@@ -34,7 +34,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
-     # - name: Test
-     #   uses: aganders3/headless-gui@v2
-     #   with:
-     #     run: python -m pytest -s -v --color=yes
+      - name: Test
+        uses: aganders3/headless-gui@v2
+        with:
+          run: python -m pytest -s -v --color=yes
