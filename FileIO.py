@@ -1,3 +1,5 @@
+""" Fonctions de manipulation de fichiers """
+
 import numpy as np
 from numpy.typing import NDArray
 from PIL import Image

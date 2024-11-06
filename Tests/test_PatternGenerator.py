@@ -1,3 +1,5 @@
+""" Tests pour la génération de pattern """
+
 from pathlib import Path
 
 import numpy as np

@@ -1,3 +1,5 @@
+""" Fonctions de génération de pattern pour des masques de structure """
+
 from enum import Enum
 from itertools import accumulate
 from typing import Any
