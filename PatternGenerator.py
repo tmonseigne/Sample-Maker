@@ -1,5 +1,7 @@
 """ Fonctions de génération de pattern pour des masques de structure """
 
+import math
+import os
 from enum import Enum
 from itertools import accumulate
 from typing import Any
@@ -7,6 +9,8 @@ from typing import Any
 import numpy as np
 from numpy.typing import NDArray
 
+from FileIO import open_png_as_boolean_mask
+from Utils import print_warning
 
 ##################################################
 class Pattern(Enum):
@@ -74,6 +78,18 @@ def stripes_mask(size: int = 256, options: Any = None) -> NDArray[np.bool_]:
 	# Options par défaut si aucunes en entrée
 	if not options: options = dict(Lengths=[200, 100, 50, 25, 12, 6], Mirrored=True, Orientation=True)
 	mask = np.full((size, size), False, dtype=bool) 				   # Masque "noir" par défaut
+
+	# Vérifie que les options existent
+	if "Lengths" not in options:
+		print_warning("Les longueurs sont introuvables ou manquant dans les options. Masque noir généré.")
+		return mask
+	if "Mirrored" not in options:
+		print_warning("L'option miroir est introuvable ou manquant dans les options. Masque noir généré.")
+		return mask
+	if "Orientation" not in options:
+		print_warning("L'orientation est introuvable ou manquant dans les options. Masque noir généré.")
+		return mask
+
 	limits = [float(x) for x in options["Lengths"] for _ in range(2)]  # Dupliquer chaque élément (bande noire et blanche de même taille)
 	if options["Mirrored"]: limits.extend([1] + limits[::-1])  		   # Ajout du miroir
 	cumulative_limits = list(accumulate(limits))  					   # Les limites sont cumulées pour avoir leur position par rapport à 0.
@@ -97,8 +113,16 @@ def squares_mask(size: int = 256, options: Any = None) -> NDArray[np.bool_]:
 	"""
 	if not options: options = dict(Size=32)			 # Options par défaut si aucunes en entrée
 	mask = np.full((size, size), False, dtype=bool)  # Masque "noir" par défaut
+
+	# Vérifie que la taille existe
+	if "Size" not in options:
+		print_warning("La taille est introuvable ou manquant dans les options. Masque noir généré.")
+		return mask
+
 	s = options["Size"]								 # Taille de chaque carré blanc
-	if s * 2 > size: return mask					 # Si on ne peut même pas placer un carré, le masque reste noir
+	if s * 2 > size: 				 				 # Si on ne peut même pas placer un carré, le masque reste noir
+		print_warning("La taille est trop grande. Masque noir généré.")
+		return mask
 	n = (size - s) // (s * 2) + 1  					 # Calcul du nombre de carrés dans chaque direction (+1 pour maximiser le nombre de carrés)
 
 	start = (size - (n * (s * 2) - s)) // 2			 # Calcul de la position du premier carré
@@ -119,7 +143,26 @@ def sun_mask(size: int = 256, options: Any = None) -> NDArray[np.bool_]:
 	:param options: Dictionnaire avec les options spécifiques au motif du soleil.
 	:return: Masque sous forme de tableau numpy 2D de type booléen.
 	"""
-	mask = np.full((size, size), False, dtype=bool)
+	if not options: options = dict(Rays=16)			  # Options par défaut si aucunes en entrée
+	mask = np.full((size, size), False, dtype=bool)   # Masque "noir" par défaut
+
+	# Vérifie que rays existe et est une puissance de 2.
+	if "Rays" not in options or not (options["Rays"] & (options["Rays"] - 1)) == 0:
+		print_warning("Le nombre de rayon est introuvable ou manquant dans les options. Masque noir généré.")
+		return mask
+
+	center = size // 2								  # Centre de l'image
+	n_segments = options["Rays"] * 2				  # Nombre de segments
+	angle_per_segment = 2 * math.pi / n_segments      # Calcul de l'angle par segment (en radians)
+
+	# Remplissage du masque
+	for x in range(size):
+		for y in range(size):
+			dx, dy = x - center, y - center			 					# Coordonnées par rapport au centre
+			angle = (math.atan2(dy, dx) + 2 * math.pi) % (2 * math.pi)  # Calcul de l'angle en radians par rapport au centre
+			segment = int(angle // angle_per_segment)					# Déterminer le segment dans lequel le point se situe
+			mask[x, y] = segment % 2 == 0								# Alterner la couleur (noir ou blanc) selon le segment
+
 	return mask
 
 
@@ -131,5 +174,7 @@ def load_mask(size: int = 256, options: Any = None) -> NDArray[np.bool_]:
 	:param options: Dictionnaire avec les options pour charger une image existante.
 	:return: Masque sous forme de tableau numpy 2D de type booléen.
 	"""
-	mask = np.full((size, size), False, dtype=bool)
-	return mask
+	if not options or "Filename" not in options or not os.path.isfile(options["Filename"]):
+		print_warning("Aucun fichier spécifié ou le fichier est introuvable. Masque noir généré.")
+		return np.full((size, size), False, dtype=bool)
+	return open_png_as_boolean_mask(options["Filename"])
