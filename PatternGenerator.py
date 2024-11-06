@@ -16,7 +16,7 @@ class Pattern(Enum):
 
 	- STRIPES : Bandes verticales (alternance de bandes noires et blanches).
 	- SQUARES : Carrés (pas encore implémenté).
-	- SUN : Motif en forme de soleil 3D (pas encore implémenté).
+	- SUN : Motif en forme de soleil (pas encore implémenté).
 	- EXISTING_IMAGE : Charge une image existante pour créer le masque (pas encore implémenté).
 	"""
 	STRIPES = 1
@@ -32,7 +32,7 @@ class Pattern(Enum):
 		return {
 				Pattern.STRIPES:        "Bandes",
 				Pattern.SQUARES:        "Carrés",
-				Pattern.SUN:            "Soleil 3D",
+				Pattern.SUN:            "Soleil",
 				Pattern.EXISTING_IMAGE: "Image existante"
 				}[self]
 
@@ -65,14 +65,15 @@ def stripes_mask(size: int = 256, options: Any = None) -> NDArray[np.bool_]:
 	L'option `Orientation` détermine si les bandes sont verticales (True) ou horizontales (False).
 
 	:param size: Taille de l'image (optionnelle), par défaut 256.
-	:param options: Dictionnaire avec les clés :
-		- "Lengths" : Liste des longueurs des bandes (en nanomètres).
+	:param options: Dictionnaire avec les options spécifiques au motif des bandes :
+		- "Lengths" : Liste des longueurs des bandes.
 		- "Mirrored" : Booléen indiquant si le motif est symétrique (miroir central).
 		- "Orientation" : Booléen pour l'orientation des bandes (True pour verticale, False pour horizontale).
 	:return: Masque sous forme de tableau numpy 2D de type booléen.
 	"""
+	# Options par défaut si aucunes en entrée
 	if not options: options = dict(Lengths=[200, 100, 50, 25, 12, 6], Mirrored=True, Orientation=True)
-	mask = np.full((size, size), False, dtype=bool)
+	mask = np.full((size, size), False, dtype=bool) 				   # Masque "noir" par défaut
 	limits = [float(x) for x in options["Lengths"] for _ in range(2)]  # Dupliquer chaque élément (bande noire et blanche de même taille)
 	if options["Mirrored"]: limits.extend([1] + limits[::-1])  		   # Ajout du miroir
 	cumulative_limits = list(accumulate(limits))  					   # Les limites sont cumulées pour avoir leur position par rapport à 0.
@@ -90,17 +91,30 @@ def squares_mask(size: int = 256, options: Any = None) -> NDArray[np.bool_]:
 	"""
 	Génération d'un masque avec un motif de carrés (actuellement vide, à implémenter).
 	:param size: Taille de l'image (optionnelle), par défaut 256.
-	:param options: Dictionnaire avec les options spécifiques au motif des carrés.
+	:param options: Dictionnaire avec les options spécifiques au motif des carrés :
+		- "Size" : Taille des carrées (en pixel).
 	:return: Masque sous forme de tableau numpy 2D de type booléen.
 	"""
-	mask = np.full((size, size), False, dtype=bool)
+	if not options: options = dict(Size=32)			 # Options par défaut si aucunes en entrée
+	mask = np.full((size, size), False, dtype=bool)  # Masque "noir" par défaut
+	s = options["Size"]								 # Taille de chaque carré blanc
+	if s * 2 > size: return mask					 # Si on ne peut même pas placer un carré, le masque reste noir
+	n = (size - s) // (s * 2) + 1  					 # Calcul du nombre de carrés dans chaque direction (+1 pour maximiser le nombre de carrés)
+
+	start = (size - (n * (s * 2) - s)) // 2			 # Calcul de la position du premier carré
+	# Remplissage des carrés dans le masque
+	for i in range(n):
+		for j in range(n):
+			x_start = start + i * (s * 2)
+			y_start = start + j * (s * 2)
+			mask[x_start:x_start + s, y_start:y_start + s] = True
 	return mask
 
 
 ##################################################
 def sun_mask(size: int = 256, options: Any = None) -> NDArray[np.bool_]:
 	"""
-	Génération d'un masque avec un motif en forme de soleil 3D (actuellement vide, à implémenter).
+	Génération d'un masque avec un motif en forme de soleil (actuellement vide, à implémenter).
 	:param size: Taille de l'image (optionnelle), par défaut 256.
 	:param options: Dictionnaire avec les options spécifiques au motif du soleil.
 	:return: Masque sous forme de tableau numpy 2D de type booléen.
