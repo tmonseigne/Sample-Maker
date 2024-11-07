@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master  # Déclenchement du workflow sur la branche principale
-      - 1-enable-sphinx-documentation
   pull_request:
 
   # Permet d'exécuter le workflow manuellement depuis l'onglet Actions
