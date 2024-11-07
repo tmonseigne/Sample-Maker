@@ -56,7 +56,7 @@ def generate_mask(pattern: Pattern, size: int = 256, options: Any = None) -> NDA
 	if pattern == Pattern.SQUARES: return squares_mask(size, options)
 	if pattern == Pattern.SUN: return sun_mask(size, options)
 	if pattern == Pattern.EXISTING_IMAGE: return load_mask(size, options)
-	return np.full((size, size), True, dtype=bool)
+	# return np.full((size, size), True, dtype=bool) # Evenement irréalisable
 
 
 ##################################################

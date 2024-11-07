@@ -11,6 +11,18 @@ SAMPLES_DIR = Path(__file__).parent / "Samples"
 
 
 ##################################################
+def test_pattern_object():
+	"""
+	Test de l'objet Pattern (utile réellement uniquement pour le code coverage à l'heure actuelle to_string non utilisé).
+	"""
+
+	assert Pattern.STRIPES.to_string() == "Bandes", "La chaine de caractère ne correspond pour le pattern Bandes"
+	assert Pattern.SQUARES.to_string() == "Carrés", "La chaine de caractère ne correspond pour le pattern Carrés"
+	assert Pattern.SUN.to_string() == "Soleil", "La chaine de caractère ne correspond pour le pattern Soleil"
+	assert Pattern.EXISTING_IMAGE.to_string() == "Image existante", "La chaine de caractère ne correspond pour le pattern Image existante"
+
+
+##################################################
 def test_generate_mask_stripes():
 	"""
 	Test de la génération de masque pour le motif 'Bandes'.
@@ -44,6 +56,37 @@ def test_stripes_mask_options():
 	assert np.any(mask), "Le masque devrait contenir des valeurs True."
 	assert np.any(~mask), "Le masque devrait contenir des valeurs False."
 	assert np.array_equal(ref, mask), "Le masque devrait correspondre à la référence."
+
+
+##################################################
+def test_stripes_mask_options_bad():
+	"""
+	Test de la fonction stripes_mask avec des options spécifiques.
+	Vérifie que les options de longueur et de miroir produisent un masque.
+	"""
+	options = {"Longueurs": [200, 100, 50], "Mirrored": False, "Orientation": False}
+	size = 128
+	mask = generate_mask(Pattern.STRIPES, size, options)
+
+	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
+	assert mask.dtype == bool, "Le masque devrait être de type booléen."
+	assert np.all(mask), "Le masque devrait contenir uniquement des valeurs True."
+
+	options = {"Lengths": [200, 100, 50], "Mirroir": False, "Orientation": False}
+	size = 128
+	mask = generate_mask(Pattern.STRIPES, size, options)
+
+	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
+	assert mask.dtype == bool, "Le masque devrait être de type booléen."
+	assert np.all(mask), "Le masque devrait contenir uniquement des valeurs True."
+
+	options = {"Lengths": [200, 100, 50], "Mirrored": False, "Sens": False}
+	size = 128
+	mask = generate_mask(Pattern.STRIPES, size, options)
+
+	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
+	assert mask.dtype == bool, "Le masque devrait être de type booléen."
+	assert np.all(mask), "Le masque devrait contenir uniquement des valeurs True."
 
 
 ##################################################
@@ -83,12 +126,20 @@ def test_squares_mask_options_little():
 
 
 ##################################################
-def test_squares_mask_options_too_big():
+def test_squares_mask_options_bad():
 	"""
 	Test de la fonction squares_mask avec des options spécifiques.
 	Vérifie que les options de taille produisent un masque noir si la taille et trop elevé.
 	"""
-	options = {"Size": 65}
+	options = {"Size": 65}  # Taille trop grande
+	size = 128
+	mask = generate_mask(Pattern.SQUARES, size, options)
+
+	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
+	assert mask.dtype == bool, "Le masque devrait être de type booléen."
+	assert np.all(mask), "Le masque devrait contenir uniquement des valeurs True."
+
+	options = {"Taille": 4}  # Dictionnaire incorrect
 	size = 128
 	mask = generate_mask(Pattern.SQUARES, size, options)
 
