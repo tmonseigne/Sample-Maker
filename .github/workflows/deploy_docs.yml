@@ -7,6 +7,18 @@ on:
       - 1-enable-sphinx-documentation
   pull_request:
 
+  # Permet d'exécuter le workflow manuellement depuis l'onglet Actions
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
   build-docs:
     runs-on: ubuntu-latest
