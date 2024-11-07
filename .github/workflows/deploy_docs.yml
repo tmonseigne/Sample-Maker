@@ -39,7 +39,7 @@ jobs:
 
       - name: Build documentation
         run: |
-          sphinx-apidoc -o Docs/generated ../  		   # Pour générer la documentation API dans `Docs/generated`
+          sphinx-apidoc -o Docs/generated ./  		   # Pour générer la documentation API dans `Docs/generated`
           sphinx-build -b html Docs/ Docs/_build/html  # Pour construire le HTML
 
 
