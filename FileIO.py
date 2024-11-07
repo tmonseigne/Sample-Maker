@@ -14,6 +14,7 @@ from PIL import Image
 def save_boolean_mask_as_png(mask: NDArray[np.bool_], filename: str):
 	"""
 	Enregistre un masque binaire en tant qu'image PNG en niveaux de gris (noir et blanc) avec Pillow.
+
 	:param mask: Tableau numpy 2D de type booléen représentant le masque.
 	:param filename: Chemin du fichier PNG de sortie.
 	"""
@@ -26,7 +27,9 @@ def save_boolean_mask_as_png(mask: NDArray[np.bool_], filename: str):
 def open_png_as_boolean_mask(filename: str) -> NDArray[np.bool_]:
 	"""
 	Ouvre une image PNG en niveaux de gris et la convertit en un masque booléen.
+
 	:param filename: Chemin du fichier PNG d'entrée.
+
 	:return: Tableau numpy 2D de type booléen représentant le masque (True pour les pixels blancs, False pour les pixels noirs).
 	"""
 	if not os.path.isfile(filename): raise OSError(f"Le fichier \"{filename}\" est introuvable.")
