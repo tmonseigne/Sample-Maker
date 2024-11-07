@@ -56,7 +56,7 @@ def generate_mask(pattern: Pattern, size: int = 256, options: Any = None) -> NDA
 	if pattern == Pattern.SQUARES: return squares_mask(size, options)
 	if pattern == Pattern.SUN: return sun_mask(size, options)
 	if pattern == Pattern.EXISTING_IMAGE: return load_mask(size, options)
-	return np.full((size, size), False, dtype=bool)
+	return np.full((size, size), True, dtype=bool)
 
 
 ##################################################
@@ -81,14 +81,14 @@ def stripes_mask(size: int = 256, options: Any = None) -> NDArray[np.bool_]:
 
 	# Vérifie que les options existent
 	if "Lengths" not in options:
-		print_warning("Les longueurs sont introuvables ou manquant dans les options. Masque noir généré.")
-		return mask
+		print_warning("Les longueurs sont introuvables dans les options. Masque blanc généré.")
+		return ~mask
 	if "Mirrored" not in options:
-		print_warning("L'option miroir est introuvable ou manquant dans les options. Masque noir généré.")
-		return mask
+		print_warning("L'option miroir est introuvable dans les options. Masque blanc généré.")
+		return ~mask
 	if "Orientation" not in options:
-		print_warning("L'orientation est introuvable ou manquant dans les options. Masque noir généré.")
-		return mask
+		print_warning("L'orientation est introuvable dans les options. Masque blanc généré.")
+		return ~mask
 
 	limits = [float(x) for x in options["Lengths"] for _ in range(2)]  # Dupliquer chaque élément (bande noire et blanche de même taille)
 	if options["Mirrored"]: limits.extend([1] + limits[::-1])  		   # Ajout du miroir
@@ -116,13 +116,13 @@ def squares_mask(size: int = 256, options: Any = None) -> NDArray[np.bool_]:
 
 	# Vérifie que la taille existe
 	if "Size" not in options:
-		print_warning("La taille est introuvable ou manquant dans les options. Masque noir généré.")
-		return mask
+		print_warning("La taille est introuvable ou manquant dans les options. Masque blanc généré.")
+		return ~mask
 
 	s = options["Size"]								 # Taille de chaque carré blanc
 	if s * 2 > size: 				 				 # Si on ne peut même pas placer un carré, le masque reste noir
-		print_warning("La taille est trop grande. Masque noir généré.")
-		return mask
+		print_warning("La taille est trop grande. Masque blanc généré.")
+		return ~mask
 	n = (size - s) // (s * 2) + 1  					 # Calcul du nombre de carrés dans chaque direction (+1 pour maximiser le nombre de carrés)
 
 	start = (size - (n * (s * 2) - s)) // 2			 # Calcul de la position du premier carré
@@ -148,8 +148,8 @@ def sun_mask(size: int = 256, options: Any = None) -> NDArray[np.bool_]:
 
 	# Vérifie que rays existe et est une puissance de 2.
 	if "Rays" not in options or not (options["Rays"] & (options["Rays"] - 1)) == 0:
-		print_warning("Le nombre de rayon est introuvable ou manquant dans les options. Masque noir généré.")
-		return mask
+		print_warning("Le nombre de rayon est introuvable ou manquant dans les options. Masque blanc généré.")
+		return ~mask
 
 	center = size // 2								  # Centre de l'image
 	n_segments = options["Rays"] * 2				  # Nombre de segments
@@ -175,6 +175,6 @@ def load_mask(size: int = 256, options: Any = None) -> NDArray[np.bool_]:
 	:return: Masque sous forme de tableau numpy 2D de type booléen.
 	"""
 	if not options or "Filename" not in options or not os.path.isfile(options["Filename"]):
-		print_warning("Aucun fichier spécifié ou le fichier est introuvable. Masque noir généré.")
-		return np.full((size, size), False, dtype=bool)
+		print_warning("Aucun fichier spécifié ou le fichier est introuvable. Masque blanc généré.")
+		return np.full((size, size), True, dtype=bool)
 	return open_png_as_boolean_mask(options["Filename"])
