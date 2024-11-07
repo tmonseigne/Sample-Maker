@@ -163,3 +163,4 @@ cython_debug/
 
 # Artifacts
 *Tests/Samples/test_save_boolean_mask.png
+*Docs/generated/*
