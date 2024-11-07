@@ -4,10 +4,11 @@
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/tmonseigne/Sample-Maker/test.yml)
 ![GitHub top language](https://img.shields.io/github/languages/top/tmonseigne/Sample-Maker)
 [![codecov](https://codecov.io/github/tmonseigne/Sample-Maker/graph/badge.svg?token=OJFRBzwxXR)](https://codecov.io/github/tmonseigne/Sample-Maker)
+[![Documentation Status](https://img.shields.io/badge/Documentation-Online-brightgreen)](https://tmonseigne.github.io/Sample-Maker/)
 
 Petit outil permettant de simuler une acquisition de microscopie.
 
 ## Prérequis
 
 - Python 3.12 ou supérieur
-  - pip install numpy pillow pytest PyQt5
+  - pip install colorama numpy pillow pytest pytest-cov PyQt5 sphinx sphinx-autobuild sphinx-rtd-theme
