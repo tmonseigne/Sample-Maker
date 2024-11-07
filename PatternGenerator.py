@@ -31,6 +31,7 @@ class Pattern(Enum):
 	def to_string(self) -> str:
 		"""
 		Retourne une chaîne de caractères représentant le motif correspondant.
+
 		:return: Le nom du motif en français.
 		"""
 		return {
@@ -49,6 +50,7 @@ def generate_mask(pattern: Pattern, size: int = 256, options: Any = None) -> NDA
 	:param pattern: Le motif à utiliser pour générer le masque (Pattern.STRIPES, Pattern.SQUARES, etc.).
 	:param size: Taille de l'image (optionnelle), par défaut 256.
 	:param options: Dictionnaire contenant des options spécifiques au motif (longueur des bandes, effet miroir, etc.).
+
 	:return: Masque sous forme de tableau numpy 2D de type booléen.
 	"""
 	# Création de l'image selon le motif
@@ -73,6 +75,7 @@ def stripes_mask(size: int = 256, options: Any = None) -> NDArray[np.bool_]:
 		- "Lengths" : Liste des longueurs des bandes.
 		- "Mirrored" : Booléen indiquant si le motif est symétrique (miroir central).
 		- "Orientation" : Booléen pour l'orientation des bandes (True pour verticale, False pour horizontale).
+
 	:return: Masque sous forme de tableau numpy 2D de type booléen.
 	"""
 	# Options par défaut si aucunes en entrée
@@ -106,9 +109,11 @@ def stripes_mask(size: int = 256, options: Any = None) -> NDArray[np.bool_]:
 def squares_mask(size: int = 256, options: Any = None) -> NDArray[np.bool_]:
 	"""
 	Génération d'un masque avec un motif de carrés (actuellement vide, à implémenter).
+
 	:param size: Taille de l'image (optionnelle), par défaut 256.
 	:param options: Dictionnaire avec les options spécifiques au motif des carrés :
 		- "Size" : Taille des carrées (en pixel).
+
 	:return: Masque sous forme de tableau numpy 2D de type booléen.
 	"""
 	if not options: options = dict(Size=32)			 # Options par défaut si aucunes en entrée
@@ -139,8 +144,10 @@ def squares_mask(size: int = 256, options: Any = None) -> NDArray[np.bool_]:
 def sun_mask(size: int = 256, options: Any = None) -> NDArray[np.bool_]:
 	"""
 	Génération d'un masque avec un motif en forme de soleil (actuellement vide, à implémenter).
+
 	:param size: Taille de l'image (optionnelle), par défaut 256.
 	:param options: Dictionnaire avec les options spécifiques au motif du soleil.
+
 	:return: Masque sous forme de tableau numpy 2D de type booléen.
 	"""
 	if not options: options = dict(Rays=16)			  # Options par défaut si aucunes en entrée
@@ -170,8 +177,10 @@ def sun_mask(size: int = 256, options: Any = None) -> NDArray[np.bool_]:
 def load_mask(size: int = 256, options: Any = None) -> NDArray[np.bool_]:
 	"""
 	Charge un masque à partir d'une image existante (actuellement vide, à implémenter).
+
 	:param size: Taille de l'image (optionnelle), par défaut 256.
 	:param options: Dictionnaire avec les options pour charger une image existante.
+
 	:return: Masque sous forme de tableau numpy 2D de type booléen.
 	"""
 	if not options or "Filename" not in options or not os.path.isfile(options["Filename"]):
