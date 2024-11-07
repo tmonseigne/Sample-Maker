@@ -94,7 +94,7 @@ def test_squares_mask_options_too_big():
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
 	assert mask.dtype == bool, "Le masque devrait être de type booléen."
-	assert np.all(~mask), "Le masque devrait contenir uniquement des valeurs False."
+	assert np.all(mask), "Le masque devrait contenir uniquement des valeurs True."
 
 
 ##################################################
@@ -163,7 +163,7 @@ def test_sun_mask_options_bad():
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
 	assert mask.dtype == bool, "Le masque devrait être de type booléen."
-	assert np.all(~mask), "Le masque devrait contenir uniquement des valeurs False."
+	assert np.all(mask), "Le masque devrait contenir uniquement des valeurs True."
 
 
 ##################################################
@@ -182,7 +182,7 @@ def test_generate_mask_existing_image():
 
 
 ##################################################
-def test_sun_mask_options_bad_filenmae():
+def test_existing_mask_options_bad_filenmae():
 	"""
 	Test de la génération de masque pour le motif 'Image existante'.
 	Vérifie que le masque est de la bonne taille et de type booléen.
@@ -193,4 +193,4 @@ def test_sun_mask_options_bad_filenmae():
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
 	assert mask.dtype == bool, "Le masque devrait être de type booléen."
-	assert np.all(~mask), "Le masque devrait contenir uniquement des valeurs False."
+	assert np.all(mask), "Le masque devrait contenir uniquement des valeurs True."

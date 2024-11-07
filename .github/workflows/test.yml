@@ -4,9 +4,11 @@ on:
   pull_request:
     branches:
       - master
+      - 2-enable-code-coverage
   push:
     branches:
       - master
+      - 2-enable-code-coverage
 
 jobs:
   test:
@@ -34,7 +36,15 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
-      - name: Test
+      - name: Tests
         uses: aganders3/headless-gui@v2
         with:
-          run: python -m pytest -s -v --color=yes
+          run: python -m pytest -s -v --color=yes --cov=. --cov-report=xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml
+          flags: unittests
+          fail_ci_if_error: true
