@@ -23,6 +23,7 @@ class Pattern(Enum):
 	- SUN : Motif en forme de soleil (pas encore implémenté).
 	- EXISTING_IMAGE : Charge une image existante pour créer le masque (pas encore implémenté).
 	"""
+	NONE = 0
 	STRIPES = 1
 	SQUARES = 2
 	SUN = 3
@@ -38,7 +39,8 @@ class Pattern(Enum):
 				Pattern.STRIPES:        "Bandes",
 				Pattern.SQUARES:        "Carrés",
 				Pattern.SUN:            "Soleil",
-				Pattern.EXISTING_IMAGE: "Image existante"
+				Pattern.EXISTING_IMAGE: "Image existante",
+				Pattern.NONE: 			"None"
 				}[self]
 
 
@@ -58,7 +60,7 @@ def generate_mask(pattern: Pattern, size: int = 256, options: Any = None) -> NDA
 	if pattern == Pattern.SQUARES: return squares_mask(size, options)
 	if pattern == Pattern.SUN: return sun_mask(size, options)
 	if pattern == Pattern.EXISTING_IMAGE: return load_mask(size, options)
-	# return np.full((size, size), True, dtype=bool) # Evenement irréalisable
+	return np.full((size, size), True, dtype=bool)
 
 
 ##################################################

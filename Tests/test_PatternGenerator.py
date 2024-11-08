@@ -20,6 +20,7 @@ def test_pattern_object():
 	assert Pattern.SQUARES.to_string() == "Carrés", "La chaine de caractère ne correspond pour le pattern Carrés"
 	assert Pattern.SUN.to_string() == "Soleil", "La chaine de caractère ne correspond pour le pattern Soleil"
 	assert Pattern.EXISTING_IMAGE.to_string() == "Image existante", "La chaine de caractère ne correspond pour le pattern Image existante"
+	assert Pattern.NONE.to_string() == "None", "La chaine de caractère ne correspond pour le pattern None"
 
 
 ##################################################
@@ -129,7 +130,7 @@ def test_squares_mask_options_little():
 def test_squares_mask_options_bad():
 	"""
 	Test de la fonction squares_mask avec des options spécifiques.
-	Vérifie que les options de taille produisent un masque noir si la taille et trop elevé.
+	Vérifie que les options de taille produisent un masque blanc si la taille et trop elevé.
 	"""
 	options = {"Size": 65}  # Taille trop grande
 	size = 128
@@ -206,7 +207,7 @@ def test_sun_mask_options():
 def test_sun_mask_options_bad():
 	"""
 	Test de la fonction sun_mask avec des options spécifiques.
-	Vérifie que les options de nombre de rayons produisent un masque noir si ce n'est un multiple de 2.
+	Vérifie que les options de nombre de rayons produisent un masque blanc si ce n'est un multiple de 2.
 	"""
 	options = {"Rays": 3}
 	size = 128
@@ -233,14 +234,28 @@ def test_generate_mask_existing_image():
 
 
 ##################################################
-def test_existing_mask_options_bad_filenmae():
+def test_existing_mask_options_bad_filename():
 	"""
 	Test de la génération de masque pour le motif 'Image existante'.
-	Vérifie que le masque est de la bonne taille et de type booléen.
+	Vérifie que le masque est de la bonne taille, de type booléen et est entièrement blanc.
 	"""
 	options = {"Filename": f"{SAMPLES_DIR}/badfile.png"}
 	size = 256
 	mask = generate_mask(Pattern.EXISTING_IMAGE, size, options)
+
+	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
+	assert mask.dtype == bool, "Le masque devrait être de type booléen."
+	assert np.all(mask), "Le masque devrait contenir uniquement des valeurs True."
+
+
+##################################################
+def test_none_mask():
+	"""
+	Test de la génération d'un masque nulle (donc entièrement blanc).
+	Vérifie que le masque est de la bonne taille, de type booléen et est entièrement blanc.
+	"""
+	size = 256
+	mask = generate_mask(Pattern.NONE, size)
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
 	assert mask.dtype == bool, "Le masque devrait être de type booléen."
