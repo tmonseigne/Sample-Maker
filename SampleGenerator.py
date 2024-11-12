@@ -97,9 +97,9 @@ def apply_mask(localisation: NDArray[float], mask: NDArray[np.bool_]) -> NDArray
 	(x arrondi, y arrondi) correspondent à des positions "True" dans le masque.
 
 	:param localisation: Tableau numpy de positions des molécules de forme (N, 3), où chaque ligne contient les coordonnées (x, y, z).
-	Les coordonnées x et y sont en flottants et doivent être dans les limites de `mask`.
+		Les coordonnées x et y sont en flottants et doivent être dans les limites de `mask`.
 	:param mask: Tableau numpy 2D de type booléen indiquant les zones de validité (True) pour les molécules.
-	La forme de `mask` doit être (size, size), où `size` correspond à la taille de l'image.
+		La forme de `mask` doit être (size, size), où `size` correspond à la taille de l'image.
 	:return: Tableau numpy filtré de positions de molécules (x, y, z) où seules les molécules dans les zones "True" du masque sont conservées.
 	"""
 

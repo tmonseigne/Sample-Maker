@@ -18,6 +18,7 @@ class Pattern(Enum):
 	Enumération représentant les différents motifs disponibles pour la génération de masque.
 	Chaque motif est associé à un identifiant unique pour être utilisé dans la fonction `generate_mask`.
 
+	- NONE : Aucun masque (ou plutôt un masque entièrement blanc).
 	- STRIPES : Bandes verticales (alternance de bandes noires et blanches).
 	- SQUARES : Carrés (pas encore implémenté).
 	- SUN : Motif en forme de soleil (pas encore implémenté).
@@ -36,11 +37,11 @@ class Pattern(Enum):
 		:return: Le nom du motif en français.
 		"""
 		return {
+				Pattern.NONE: 			"None",
 				Pattern.STRIPES:        "Bandes",
 				Pattern.SQUARES:        "Carrés",
 				Pattern.SUN:            "Soleil",
-				Pattern.EXISTING_IMAGE: "Image existante",
-				Pattern.NONE: 			"None"
+				Pattern.EXISTING_IMAGE: "Image existante"
 				}[self]
 
 
