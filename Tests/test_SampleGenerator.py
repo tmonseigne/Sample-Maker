@@ -4,9 +4,8 @@ from pathlib import Path
 
 import numpy as np
 
-from FileIO import open_png_as_boolean_mask
-from ImageGenerator import apply_mask, compute_molecule_number, compute_molecule_localisation, compute_psf, add_snr, generate_sample
 from PatternGenerator import generate_mask, Pattern
+from SampleGenerator import add_snr, apply_mask, compute_molecule_localisation, compute_molecule_number, compute_psf, generate_sample
 
 SAMPLES_DIR = Path(__file__).parent / "Samples"
 
@@ -74,6 +73,7 @@ def test_compute_psf():
 	res = compute_psf(256, localisation, 100.0, 10.0, 2.0)
 	assert res.shape == (256, 256), f"Le résultat est une image de taille {res.shape} au lieu de (256, 256)."
 
+
 ##################################################
 def test_compute_psf_bad_options():
 	"""
@@ -94,8 +94,12 @@ def test_add_snr():
 	res = add_snr(image, snr=10)
 	assert res.shape == (256, 256), f"Le résultat est une image de taille {res.shape} au lieu de (256, 256)."
 
+
 ##################################################
 def test_generate_sample():
 	"""
 	Test de la fonction generate_sample.
 	"""
+
+	res = generate_sample(256, 160, 1.0, Pattern.NONE, None, 100, 10, 2, 10)
+	assert res.shape == (256, 256), f"Le résultat est une image de taille {res.shape} au lieu de (256, 256)."

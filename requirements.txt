@@ -4,6 +4,7 @@ pillow
 pytest
 pytest-cov
 PyQt5
+scipy
 sphinx
 sphinx-autobuild
 sphinx-rtd-theme
