@@ -7,8 +7,8 @@ import numpy as np
 from FileIO import open_png_as_boolean_mask, save_boolean_mask_as_png
 
 SAMPLES_DIR = Path(__file__).parent / "Samples"
+# np.random.seed(42) # Possibilité de fixer la graine du random pour avoir un aléatoire "controlé".
 ref_boolean_mask = np.random.rand(256, 256) > 0.5
-
 
 ##################################################
 def test_save_boolean_mask_as_png():

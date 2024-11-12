@@ -49,6 +49,8 @@ def test_compute_molecule_localisation():
 def test_apply_mask():
 	"""
 	Test de la fonction apply_mask.
+
+	.. todo:: Améliorer le test pour avoir un control total des entrées et sorties (un tableau localisation fixe et des masques simple), donc sans random.
 	"""
 
 	localisation = compute_molecule_localisation(256, 160, 0.25)
@@ -68,6 +70,8 @@ def test_apply_mask():
 def test_compute_psf():
 	"""
 	Test de la fonction compute_psf.
+
+	.. todo:: Améliorer le test pour avoir un control total des entrées (un tableau localisation fixe), donc sans random.
 	"""
 	localisation = compute_molecule_localisation(256, 160, 0.25)
 	res = compute_psf(256, localisation, 100.0, 10.0, 2.0)
@@ -90,7 +94,7 @@ def test_add_snr():
 	"""
 	Test de la fonction add_snr.
 	"""
-	image = np.ones((256, 256)) * 500  # Exemple d'image avec des pixels égaux à 500
+	image = np.ones((256, 256), dtype=np.float32) * 500  # Exemple d'image avec des pixels égaux à 500
 	res = add_snr(image, snr=10)
 	assert res.shape == (256, 256), f"Le résultat est une image de taille {res.shape} au lieu de (256, 256)."
 

@@ -16,7 +16,7 @@ MAX_INTENSITY = 65535  # Pour des entiers sur 16 bits
 def generate_sample(size: int = 256, pixel_size: int = 160, density: float = 1.0,
 					pattern: Pattern = Pattern.NONE, pattern_options: Any = None,
 					intensity: float = 100, variation: float = 10, astigmatism_ratio: float = 2.0,
-					snr: float = 10.0) -> NDArray[float]:
+					snr: float = 10.0) -> NDArray[np.float32]:
 	"""
 	Calcule une répartition des molécules sur une image carrée en fonction de sa taille, de la taille d'un pixel et de la densité de molécules.
 	Un masque est appliqué selon un pattern (prédéfini ou chargé à partir d'une image).
@@ -63,10 +63,10 @@ def compute_molecule_number(size: int = 256, pixel_size: int = 160, density: flo
 
 
 ##################################################
-def compute_molecule_localisation(size: int = 256, pixel_size: int = 160, density: float = 1.0) -> NDArray[float]:
+def compute_molecule_localisation(size: int = 256, pixel_size: int = 160, density: float = 1.0) -> NDArray[np.float32]:
 	"""
 	Génère un tableau de positions 3D aléatoires pour les molécules en fonction de la taille de l'image,
-	de la taille d'un pixel et de la densité des molécules. la coordonnée Z sera comprise entre -1 et 1.
+	de la taille d'un pixel et de la densité des molécules. La coordonnée Z sera comprise entre -1 et 1.
 
 	:param size: Taille de l'image en pixels (par défaut 256), qui correspond à la dimension d'un côté de l'image carrée.
 	:param pixel_size: Taille d'un pixel en nanomètres (par défaut 160).
@@ -91,7 +91,7 @@ def compute_molecule_localisation(size: int = 256, pixel_size: int = 160, densit
 
 
 ##################################################
-def apply_mask(localisation: NDArray[float], mask: NDArray[np.bool_]) -> NDArray[float]:
+def apply_mask(localisation: NDArray[np.float32], mask: NDArray[np.bool_]) -> NDArray[np.float32]:
 	"""
 	Filtre les positions des molécules en fonction d'un masque booléen 2D, ne conservant que celles dont les coordonnées
 	(x arrondi, y arrondi) correspondent à des positions "True" dans le masque.
@@ -115,13 +115,14 @@ def apply_mask(localisation: NDArray[float], mask: NDArray[np.bool_]) -> NDArray
 
 
 ##################################################
-def compute_psf(size: int, localisation: NDArray[float], intensity: float = 100, variation: float = 10, astigmatism_ratio: float = 2.0) -> NDArray[float]:
+def compute_psf(size: int, localisation: NDArray[np.float32],
+				intensity: float = 100, variation: float = 10, astigmatism_ratio: float = 2.0) -> NDArray[np.float32]:
 	"""
 	Calcule une image 2D avec la fonction de réponse impulsionnelle (PSF) de chaque molécule basée sur les coordonnées et un astigmatisme défini par z.
 
 	:param size: Taille de l'image en pixels (size x size).
 	:param localisation: Tableau numpy de positions des molécules de forme (N, 3), où chaque ligne est (x, y, z).
-	:param intensity: Intensité de base pour chaque PSF (ie : intensité du fluorophore) (par défaut 100).
+	:param intensity: Intensité de base pour chaque PSF (i.e. : intensité du fluorophore) (par défaut 100).
 	:param variation: Variation d'intensité aléatoire appliquée à l'intensité (par défaut 10).
 	:param astigmatism_ratio: Ratio de l'astigmatisme (par défaut 2 indique une déformation de X par rapport à Y de maximum 2).
 	:return: Image 2D de taille (size, size) avec les PSF ajoutées pour chaque molécule.
@@ -163,7 +164,7 @@ def compute_psf(size: int, localisation: NDArray[float], intensity: float = 100,
 
 
 ##################################################
-def add_snr(image: NDArray[float], snr: float = 10.0):
+def add_snr(image: NDArray[np.float32], snr: float = 10.0):
 	"""
 	Ajoute du bruit gaussien et poissonien à une image pour atteindre un SNR donné.
 

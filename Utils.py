@@ -4,6 +4,26 @@ from colorama import Fore, Style
 
 
 # ==================================================
+# region File Management
+# # ==================================================
+##################################################
+def clean_extension(filename: str, extension: str):
+	"""
+	Ajoute l'extension au fichier si ce n'est pas déjà l'extension actuelle
+
+	:param filename: Nom du fichier
+	:param extension: Extension finale du fichier
+
+	.. todo:: Fonction actuellement vide.
+	"""
+	print("TODO")
+
+# ==================================================
+# endregion File Management
+# ==================================================
+
+
+# ==================================================
 # region Prints
 # ==================================================
 ##################################################
