@@ -20,7 +20,7 @@ mirror = True						 # On définit l'option miroir pour que les bandes soient dé
 oriantation = True					 # On définit l'oriantation à true pour avoir des bandes verticales
 options = {"Lengths": lengths, "Mirrored": mirror, "Orientation": oriantation}  # Création du dictionnaire d'options
 mask = generate_mask(Pattern.STRIPES, size, options)							# Génération du masque
-save_boolean_mask_as_png(mask, f"{OUTPUT_DIR}/Radio_mask.png")					# Enregistrement du masque au format png
+save_boolean_mask_as_png(mask, f"{OUTPUT_DIR}/Mask_Radio.png")					# Enregistrement du masque au format png
 
 
 ##################################################
@@ -28,7 +28,7 @@ save_boolean_mask_as_png(mask, f"{OUTPUT_DIR}/Radio_mask.png")					# Enregistrem
 size = 256														 # Taille de l'image
 options = {"Size": 64}											 # Image avec des carrés de 32 pixels
 mask = generate_mask(Pattern.SQUARES, size, options)			 # Génération du masque
-save_boolean_mask_as_png(mask, f"{OUTPUT_DIR}/Square_mask.png")  # Enregistrement du masque au format png
+save_boolean_mask_as_png(mask, f"{OUTPUT_DIR}/Mask_Square.png")  # Enregistrement du masque au format png
 
 
 ##################################################
@@ -36,7 +36,7 @@ save_boolean_mask_as_png(mask, f"{OUTPUT_DIR}/Square_mask.png")  # Enregistremen
 size = 256													  # Taille de l'image
 options = {"Rays": 16}										  # Image avec 16 rayons
 mask = generate_mask(Pattern.SUN, size, options)			  # Génération du masque
-save_boolean_mask_as_png(mask, f"{OUTPUT_DIR}/Sun_mask.png")  # Enregistrement du masque au format png
+save_boolean_mask_as_png(mask, f"{OUTPUT_DIR}/Mask_Sun.png")  # Enregistrement du masque au format png
 
 
 ##################################################
@@ -44,11 +44,11 @@ save_boolean_mask_as_png(mask, f"{OUTPUT_DIR}/Sun_mask.png")  # Enregistrement d
 size = 256														   # Taille de l'image
 options = {"Filename": f"{INPUT_DIR}/PALM.png"}					   # Chemin vers le fichier
 mask = generate_mask(Pattern.EXISTING_IMAGE, size, options)		   # Génération du masque
-save_boolean_mask_as_png(mask, f"{OUTPUT_DIR}/Existing_mask.png")  # Enregistrement du masque au format png
+save_boolean_mask_as_png(mask, f"{OUTPUT_DIR}/Mask_Existing.png")  # Enregistrement du masque au format png
 
 
 ##################################################
 # Création d'un masque blanc (passe-tout)
-size = 256														   # Taille de l'image
-mask = generate_mask(Pattern.NONE, size)						   # Génération du masque
-save_boolean_mask_as_png(mask, f"{OUTPUT_DIR}/Blank_mask.png")  # Enregistrement du masque au format png
+size = 256														# Taille de l'image
+mask = generate_mask(Pattern.NONE, size)						# Génération du masque
+save_boolean_mask_as_png(mask, f"{OUTPUT_DIR}/Mask_Blank.png")  # Enregistrement du masque au format png

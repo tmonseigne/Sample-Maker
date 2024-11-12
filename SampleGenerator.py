@@ -126,6 +126,9 @@ def compute_psf(size: int, localisation: NDArray[np.float32],
 	:param variation: Variation d'intensité aléatoire appliquée à l'intensité (par défaut 10).
 	:param astigmatism_ratio: Ratio de l'astigmatisme (par défaut 2 indique une déformation de X par rapport à Y de maximum 2).
 	:return: Image 2D de taille (size, size) avec les PSF ajoutées pour chaque molécule.
+
+	.. todo:: Régler la taille des psf plus précisement avec une option psf_size. le ratio de la matrice de covariance va influer la taille de la psf.
+		Il faudra faire des tests et voir comment régler précisement la taille des psf pour se rapprocher de données réelles.
 	"""
 
 	image = np.zeros((size, size), dtype=np.float32)
