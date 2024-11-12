@@ -5,7 +5,7 @@ from pathlib import Path
 import numpy as np
 
 from PatternGenerator import generate_mask, Pattern
-from SampleGenerator import add_snr, apply_mask, compute_molecule_localisation, compute_molecule_number, compute_psf, generate_sample
+from SampleGenerator import add_snr, apply_mask, compute_molecule_grid, compute_molecule_localisation, compute_molecule_number, compute_psf, generate_sample
 
 
 ##################################################
@@ -41,6 +41,16 @@ def test_compute_molecule_localisation():
 
 	res = compute_molecule_localisation(256, 160, 0.25)
 	assert res.shape == (419, 3), f"Le résultat est {res.shape} au lieu de (419,3)"
+
+
+##################################################
+def test_compute_molecule_grid():
+	"""
+	Test de la fonction compute_molecule_localisation.
+	"""
+
+	res = compute_molecule_grid(size=100, shift=10)
+	assert res.shape == (81, 3), f"Le résultat est {res.shape} au lieu de (81,3)"
 
 
 ##################################################

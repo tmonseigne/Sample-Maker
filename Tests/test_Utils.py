@@ -15,6 +15,8 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)  # Créer le dossier de sorties (la premi
 def test_clean_extension():
 	"""
 	Test de la fonction clean extension.
+
+	.. todo:: Test à faire
 	"""
 	print("TODO")
 
