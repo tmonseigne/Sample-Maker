@@ -9,7 +9,7 @@ from scipy.stats import multivariate_normal
 from PatternGenerator import generate_mask, Pattern
 from Utils import print_warning
 
-MAX_INTENSITY = 65535  # Pour des entiers sur 16 bits
+MAX_INTENSITY = np.iinfo(np.uint16).max  # Pour des entiers sur 16 bits (soit 65535)
 
 
 ##################################################
