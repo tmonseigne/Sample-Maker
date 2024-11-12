@@ -11,8 +11,10 @@ from numpy.typing import NDArray
 
 from FileIO import open_png_as_boolean_mask
 from PatternGenerator import Pattern
-from Utils import print_warning
+from Utils import print_warning, print_error
+from scipy.stats import multivariate_normal
 
+MAX_INTENSITY = 65535  # Pour des entiers sur 16 bits
 
 ##################################################
 def generate_sample(size: int = 256, pixel_size: int = 160, density: float = 1.0, snr: float = 10.0, pattern=Pattern.NONE):
@@ -75,12 +77,6 @@ def apply_mask(localisation: NDArray[float], mask: NDArray[np.bool_]) -> NDArray
 	:param mask: Tableau numpy 2D de type booléen indiquant les zones de validité (True) pour les molécules.
 	             La forme de `mask` doit être (size, size), où `size` correspond à la taille de l'image.
 	:return: Tableau numpy filtré de positions de molécules (x, y, z) où seules les molécules dans les zones "True" du masque sont conservées.
-	:rtype: NDArray[float]
-
-	:example:
-	>>> localisation = np.array([[10.5, 20.2, 0.3], [5.0, 15.1, -0.2], [250.4, 140.5, 0.0]])
-	>>> mask = np.random.choice([True, False], size=(256, 256))
-	>>> filtered_positions = apply_mask(localisation, mask)
 	"""
 
 	# Convertir les coordonnées x et y en entiers pour correspondre aux pixels dans le masque, clip permet d'éviter les positions en dehors du masque.
@@ -95,11 +91,68 @@ def apply_mask(localisation: NDArray[float], mask: NDArray[np.bool_]) -> NDArray
 
 
 ##################################################
-def add_psf(image):
-	print("TODO")
+def compute_psf(size: int, localisation: NDArray[float], intensity: float = 100, variation: float = 10, astigmatism_ratio: float = 2.0) -> NDArray[float]:
+	"""
+	Calcule une image 2D avec la fonction de réponse impulsionnelle (PSF) de chaque molécule basée sur
+	les coordonnées et un astigmatisme défini par z.
+
+	:param size: Taille de l'image en pixels (size x size).
+	:param localisation: Tableau numpy de positions des molécules de forme (N, 3), où chaque ligne est (x, y, z).
+	:param intensity: Intensité de base pour chaque PSF (par défaut 100).
+	:param variation: Variation d'intensité aléatoire appliquée à chaque PSF (par défaut 10).
+	:param astigmatism_ratio: Ratio de l'astigmatisme (par défaut 2 indique une déformation de X par rapport à Y de maximum 2).
+	:return: Image 2D de taille (size, size) avec les PSF ajoutées pour chaque molécule.
+	"""
+	image = np.zeros((size, size), dtype=np.float32)
+	if astigmatism_ratio <= 0: 				 	# Si à un ratio négatif ce n'est pas logique
+		print_warning("Le ratio d'astygmatisme doit être strictement positif, l'image sera noire.")
+		return image
+
+	# Déterminer les bornes pour le ratio d'aspect (si l'astigmatisme est inférieure à 1, on inverse l'étirement horizontal et vertical)
+	min_ratio = min(astigmatism_ratio, 1 / astigmatism_ratio)
+	max_ratio = max(astigmatism_ratio, 1 / astigmatism_ratio)
+
+	for x, y, z in localisation:
+		# Calculer le ratio linéairement en fonction de z, mais borné aux limites logiques en cas de valeurs abhérantes
+		ratio = np.clip(1 + z * (astigmatism_ratio - 1), min_ratio, max_ratio)
+
+		# Générer une intensité aléatoire autour de l'intensité de base
+		i = intensity + np.random.normal(-variation, variation)
+
+		# Calculer la gaussienne 2D autour de (x, y) avec l'astigmatisme
+		x_coords = np.arange(size)
+		y_coords = np.arange(size)
+		x_mesh, y_mesh = np.meshgrid(x_coords, y_coords)
+		pos = np.dstack((x_mesh, y_mesh))
+
+		# Définir la gaussienne avec l'astigmatisme selon sigma_x et sigma_y
+		rv = multivariate_normal(mean=[x, y], cov=[[ratio, 0], [0, 1 / ratio]])
+		psf = i * rv.pdf(pos)
+
+		# Ajouter la gaussienne à l'image résultante
+		image += psf
+
+	# Remplacer toutes les valeurs inférieures à 0 par 0.
+	image = np.clip(image, 0, MAX_INTENSITY)
+
+	return image
 
 
 ##################################################
-def add_snr(image, snr: float = 10.0):
-	print("TODO")
+def add_snr(image: NDArray[float], snr: float = 10.0):
+	"""
+	Ajoute du bruit gaussien et poissonien à une image pour atteindre un SNR donné.
+
+	:param image: L'image d'entrée (en valeurs de pixels).
+	:param snr: Le rapport signal sur bruit désiré.
+	:return: L'image bruitée avec un SNR approximatif.
+	"""
+	signal_mean = np.mean(image)												 # Calculer l'intensité moyenne du signal
+	noise_std = signal_mean / snr												 # Calculer l'écart-type du bruit nécessaire pour le SNR
+	gaussian_noise = np.random.normal(loc=0, scale=noise_std, size=image.shape)  # Ajouter du bruit gaussien avec l'écart-type calculé
+	poisson_noise = np.random.poisson(image)									 # Ajouter du bruit poissonien basé sur l'image
+	noisy_image = image + gaussian_noise + poisson_noise						 # Somme du bruit gaussien et poissonien
+	noisy_image = np.clip(noisy_image, 0, MAX_INTENSITY)						 # Clipper les valeurs pour éviter les débordements
+	return noisy_image
+
 
