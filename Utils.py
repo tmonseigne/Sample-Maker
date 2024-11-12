@@ -1,6 +1,8 @@
 """ Fonctions génériques """
 
+import numpy as np
 from colorama import Fore, Style
+from numpy.typing import NDArray
 
 
 # ==================================================
@@ -17,6 +19,7 @@ def clean_extension(filename: str, extension: str):
 	.. todo:: Fonction actuellement vide.
 	"""
 	print("TODO")
+
 
 # ==================================================
 # endregion File Management
@@ -45,6 +48,38 @@ def print_warning(msg: str):
 	"""
 	print(Fore.YELLOW + Style.BRIGHT + msg + Fore.RESET + Style.RESET_ALL)
 
+
 # ==================================================
 # endregion Prints
+# ==================================================
+
+
+# ==================================================
+# region Drawing
+# ==================================================
+##################################################
+def add_grid(image: NDArray[np.float32], size_x: int = 10, size_y: int = 10, color: int = 255) -> NDArray[np.float32]:
+	"""
+	Ajoute une grille sur l'image
+
+	:param image: L'image d'entrée (en valeurs de pixels).
+	:param size_x: Espacement de la grille sur X (par défaut 10).
+	:param size_y: Espacement de la grille sur Y (par défaut 10).
+	:param color: Couleur de la grille (par défaut 255, blanc).
+	:return: L'image avec une grille.
+
+	.. note:: Par principe cette fonction sera utilisée plus tard sur une image RVB ou pour un layer d'affichage
+	"""
+
+	grid = image
+	size = grid.shape[0]
+	coord_x = np.arange(size_x, size, size_x)
+	coord_y = np.arange(size_y, size, size_y)
+	grid[coord_y, :] = color
+	grid[:, coord_x] = color
+
+	return grid
+
+# ==================================================
+# endregion Drawing
 # ==================================================

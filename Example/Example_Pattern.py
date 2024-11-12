@@ -8,7 +8,6 @@ from PatternGenerator import generate_mask, Pattern
 
 # Gestion des dossiers
 OUTPUT_DIR = Path(__file__).parent / "Output"
-INPUT_DIR = Path(__file__).parent / "Input"
 os.makedirs(OUTPUT_DIR, exist_ok=True)  # Créer le dossier de sorties (la première fois, il n'existe pas)
 
 ##################################################

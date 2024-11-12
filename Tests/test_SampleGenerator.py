@@ -7,8 +7,6 @@ import numpy as np
 from PatternGenerator import generate_mask, Pattern
 from SampleGenerator import add_snr, apply_mask, compute_molecule_localisation, compute_molecule_number, compute_psf, generate_sample
 
-SAMPLES_DIR = Path(__file__).parent / "Samples"
-
 
 ##################################################
 def test_compute_molecule_number():

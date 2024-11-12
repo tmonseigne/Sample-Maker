@@ -7,7 +7,7 @@ import numpy as np
 from FileIO import open_png_as_boolean_mask
 from PatternGenerator import generate_mask, Pattern
 
-SAMPLES_DIR = Path(__file__).parent / "Samples"
+INPUT_DIR = Path(__file__).parent / "Input"
 
 
 ##################################################
@@ -32,7 +32,7 @@ def test_generate_mask_stripes():
 	options = {"Lengths": [200, 100, 50, 25, 12, 6], "Mirrored": True, "Orientation": True}
 	size = 256
 	mask = generate_mask(Pattern.STRIPES, size, options)
-	ref = open_png_as_boolean_mask(f"{SAMPLES_DIR}/Stripes1_ref.png")
+	ref = open_png_as_boolean_mask(f"{INPUT_DIR}/Stripes1_ref.png")
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
 	assert mask.dtype == bool, "Le masque devrait être de type booléen."
@@ -50,7 +50,7 @@ def test_stripes_mask_options():
 	options = {"Lengths": [200, 100, 50], "Mirrored": False, "Orientation": False}
 	size = 128
 	mask = generate_mask(Pattern.STRIPES, size, options)
-	ref = open_png_as_boolean_mask(f"{SAMPLES_DIR}/Stripes2_ref.png")
+	ref = open_png_as_boolean_mask(f"{INPUT_DIR}/Stripes2_ref.png")
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
 	assert mask.dtype == bool, "Le masque devrait être de type booléen."
@@ -99,7 +99,7 @@ def test_generate_mask_squares():
 	options = {"Size": 32}
 	size = 256
 	mask = generate_mask(Pattern.SQUARES, size, options)
-	ref = open_png_as_boolean_mask(f"{SAMPLES_DIR}/Squares1_ref.png")
+	ref = open_png_as_boolean_mask(f"{INPUT_DIR}/Squares1_ref.png")
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
 	assert mask.dtype == bool, "Le masque devrait être de type booléen."
@@ -117,7 +117,7 @@ def test_squares_mask_options_little():
 	options = {"Size": 4}
 	size = 256
 	mask = generate_mask(Pattern.SQUARES, size, options)
-	ref = open_png_as_boolean_mask(f"{SAMPLES_DIR}/Squares2_ref.png")
+	ref = open_png_as_boolean_mask(f"{INPUT_DIR}/Squares2_ref.png")
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
 	assert mask.dtype == bool, "Le masque devrait être de type booléen."
@@ -158,7 +158,7 @@ def test_squares_mask_options_only_one():
 	options = {"Size": 128}
 	size = 256
 	mask = generate_mask(Pattern.SQUARES, size, options)
-	ref = open_png_as_boolean_mask(f"{SAMPLES_DIR}/Squares3_ref.png")
+	ref = open_png_as_boolean_mask(f"{INPUT_DIR}/Squares3_ref.png")
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
 	assert mask.dtype == bool, "Le masque devrait être de type booléen."
@@ -176,7 +176,7 @@ def test_generate_mask_sun():
 	options = {"Rays": 16}
 	size = 256
 	mask = generate_mask(Pattern.SUN, size, options)
-	ref = open_png_as_boolean_mask(f"{SAMPLES_DIR}/Sun1_ref.png")
+	ref = open_png_as_boolean_mask(f"{INPUT_DIR}/Sun1_ref.png")
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
 	assert mask.dtype == bool, "Le masque devrait être de type booléen."
@@ -194,7 +194,7 @@ def test_sun_mask_options():
 	options = {"Rays": 4}
 	size = 128
 	mask = generate_mask(Pattern.SUN, size, options)
-	ref = open_png_as_boolean_mask(f"{SAMPLES_DIR}/Sun2_ref.png")
+	ref = open_png_as_boolean_mask(f"{INPUT_DIR}/Sun2_ref.png")
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
 	assert mask.dtype == bool, "Le masque devrait être de type booléen."
@@ -224,7 +224,7 @@ def test_generate_mask_existing_image():
 	Test de la génération de masque pour le motif 'Image existante'.
 	Vérifie que le masque est de type booléen (la taille en entrée est théorique, car dépend du fichier en entrée).
 	"""
-	options = {"Filename": f"{SAMPLES_DIR}/PALM_ref.png"}
+	options = {"Filename": f"{INPUT_DIR}/PALM_ref.png"}
 	size = 256
 	mask = generate_mask(Pattern.EXISTING_IMAGE, size, options)
 
@@ -239,7 +239,7 @@ def test_existing_mask_options_bad_filename():
 	Test de la génération de masque pour le motif 'Image existante'.
 	Vérifie que le masque est de la bonne taille, de type booléen et est entièrement blanc.
 	"""
-	options = {"Filename": f"{SAMPLES_DIR}/badfile.png"}
+	options = {"Filename": f"{INPUT_DIR}/badfile.png"}
 	size = 256
 	mask = generate_mask(Pattern.EXISTING_IMAGE, size, options)
 

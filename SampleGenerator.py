@@ -91,6 +91,28 @@ def compute_molecule_localisation(size: int = 256, pixel_size: int = 160, densit
 
 
 ##################################################
+def compute_molecule_grid(size: int = 256, shift: int = 10) -> NDArray[np.float32]:
+	"""
+	Génère un tableau de positions 3D pour les molécules sur une grille en fonction de la taille de l'image et de l'espacement entre les molécules
+	la coordonnée Z sera comprise entre -1 et 1. le long de la grille
+
+	:param size: Taille de l'image en pixels (par défaut 256), qui correspond à la dimension d'un côté de l'image carrée.
+	:param shift: Espace en pixel entre 2 molécules (par défaut 10). On peut considérer que chaque molécule est au centre d'un carré de taille shift.
+	:return: Un tableau numpy de N lignes et 3 colonnes, où chaque ligne représente les coordonnées (x, y, z) d'une molécule.
+	"""
+
+	start = int(shift / 2)  					   # Position de départ
+	coord = np.arange(start, size - start, shift)  # On voit le centre des carrés de taille shift present dans notre image.
+	n_molecules = len(coord) ** 2				   # On a NxN molécules.
+	x, y = np.meshgrid(coord, coord)			   # Grille de cordonnées X et Y.
+	x = x.flatten()								   # Aplatir les coordonnées X pour les transformer en une liste de points.
+	y = y.flatten()								   # Aplatir les coordonnées Y pour les transformer en une liste de points.
+	z = np.linspace(-1, 1, n_molecules)			   # Tout les Z possible sur cette grille
+	molecule_grid = np.vstack((x, y, z)).T		   # Combiner les coordonnées dans un tableau de forme (n_molecules, 3)
+	return molecule_grid
+
+
+##################################################
 def apply_mask(localisation: NDArray[np.float32], mask: NDArray[np.bool_]) -> NDArray[np.float32]:
 	"""
 	Filtre les positions des molécules en fonction d'un masque booléen 2D, ne conservant que celles dont les coordonnées
@@ -167,7 +189,7 @@ def compute_psf(size: int, localisation: NDArray[np.float32],
 
 
 ##################################################
-def add_snr(image: NDArray[np.float32], snr: float = 10.0):
+def add_snr(image: NDArray[np.float32], snr: float = 10.0) -> NDArray[np.float32]:
 	"""
 	Ajoute du bruit gaussien et poissonien à une image pour atteindre un SNR donné.
 
