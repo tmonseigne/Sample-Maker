@@ -118,6 +118,8 @@ def squares_mask(size: int = 256, options: Any = None) -> NDArray[np.bool_]:
 		- "Size" : Taille des carrées (en pixel).
 
 	:return: Masque sous forme de tableau numpy 2D de type booléen.
+
+	.. todo:: Ajouter la possibilité d'avoir une option nombre de carrés. (en cas de double options priorité au nombre de carrés et bords plus grand)
 	"""
 	if not options: options = dict(Size=32)			 # Options par défaut si aucunes en entrée
 	mask = np.full((size, size), False, dtype=bool)  # Masque "noir" par défaut
