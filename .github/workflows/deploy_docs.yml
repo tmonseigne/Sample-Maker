@@ -38,8 +38,8 @@ jobs:
 
       - name: Build documentation
         run: |
-          sphinx-apidoc -o Docs/generated ./  		   # Pour générer la documentation API dans `Docs/generated`
-          sphinx-build -b html Docs/ Docs/_build/html  # Pour construire le HTML
+          sphinx-apidoc -o Docs/generated ./SampleMaker  # Pour générer la documentation API dans `Docs/generated`
+          sphinx-build -b html Docs/ Docs/_build/html    # Pour construire le HTML
 
 
       - name: Setup Pages
