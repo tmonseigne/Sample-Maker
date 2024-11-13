@@ -25,7 +25,8 @@ class PatternType(Enum):
 	SUN = 3
 	EXISTING_IMAGE = 4
 
-	def to_string(self) -> str:
+	##################################################
+	def tostring(self) -> str:
 		"""
 		Retourne une chaîne de caractères représentant le motif correspondant.
 
@@ -38,6 +39,9 @@ class PatternType(Enum):
 				PatternType.SUN:            "Soleil",
 				PatternType.EXISTING_IMAGE: "Image existante"
 				}[self]
+
+	##################################################
+	def __str__(self) -> str: return self.tostring()
 
 # ==================================================
 # endregion Pattern Type
@@ -109,23 +113,29 @@ class ExistingImageOptions:
 	path: str = ""
 
 
-##################################################
-# Classe principale pour les options de masque
+# ==================================================
+# endregion Pattern Options
+# ==================================================
+
+
+# ==================================================
+# region Pattern
+# ==================================================
 @dataclass
-class PatternOptions:
+class Pattern:
 	"""
-	Class générique pour les options de motif.
+	Class principale pour les motifs et leurs options.
 
 	Attributs :
 		- **pattern (Pattern)** : Le motif à utiliser.
 		- **options (Dict)** : Dictionnaire contenant des options spécifiques au motif.
 	"""
-	pattern: PatternType
+	pattern: PatternType = PatternType.NONE
 	options: Union[NoneOptions, StripesOptions, SquaresOptions, SunOptions, ExistingImageOptions] = field(default_factory=NoneOptions)
 
 	##################################################
 	@classmethod
-	def from_pattern(cls, pattern: PatternType, options: Optional[Dict[str, Any]] = None) -> 'PatternOptions':
+	def from_pattern(cls, pattern: PatternType, options: Optional[Dict[str, Any]] = None) -> 'Pattern':
 		"""
 		Génère les options spécifiques selon le type de motif.
 
@@ -140,40 +150,14 @@ class PatternOptions:
 		else: return cls(pattern, NoneOptions())  # MaskPattern.NONE ou autre
 
 	##################################################
-	def to_str(self) -> str:
+	def tostring(self) -> str:
 		"""
 		Conversiont en chaine de caractère.
 		"""
-		return (f"PatternOptions:\n"
-				f"  Pattern: {self.pattern}\n"
-				f"  Options: {self.options}")
+		return f"Pattern: {self.pattern}, Options: {self.options}"
 
 	##################################################
-	def __str__(self):
-		"""
-		Surcharge de l'affichage de l'objet pour un résumé détaillé.
-		"""
-		return self.to_str()
-
-# ==================================================
-# endregion Pattern Options
-# ==================================================
-
-# ==================================================
-# region Pattern
-# ==================================================
-##################################################
-@dataclass
-class Pattern:
-	"""
-	Objet Motif principal contenant le type et les options associées.
-
-	Attributs :
-		- **type (PatternType)** : Type de motif.
-		- **options (PatternOptions)** : Options du motif.
-	"""
-	type: PatternType = PatternType.NONE
-	options: PatternOptions = field(default_factory=NoneOptions)
+	def __str__(self) -> str: return self.tostring()
 
 # ==================================================
 # endregion Pattern
