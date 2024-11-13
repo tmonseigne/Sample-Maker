@@ -61,15 +61,16 @@ def save_sample_as_png(sample: NDArray[np.float32], filename: str, percentile: f
 	:param percentile: Percentile de l'intensité max qui deviendra un pixel blanc (par défaut 99%).
 	"""
 
-	percentile = np.clip(percentile, 0, 100) 					  # On évite les options bizarres des utilisateurs.
-	max_i = np.percentile(sample, percentile)					  # Calcul du percentile
+	percentile = np.clip(percentile, 0, 100) 							  # On évite les options bizarres des utilisateurs.
+	if np.fabs(percentile) <= np.finfo(np.float32).eps:					  # Si le percentile est 0 il n'y a pas de mise à l'échelle
+		grayscale = sample  											  # Aucune Transformation
+	else:																  # Sinon mise à l'échelle
+		max_i = np.percentile(sample, percentile)  						  # Calcul du percentile
+		if max_i == 0: grayscale = np.zeros_like(sample, dtype=np.uint8)  # Si le maximum est 0, on remplit l'image avec des valeurs nulles
+		else: grayscale = (sample * MAX_UI_8 / max_i)					  # Normalisation entre 0 et 255
 
-	if max_i == 0:
-		grayscale = np.zeros_like(sample, dtype=np.uint8)		  # Si le maximum est 0, on remplit l'image avec des valeurs nulles
-	else:
-		grayscale = (sample * MAX_UI_8 / max_i).astype(np.uint8)  # Normalisation entre 0 et 255
-		grayscale = np.clip(grayscale, 0, MAX_UI_8)				  # On s'assure que toutes les valeurs sont entre 0 et 255.
-	image = Image.fromarray(grayscale, mode='L')				  # L pour niveau de gris
+	grayscale = np.clip(grayscale, 0, MAX_UI_8).astype(np.uint8)		  # On s'assure que toutes les valeurs sont entre 0 et 255.
+	image = Image.fromarray(grayscale, mode='L')						  # L pour niveau de gris
 	image.save(filename)
 
 
