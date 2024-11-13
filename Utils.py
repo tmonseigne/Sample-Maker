@@ -9,16 +9,16 @@ from numpy.typing import NDArray
 # region File Management
 # # ==================================================
 ##################################################
-def clean_extension(filename: str, extension: str):
+def add_extension(filename: str, extension: str) -> str:
 	"""
 	Ajoute l'extension au fichier si ce n'est pas déjà l'extension actuelle
 
 	:param filename: Nom du fichier
 	:param extension: Extension finale du fichier
-
-	.. todo:: Fonction actuellement vide.
 	"""
-	print("TODO")
+	if not extension.startswith('.'): extension = '.' + extension  # S'assurer que l'extension commence par un point
+	if not filename.endswith(extension): filename += extension	   # Si le fichier n'a pas déjà l'extension, on l'ajoute
+	return filename
 
 
 # ==================================================

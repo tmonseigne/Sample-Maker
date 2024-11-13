@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 
 from FileIO import open_png_as_sample, save_sample_as_png
-from Utils import add_grid, print_error, print_warning
+from Utils import add_grid, add_extension, print_error, print_warning
 
 INPUT_DIR = Path(__file__).parent / "Input"
 OUTPUT_DIR = Path(__file__).parent / "Output"
@@ -12,13 +12,30 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)  # Créer le dossier de sorties (la premi
 
 
 ##################################################
-def test_clean_extension():
+def test_add_extension():
 	"""
-	Test de la fonction clean extension.
+	Test de la fonction add extension.
+	"""
 
-	.. todo:: Test à faire
-	"""
-	print("TODO")
+	filename = "filename.extension"
+
+	res = add_extension(filename, "new")
+	assert res == "filename.extension.new", f"Le nom de fichier ne correspond pas"
+
+	res = add_extension(filename, "new")
+	assert res == "filename.extension.new", f"Le nom de fichier ne correspond pas"
+
+	filename = "filename"
+	res = add_extension(filename, "new")
+	assert res == "filename.new", f"Le nom de fichier ne correspond pas"
+
+	filename = "file.name.extension"
+	res = add_extension(filename, "new")
+	assert res == "file.name.extension.new", f"Le nom de fichier ne correspond pas"
+
+	filename = "file/name/extension"
+	res = add_extension(filename, "new")
+	assert res == "file/name/extension.new", f"Le nom de fichier ne correspond pas"
 
 
 ##################################################
