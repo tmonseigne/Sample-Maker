@@ -44,5 +44,5 @@ todo_include_todos = True
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath('../'))  # Ajustez le chemin selon votre structure
+sys.path.insert(0, os.path.abspath('../SampleMaker'))  # Ajustez le chemin selon votre structure
 # sys.path.insert(0, os.path.abspath('../Tests'))  # Ajustez le chemin selon votre structure

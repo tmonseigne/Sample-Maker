@@ -6,7 +6,7 @@ from typing import Any
 import numpy as np
 from numpy.typing import NDArray
 
-from PatternGenerator import Pattern
+from Mask import MaskPattern
 from SampleGenerator import compute_area
 
 
@@ -75,7 +75,7 @@ class Stack:
 
 	##################################################
 	def initialize(self, size: int = 256, pixel_size: int = 160, density: float = 1.0,
-				   pattern: Pattern = Pattern.NONE, pattern_options: Any = None,
+				   pattern: MaskPattern = MaskPattern.NONE, pattern_options: Any = None,
 				   intensity: float = 100, variation: float = 10, astigmatism_ratio: float = 2.0,
 				   snr: float = 10.0, base_background: float = 500, base_noise_std: float = 12,
 				   stack_model: StackModel = StackModel.NONE, stack_model_options: Any = None):

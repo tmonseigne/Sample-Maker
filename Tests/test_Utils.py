@@ -3,8 +3,8 @@ import os
 from pathlib import Path
 import numpy as np
 
-from FileIO import open_png_as_sample, save_sample_as_png
-from Utils import add_grid, add_extension, print_error, print_warning
+from SampleMaker.FileIO import open_png_as_sample, save_sample_as_png
+from SampleMaker.Utils import add_grid, add_extension, print_error, print_warning
 
 INPUT_DIR = Path(__file__).parent / "Input"
 OUTPUT_DIR = Path(__file__).parent / "Output"

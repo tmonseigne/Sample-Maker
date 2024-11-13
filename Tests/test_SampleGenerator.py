@@ -2,8 +2,8 @@
 
 import numpy as np
 
-from PatternGenerator import generate_mask, Pattern
-from SampleGenerator import add_snr, apply_mask, compute_molecule_grid, compute_molecule_localisation, compute_molecule_number, compute_psf, generate_sample
+from SampleMaker.Mask import generate_mask, MaskPattern
+from SampleMaker.SampleGenerator import add_snr, apply_mask, compute_molecule_grid, compute_molecule_localisation, compute_molecule_number, compute_psf, generate_sample
 
 
 ##################################################
@@ -60,11 +60,11 @@ def test_apply_mask():
 	"""
 
 	localisation = compute_molecule_localisation(256, 160, 0.25)
-	mask = generate_mask(Pattern.SQUARES, 256)
+	mask = generate_mask(MaskPattern.SQUARES, 256)
 	res = apply_mask(localisation, mask)
 	assert res.shape[0] <= 419, f"Le résultat possède plus de molécule ({res.shape[0]} au lieu de 419) après application du masque."
 
-	mask = generate_mask(Pattern.NONE, 256)
+	mask = generate_mask(MaskPattern.NONE, 256)
 	res = apply_mask(localisation, mask)
 	assert res.shape == (419, 3), f"Le résultat possède {res.shape[0]} molécules après application du masque blanc au lieu de 419."
 
@@ -121,5 +121,5 @@ def test_generate_sample():
 	Test de la fonction generate_sample.
 	"""
 
-	res = generate_sample(256, 160, 1.0, Pattern.NONE, None, 100, 10, 2, 10)
+	res = generate_sample(256, 160, 1.0, MaskPattern.NONE, None, 100, 10, 2, 10)
 	assert res.shape == (256, 256), f"Le résultat est une image de taille {res.shape} au lieu de (256, 256)."

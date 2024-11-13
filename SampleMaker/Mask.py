@@ -13,7 +13,7 @@ from FileIO import open_png_as_boolean_mask
 from Utils import print_warning
 
 ##################################################
-class Pattern(Enum):
+class MaskPattern(Enum):
 	"""
 	Enumération représentant les différents motifs disponibles pour la génération de masque.
 	Chaque motif est associé à un identifiant unique pour être utilisé dans la fonction `generate_mask`.
@@ -37,16 +37,15 @@ class Pattern(Enum):
 		:return: Le nom du motif en français.
 		"""
 		return {
-				Pattern.NONE: 			"None",
-				Pattern.STRIPES:        "Bandes",
-				Pattern.SQUARES:        "Carrés",
-				Pattern.SUN:            "Soleil",
-				Pattern.EXISTING_IMAGE: "Image existante"
+				MaskPattern.NONE:           "None",
+				MaskPattern.STRIPES:        "Bandes",
+				MaskPattern.SQUARES:        "Carrés",
+				MaskPattern.SUN:            "Soleil",
+				MaskPattern.EXISTING_IMAGE: "Image existante"
 				}[self]
 
-
 ##################################################
-def generate_mask(pattern: Pattern, size: int = 256, options: Any = None) -> NDArray[np.bool_]:
+def generate_mask(pattern: MaskPattern, size: int = 256, options: Any = None) -> NDArray[np.bool_]:
 	"""
 	Génère un masque en fonction du motif sélectionné.
 
@@ -57,10 +56,10 @@ def generate_mask(pattern: Pattern, size: int = 256, options: Any = None) -> NDA
 	:return: Masque sous forme de tableau numpy 2D de type booléen.
 	"""
 	# Création de l'image selon le motif
-	if pattern == Pattern.STRIPES: return stripes_mask(size, options)
-	if pattern == Pattern.SQUARES: return squares_mask(size, options)
-	if pattern == Pattern.SUN: return sun_mask(size, options)
-	if pattern == Pattern.EXISTING_IMAGE: return load_mask(size, options)
+	if pattern == MaskPattern.STRIPES: return stripes_mask(size, options)
+	if pattern == MaskPattern.SQUARES: return squares_mask(size, options)
+	if pattern == MaskPattern.SUN: return sun_mask(size, options)
+	if pattern == MaskPattern.EXISTING_IMAGE: return load_mask(size, options)
 	return np.full((size, size), True, dtype=bool)
 
 

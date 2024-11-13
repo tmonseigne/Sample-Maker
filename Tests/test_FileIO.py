@@ -5,8 +5,8 @@ from pathlib import Path
 
 import numpy as np
 
-from FileIO import open_png_as_boolean_mask, open_png_as_sample, save_boolean_mask_as_png, save_sample_as_png
-from Utils import print_warning
+from SampleMaker.FileIO import open_png_as_boolean_mask, open_png_as_sample, save_boolean_mask_as_png, save_sample_as_png
+from SampleMaker.Utils import print_warning
 
 OUTPUT_DIR = Path(__file__).parent / "Output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)  # Créer le dossier de sorties (la première fois, il n'existe pas)

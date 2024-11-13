@@ -4,8 +4,8 @@ from pathlib import Path
 
 import numpy as np
 
-from FileIO import open_png_as_boolean_mask
-from PatternGenerator import generate_mask, Pattern
+from SampleMaker.FileIO import open_png_as_boolean_mask
+from SampleMaker.Mask import generate_mask, MaskPattern
 
 INPUT_DIR = Path(__file__).parent / "Input"
 
@@ -16,11 +16,11 @@ def test_pattern_object():
 	Test de l'objet Pattern (utile réellement uniquement pour le code coverage à l'heure actuelle to_string non utilisé).
 	"""
 
-	assert Pattern.STRIPES.to_string() == "Bandes", "La chaine de caractère ne correspond pour le pattern Bandes"
-	assert Pattern.SQUARES.to_string() == "Carrés", "La chaine de caractère ne correspond pour le pattern Carrés"
-	assert Pattern.SUN.to_string() == "Soleil", "La chaine de caractère ne correspond pour le pattern Soleil"
-	assert Pattern.EXISTING_IMAGE.to_string() == "Image existante", "La chaine de caractère ne correspond pour le pattern Image existante"
-	assert Pattern.NONE.to_string() == "None", "La chaine de caractère ne correspond pour le pattern None"
+	assert MaskPattern.STRIPES.to_string() == "Bandes", "La chaine de caractère ne correspond pour le pattern Bandes"
+	assert MaskPattern.SQUARES.to_string() == "Carrés", "La chaine de caractère ne correspond pour le pattern Carrés"
+	assert MaskPattern.SUN.to_string() == "Soleil", "La chaine de caractère ne correspond pour le pattern Soleil"
+	assert MaskPattern.EXISTING_IMAGE.to_string() == "Image existante", "La chaine de caractère ne correspond pour le pattern Image existante"
+	assert MaskPattern.NONE.to_string() == "None", "La chaine de caractère ne correspond pour le pattern None"
 
 
 ##################################################
@@ -31,7 +31,7 @@ def test_generate_mask_stripes():
 	"""
 	options = {"Lengths": [200, 100, 50, 25, 12, 6], "Mirrored": True, "Orientation": True}
 	size = 256
-	mask = generate_mask(Pattern.STRIPES, size, options)
+	mask = generate_mask(MaskPattern.STRIPES, size, options)
 	ref = open_png_as_boolean_mask(f"{INPUT_DIR}/Stripes1_ref.png")
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
@@ -49,7 +49,7 @@ def test_stripes_mask_options():
 	"""
 	options = {"Lengths": [200, 100, 50], "Mirrored": False, "Orientation": False}
 	size = 128
-	mask = generate_mask(Pattern.STRIPES, size, options)
+	mask = generate_mask(MaskPattern.STRIPES, size, options)
 	ref = open_png_as_boolean_mask(f"{INPUT_DIR}/Stripes2_ref.png")
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
@@ -67,7 +67,7 @@ def test_stripes_mask_options_bad():
 	"""
 	options = {"Longueurs": [200, 100, 50], "Mirrored": False, "Orientation": False}
 	size = 128
-	mask = generate_mask(Pattern.STRIPES, size, options)
+	mask = generate_mask(MaskPattern.STRIPES, size, options)
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
 	assert mask.dtype == bool, "Le masque devrait être de type booléen."
@@ -75,7 +75,7 @@ def test_stripes_mask_options_bad():
 
 	options = {"Lengths": [200, 100, 50], "Mirroir": False, "Orientation": False}
 	size = 128
-	mask = generate_mask(Pattern.STRIPES, size, options)
+	mask = generate_mask(MaskPattern.STRIPES, size, options)
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
 	assert mask.dtype == bool, "Le masque devrait être de type booléen."
@@ -83,7 +83,7 @@ def test_stripes_mask_options_bad():
 
 	options = {"Lengths": [200, 100, 50], "Mirrored": False, "Sens": False}
 	size = 128
-	mask = generate_mask(Pattern.STRIPES, size, options)
+	mask = generate_mask(MaskPattern.STRIPES, size, options)
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
 	assert mask.dtype == bool, "Le masque devrait être de type booléen."
@@ -98,7 +98,7 @@ def test_generate_mask_squares():
 	"""
 	options = {"Size": 32}
 	size = 256
-	mask = generate_mask(Pattern.SQUARES, size, options)
+	mask = generate_mask(MaskPattern.SQUARES, size, options)
 	ref = open_png_as_boolean_mask(f"{INPUT_DIR}/Squares1_ref.png")
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
@@ -116,7 +116,7 @@ def test_squares_mask_options_little():
 	"""
 	options = {"Size": 4}
 	size = 256
-	mask = generate_mask(Pattern.SQUARES, size, options)
+	mask = generate_mask(MaskPattern.SQUARES, size, options)
 	ref = open_png_as_boolean_mask(f"{INPUT_DIR}/Squares2_ref.png")
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
@@ -134,7 +134,7 @@ def test_squares_mask_options_bad():
 	"""
 	options = {"Size": 65}  # Taille trop grande
 	size = 128
-	mask = generate_mask(Pattern.SQUARES, size, options)
+	mask = generate_mask(MaskPattern.SQUARES, size, options)
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
 	assert mask.dtype == bool, "Le masque devrait être de type booléen."
@@ -142,7 +142,7 @@ def test_squares_mask_options_bad():
 
 	options = {"Taille": 4}  # Dictionnaire incorrect
 	size = 128
-	mask = generate_mask(Pattern.SQUARES, size, options)
+	mask = generate_mask(MaskPattern.SQUARES, size, options)
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
 	assert mask.dtype == bool, "Le masque devrait être de type booléen."
@@ -157,7 +157,7 @@ def test_squares_mask_options_only_one():
 	"""
 	options = {"Size": 128}
 	size = 256
-	mask = generate_mask(Pattern.SQUARES, size, options)
+	mask = generate_mask(MaskPattern.SQUARES, size, options)
 	ref = open_png_as_boolean_mask(f"{INPUT_DIR}/Squares3_ref.png")
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
@@ -175,7 +175,7 @@ def test_generate_mask_sun():
 	"""
 	options = {"Rays": 16}
 	size = 256
-	mask = generate_mask(Pattern.SUN, size, options)
+	mask = generate_mask(MaskPattern.SUN, size, options)
 	ref = open_png_as_boolean_mask(f"{INPUT_DIR}/Sun1_ref.png")
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
@@ -193,7 +193,7 @@ def test_sun_mask_options():
 	"""
 	options = {"Rays": 4}
 	size = 128
-	mask = generate_mask(Pattern.SUN, size, options)
+	mask = generate_mask(MaskPattern.SUN, size, options)
 	ref = open_png_as_boolean_mask(f"{INPUT_DIR}/Sun2_ref.png")
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
@@ -211,7 +211,7 @@ def test_sun_mask_options_bad():
 	"""
 	options = {"Rays": 3}
 	size = 128
-	mask = generate_mask(Pattern.SUN, size, options)
+	mask = generate_mask(MaskPattern.SUN, size, options)
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
 	assert mask.dtype == bool, "Le masque devrait être de type booléen."
@@ -226,7 +226,7 @@ def test_generate_mask_existing_image():
 	"""
 	options = {"Filename": f"{INPUT_DIR}/PALM_ref.png"}
 	size = 256
-	mask = generate_mask(Pattern.EXISTING_IMAGE, size, options)
+	mask = generate_mask(MaskPattern.EXISTING_IMAGE, size, options)
 
 	assert mask.dtype == bool, "Le masque devrait être de type booléen."
 	assert np.any(mask), "Le masque devrait contenir des valeurs True."
@@ -241,7 +241,7 @@ def test_existing_mask_options_bad_filename():
 	"""
 	options = {"Filename": f"{INPUT_DIR}/badfile.png"}
 	size = 256
-	mask = generate_mask(Pattern.EXISTING_IMAGE, size, options)
+	mask = generate_mask(MaskPattern.EXISTING_IMAGE, size, options)
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
 	assert mask.dtype == bool, "Le masque devrait être de type booléen."
@@ -255,7 +255,7 @@ def test_none_mask():
 	Vérifie que le masque est de la bonne taille, de type booléen et est blanc.
 	"""
 	size = 256
-	mask = generate_mask(Pattern.NONE, size)
+	mask = generate_mask(MaskPattern.NONE, size)
 
 	assert mask.shape == (size, size), "Le masque n'a pas la taille attendue."
 	assert mask.dtype == bool, "Le masque devrait être de type booléen."
