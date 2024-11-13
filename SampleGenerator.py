@@ -44,6 +44,18 @@ def generate_sample(size: int = 256, pixel_size: int = 160, density: float = 1.0
 	sample = add_snr(sample, snr, base_background, base_noise_std)
 	return sample
 
+##################################################
+def compute_area(size: int = 256, pixel_size: int = 160):
+	"""
+	Calcul de l'aire de l'image en fonction de sa taille et de la taille des pixels
+
+	:param size: Taille de l'image en pixels (par défaut : 256). Cela correspond à la dimension d'un côté de l'image carrée.
+	:param pixel_size: Taille d'un pixel en nanomètres (par défaut : 160). Utilisé pour calculer la surface de l'image.
+	:return: Aire de l'image en micromètre carré
+	"""
+	length = float(size * pixel_size) / 1000  # Calculer la taille de l'image en micromètres (conversion depuis la taille des pixels en nanomètres
+	area = length ** 2						  # Calculer l'aire de l'image en micromètres carrés
+	return area
 
 ##################################################
 def compute_molecule_number(size: int = 256, pixel_size: int = 160, density: float = 1.0) -> int:
@@ -58,9 +70,8 @@ def compute_molecule_number(size: int = 256, pixel_size: int = 160, density: flo
 	:return: Nombre estimé de molécules dans l'image.
 	"""
 
-	im_size = float(size * pixel_size) / 1000  # Calculer la taille de l'image en micromètres (conversion depuis la taille des pixels en nanomètres
-	im_area = im_size ** 2					   # Calculer l'aire de l'image en micromètres carrés
-	molecule_number = int(im_area * density)   # Calculer le nombre de molécules en fonction de la densité
+	area = compute_area(size, pixel_size)  # Calculer l'aire de l'image en micromètre carré
+	molecule_number = int(area * density)  # Calculer le nombre de molécules en fonction de la densité
 	return molecule_number
 
 

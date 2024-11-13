@@ -1,16 +1,53 @@
 """ Fichier de la classe Stack """
 
+from enum import Enum
 from typing import Any
 
 import numpy as np
 from numpy.typing import NDArray
 
 from PatternGenerator import Pattern
+from SampleGenerator import compute_area
 
 
+##################################################
+class StackModel(Enum):
+	"""
+	Enumération représentant les différents modèles de piles disponibles.
+	Chaque modèle est associé à un identifiant unique pour être utilisé dans la fonction `generate`.
+
+	- NONE : Aucun modèle particulier (Les échantillons sont indépendants les uns des autres).
+	"""
+	NONE = 0
+
+	def to_string(self) -> str:
+		"""
+		Retourne une chaîne de caractères représentant le motif correspondant.
+
+		:return: Le nom du motif en français.
+		"""
+		return {
+				StackModel.NONE: "None",
+				}[self]
+
+##################################################
 class Stack:
 	"""
 	Classe permettant de stocker une pile d'image
+
+	Attributs :
+		pixel_size (int) : Taille d'un pixel en nanomètres.
+		density (float) : Densité de molécules par micromètre carré.
+		pattern (Pattern) : Motif à utiliser pour générer le masque.
+		pattern_options (Dict) : Options spécifiques pour le motif.
+		intensity (float) : Intensité de base du fluorophore.
+		variation (float) : Variation d'intensité aléatoire.
+		astigmatism_ratio (float) : Ratio de l'astigmatisme.
+		snr (float) : Rapport signal sur bruit désiré.
+		base_background (float) : Intensité de fond de base du microscope, typiquement autour de 500.
+		stack_model (StackModel) : Modèle de la pile.
+		stack_model_options (Dict) : Options spécifiques pour le modèle de la pile.
+		stack (np.ndarray) : Tableau numpy 3D stockant la pile d'images.
 	"""
 
 	# ==================================================
@@ -32,13 +69,16 @@ class Stack:
 		self.snr = None
 		self.base_background = None
 		self.base_noise_std = None
+		self.stack_model = None
+		self.stack_model_options = None
 		self.stack = None
 
 	##################################################
 	def initialize(self, size: int = 256, pixel_size: int = 160, density: float = 1.0,
 				   pattern: Pattern = Pattern.NONE, pattern_options: Any = None,
 				   intensity: float = 100, variation: float = 10, astigmatism_ratio: float = 2.0,
-				   snr: float = 10.0, base_background: float = 500, base_noise_std: float = 12):
+				   snr: float = 10.0, base_background: float = 500, base_noise_std: float = 12,
+				   stack_model: StackModel = StackModel.NONE, stack_model_options: Any = None):
 		"""
 		Initialise une instance de la classe Stack avec un tableau numpy 3D de type float.
 
@@ -53,6 +93,8 @@ class Stack:
 		:param snr: Le rapport signal sur bruit désiré (par défaut 10 un excellent SNR).
 		:param base_background: Intensité de fond de base du microscope, typiquement autour de 500.
 		:param base_noise_std: Écart-type du bruit gaussien de fond.
+		:param stack_model: Modèle de la pile.
+		:param stack_model_options: Options spécifiques pour le modèle de la pile.
 		"""
 		self.size = size
 		self.pixel_size = pixel_size
@@ -65,11 +107,9 @@ class Stack:
 		self.snr = snr
 		self.base_background = base_background
 		self.base_noise_std = base_noise_std
+		self.stack_model = stack_model
+		self.stack_model_options = stack_model_options
 		self.stack = np.zeros((size, size, 0), dtype=np.float32)
-
-	##################################################
-	def generate_stack(self):
-		print("TODO")
 
 	# ==================================================
 	# endregion Initialization
@@ -107,6 +147,25 @@ class Stack:
 	# ==================================================
 
 	# ==================================================
+	# region Stack Generator
+	# ==================================================
+	##################################################
+	def generate(self, n: int):
+		"""
+		Génère une pile de n échantillons
+		:param n: Nombre d'échantillons de la pile
+
+		.. todo:: A faire
+		"""
+		# générer un sample
+		# Ajouter le sample à la pile
+		print("TODO")
+
+	# ==================================================
+	# endregion Stack Generator
+	# ==================================================
+
+	# ==================================================
 	# region IO
 	# ==================================================
 	##################################################
@@ -116,12 +175,14 @@ class Stack:
 		"""
 		summary = (
 				f"Stack Summary:\n"
-				f"  Pattern: {self.pattern}\n"
-				f"  SNR: {self.snr}\n"
-				f"  Intensity: {self.intensity}\n"
-				f"  Shape: {self.stack.shape}\n"
-				f"  Max Value: {self.stack.max()}\n"
-				f"  Min Value: {self.stack.min()}"
+				f"  Pixel size: {self.pixel_size} nm, Surface: {compute_area(self.size, self.pixel_size)} um², Density: {self.density}\n"
+				f"  Pattern: {self.pattern}, Options: {self.pattern_options}\n"
+				f"  Intensity: {self.intensity}, Varition: {self.variation}, Astigmatisme Ratio: {self.astigmatism_ratio}\n"
+				f"  SNR: {self.snr}, Background: {self.base_background}, Deviation: {self.base_noise_std}\n"
+				f"  Stack Model: {self.stack_model}, Options: {self.stack_model_options}\n"
+				f"  Shape: {self.stack.shape if self.stack is not None else 'None'}\n"
+				f"  Max Value: {self.stack.max() if self.stack is not None else 'None'}\n"
+				f"  Min Value: {self.stack.min() if self.stack is not None else 'None'}"
 		)
 		return summary
 
