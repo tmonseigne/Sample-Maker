@@ -29,3 +29,43 @@ def test_open_png_as_boolean_mask():
 	"""
 	mask = open_png_as_boolean_mask(f"{OUTPUT_DIR}/test_save_boolean_mask.png")
 	assert np.array_equal(ref_boolean_mask, mask), "Le masque devrait correspondre à la référence."
+
+
+##################################################
+def test_save_sample_as_png():
+	"""
+	Test de la fonction save_sample_as_png.
+
+	.. todo:: A faire
+	"""
+	print("TODO")
+
+
+##################################################
+def test_open_png_as_sample():
+	"""
+	Test de la fonction open_png_as_sample.
+
+	.. todo:: A faire
+	"""
+	print("TODO")
+
+
+##################################################
+def test_save_stack_as_tiff():
+	"""
+	Test de la fonction save_sample_as_png.
+
+	.. todo:: A faire
+	"""
+	print("TODO")
+
+##################################################
+def test_open_tiff_as_stack():
+	"""
+	Test de la fonction save_sample_as_png.
+
+	.. todo:: A faire
+	"""
+	print("TODO")
+

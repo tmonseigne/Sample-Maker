@@ -104,6 +104,8 @@ def save_stack_as_tiff(stack: NDArray[np.float32], filename: str):
 
 	:param stack: Tableau numpy 2D de type flottant représentant l'échantillon.
 	:param filename: Chemin du fichier PNG de sortie.
+
+	.. note:: Une image simple sera enregistré comme une pile d'une image.
 	"""
 	np.clip(stack, 0, MAX_UI_16)				 # On s'assure que toutes les valeurs sont entre 0 et max uint16
 	image = Image.fromarray(stack, mode='I;16')  # I;16 pour uint16
@@ -117,6 +119,8 @@ def open_tiff_as_stack(filename: str) -> NDArray[np.float32]:
 
 	:param filename: Chemin du fichier TIFF d'entrée.
 	:return: Tableau numpy 2D de type flottant représentant l'échantillon.
+
+	.. note:: Une image simple sera ouverte comme une pile d'une image.
 	"""
 	if not os.path.isfile(filename): raise OSError(f"Le fichier \"{filename}\" est introuvable.")
 	image = Image.open(filename).convert("I;16")  # "I;16" pour uint16
