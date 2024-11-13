@@ -58,7 +58,18 @@ class NoneOptions:
 	"""
 	Pas d'options pour le motif 'NONE'
 	"""
-	pass
+
+	##################################################
+	def tostring(self) -> str:
+		"""
+		Retourne une chaîne de caractères correspondant aux options.
+
+		:return: la liste des options.
+		"""
+		return "No Options"
+
+	##################################################
+	def __str__(self) -> str: return self.tostring()
 
 
 ##################################################
@@ -76,6 +87,19 @@ class StripesOptions:
 	mirror: bool = True
 	orientation: bool = True
 
+	##################################################
+	def tostring(self) -> str:
+		"""
+		Retourne une chaîne de caractères correspondant aux options.
+
+		:return: la liste des options.
+		"""
+		return (f"Lengths: {self.lengths}, "
+				f"{'mirrored' if self.mirror else 'not mirrored'}, "
+				f"{'vertical' if self.orientation else 'horizontal'}")
+
+	##################################################
+	def __str__(self) -> str: return self.tostring()
 
 ##################################################
 @dataclass
@@ -88,6 +112,17 @@ class SquaresOptions:
 	"""
 	size: int = 32
 
+	##################################################
+	def tostring(self) -> str:
+		"""
+		Retourne une chaîne de caractères correspondant aux options.
+
+		:return: la liste des options.
+		"""
+		return f"Size: {self.size}"
+
+	##################################################
+	def __str__(self) -> str: return self.tostring()
 
 ##################################################
 @dataclass
@@ -100,6 +135,17 @@ class SunOptions:
 	"""
 	ray_count: int = 16
 
+	##################################################
+	def tostring(self) -> str:
+		"""
+		Retourne une chaîne de caractères correspondant aux options.
+
+		:return: la liste des options.
+		"""
+		return f"Ray number: {self.ray_count}"
+
+	##################################################
+	def __str__(self) -> str: return self.tostring()
 
 ##################################################
 @dataclass
@@ -112,6 +158,17 @@ class ExistingImageOptions:
 	"""
 	path: str = ""
 
+	##################################################
+	def tostring(self) -> str:
+		"""
+		Retourne une chaîne de caractères correspondant aux options.
+
+		:return: la liste des options.
+		"""
+		return f"Path: {self.path}"
+
+	##################################################
+	def __str__(self) -> str: return self.tostring()
 
 # ==================================================
 # endregion Pattern Options
