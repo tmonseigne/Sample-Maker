@@ -9,14 +9,14 @@ from scipy.stats import multivariate_normal
 from PatternGenerator import generate_mask, Pattern
 from Utils import print_warning
 
-MAX_INTENSITY = np.iinfo(np.uint16).max  # Pour des entiers sur 16 bits (soit 65535)
+MAX_INTENSITY = np.iinfo(np.uint16).max  # Pour des entiers sur 16 bits (soit 65535).
 
 
 ##################################################
 def generate_sample(size: int = 256, pixel_size: int = 160, density: float = 1.0,
 					pattern: Pattern = Pattern.NONE, pattern_options: Any = None,
 					intensity: float = 100, variation: float = 10, astigmatism_ratio: float = 2.0,
-					snr: float = 10.0) -> NDArray[np.float32]:
+					snr: float = 10.0, base_background: float = 500, base_noise_std: float = 12) -> NDArray[np.float32]:
 	"""
 	Calcule une répartition des molécules sur une image carrée en fonction de sa taille, de la taille d'un pixel et de la densité de molécules.
 	Un masque est appliqué selon un pattern (prédéfini ou chargé à partir d'une image).
@@ -32,6 +32,8 @@ def generate_sample(size: int = 256, pixel_size: int = 160, density: float = 1.0
 	:param variation: Variation d'intensité aléatoire appliquée à l'intensité du fluorophore (par défaut 10).
 	:param astigmatism_ratio: Ratio de l'astigmatisme (par défaut 2 indique une déformation de X par rapport à Y de maximum 2).
 	:param snr: Le rapport signal sur bruit désiré (par défaut 10 un excellent SNR).
+	:param base_background: Intensité de fond de base du microscope, typiquement autour de 500.
+	:param base_noise_std: Écart-type du bruit gaussien de fond.
 	:return: Image 2D de taille (size, size) avec les molécules affichées.
 	"""
 
@@ -39,7 +41,7 @@ def generate_sample(size: int = 256, pixel_size: int = 160, density: float = 1.0
 	mask = generate_mask(pattern, size, pattern_options)
 	localisation = apply_mask(localisation, mask)
 	sample = compute_psf(size, localisation, intensity, variation, astigmatism_ratio)
-	sample = add_snr(sample, snr)
+	sample = add_snr(sample, snr, base_background, base_noise_std)
 	return sample
 
 
@@ -94,7 +96,7 @@ def compute_molecule_localisation(size: int = 256, pixel_size: int = 160, densit
 def compute_molecule_grid(size: int = 256, shift: int = 10) -> NDArray[np.float32]:
 	"""
 	Génère un tableau de positions 3D pour les molécules sur une grille en fonction de la taille de l'image et de l'espacement entre les molécules
-	la coordonnée Z sera comprise entre -1 et 1. le long de la grille
+	la coordonnée Z sera comprise entre -1 et 1 le long de la grille.
 
 	:param size: Taille de l'image en pixels (par défaut 256), qui correspond à la dimension d'un côté de l'image carrée.
 	:param shift: Espace en pixel entre 2 molécules (par défaut 10). On peut considérer que chaque molécule est au centre d'un carré de taille shift.
@@ -107,8 +109,8 @@ def compute_molecule_grid(size: int = 256, shift: int = 10) -> NDArray[np.float3
 	x, y = np.meshgrid(coord, coord)			   # Grille de cordonnées X et Y.
 	x = x.flatten()								   # Aplatir les coordonnées X pour les transformer en une liste de points.
 	y = y.flatten()								   # Aplatir les coordonnées Y pour les transformer en une liste de points.
-	z = np.linspace(-1, 1, n_molecules)			   # Tout les Z possible sur cette grille
-	molecule_grid = np.vstack((x, y, z)).T		   # Combiner les coordonnées dans un tableau de forme (n_molecules, 3)
+	z = np.linspace(-1, 1, n_molecules)			   # Tous les Z possibles sur cette grille.
+	molecule_grid = np.vstack((x, y, z)).T		   # Combiner les coordonnées dans un tableau de forme (n_molecules, 3).
 	return molecule_grid
 
 
@@ -189,19 +191,29 @@ def compute_psf(size: int, localisation: NDArray[np.float32],
 
 
 ##################################################
-def add_snr(image: NDArray[np.float32], snr: float = 10.0) -> NDArray[np.float32]:
+def add_snr(image: NDArray[np.float32], snr: float = 10.0, base_background: float = 500, base_noise_std: float = 12) -> NDArray[np.float32]:
 	"""
 	Ajoute du bruit gaussien et poissonien à une image pour atteindre un SNR donné.
 
 	:param image: L'image d'entrée (en valeurs de pixels).
 	:param snr: Le rapport signal sur bruit désiré (par défaut 10).
+	:param base_background: Intensité de fond de base du microscope, typiquement autour de 500.
+	:param base_noise_std: Écart-type du bruit gaussien de fond.
 	:return: L'image bruitée avec un SNR approximatif.
 	"""
 
-	signal_mean = np.mean(image)												 # Calculer l'intensité moyenne du signal
+	# Crée une image de fond (background) avec un bruit gaussien de base
+	background_noise = np.random.normal(loc=base_background, scale=base_noise_std, size=image.shape)
+
+	# Calcul du bruit requis pour obtenir le SNR
+	signal_mean = np.mean(image[image > 0])  # Moyenne des pixels non-nuls pour éviter la majorité noire
+	if signal_mean == 0:
+		print_warning("Attention : le signal moyen est nul, impossible d'ajouter du SNR")
+		return np.clip(background_noise, 0, MAX_INTENSITY).astype(np.float32)
+
 	noise_std = signal_mean / snr												 # Calculer l'écart-type du bruit nécessaire pour le SNR
-	gaussian_noise = np.random.normal(loc=0, scale=noise_std, size=image.shape)  # Ajouter du bruit gaussien avec l'écart-type calculé
-	poisson_noise = np.random.poisson(image) 									 # Ajouter du bruit poissonien basé sur l'image
-	noisy_image = image + gaussian_noise + poisson_noise						 # Somme du bruit gaussien et poissonien
+	gaussian_noise = np.random.normal(loc=0, scale=noise_std, size=image.shape)  # Générer le bruit gaussien pour le signal
+	poisson_noise = np.random.poisson(image).astype(float)						 # Ajouter le bruit poissonien (modèle pour le bruit photonique) au signal
+	noisy_image = image + gaussian_noise + poisson_noise + background_noise		 # Somme du bruit gaussien et poissonien
 	noisy_image = np.clip(noisy_image, 0, MAX_INTENSITY)						 # Clipper les valeurs pour éviter les débordements
 	return noisy_image

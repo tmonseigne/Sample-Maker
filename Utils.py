@@ -68,7 +68,7 @@ def add_grid(image: NDArray[np.float32], size_x: int = 10, size_y: int = 10, col
 	:param color: Couleur de la grille (par défaut 255, blanc).
 	:return: L'image avec une grille.
 
-	.. note:: Par principe cette fonction sera utilisée plus tard sur une image RVB ou pour un layer d'affichage
+	.. note:: Par principe cette fonction sera utilisée plus tard sur une image RVB ou pour un calque d'affichage
 	"""
 
 	grid = image

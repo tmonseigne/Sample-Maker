@@ -1,7 +1,5 @@
 """ Tests pour la génération d'images """
 
-from pathlib import Path
-
 import numpy as np
 
 from PatternGenerator import generate_mask, Pattern
@@ -103,7 +101,7 @@ def test_add_snr():
 	Test de la fonction add_snr.
 	"""
 	image = np.ones((256, 256), dtype=np.float32) * 500  # Exemple d'image avec des pixels égaux à 500
-	res = add_snr(image, snr=10)
+	res = add_snr(image, snr=10, base_background=500, base_noise_std=12)
 	assert res.shape == (256, 256), f"Le résultat est une image de taille {res.shape} au lieu de (256, 256)."
 
 

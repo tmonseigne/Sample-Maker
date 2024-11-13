@@ -25,8 +25,10 @@ intensity = 5000		# Intensité de base du fluorophore.
 variation = 500			# Variation d'intensité du fluorophore.
 astigmatism_ratio = 2   # Ratio de l'astigmatisme.
 snr = 10				# Le rapport signal sur bruit désiré.
+base_background = 500   # Intensité de fond de base du microscope, typiquement autour de 500.
+base_noise_std = 12		# Écart-type du bruit gaussien de fond.
 
-sample = generate_sample(size, pixel_size, density, pattern, pattern_options, intensity, variation, astigmatism_ratio, snr)
+sample = generate_sample(size, pixel_size, density, pattern, pattern_options, intensity, variation, astigmatism_ratio, snr, base_background, base_noise_std)
 save_sample_as_png(sample, f"{OUTPUT_DIR}/Sample_Base.png", 100)  # Enregistrement de l'échantillon au format png
 
 ##################################################
@@ -41,8 +43,10 @@ intensity = 5000			   # Intensité de base du fluorophore.
 variation = 500				   # Variation d'intensité du fluorophore.
 astigmatism_ratio = 2   	   # Ratio de l'astigmatisme.
 snr = 2.6					   # Le rapport signal sur bruit désiré.
+base_background = 500 		   # Intensité de fond de base du microscope, typiquement autour de 500.
+base_noise_std = 12			   # Écart-type du bruit gaussien de fond.
 
-sample = generate_sample(size, pixel_size, density, pattern, pattern_options, intensity, variation, astigmatism_ratio, snr)
+sample = generate_sample(size, pixel_size, density, pattern, pattern_options, intensity, variation, astigmatism_ratio, snr, base_background, base_noise_std)
 save_sample_as_png(sample, f"{OUTPUT_DIR}/Sample_Square_noisy.png", 100)  # Enregistrement de l'échantillon au format png
 
 ##################################################
@@ -57,8 +61,10 @@ intensity = 5000			   # Intensité de base du fluorophore.
 variation = 500				   # Variation d'intensité du fluorophore.
 astigmatism_ratio = 2   	   # Ratio de l'astigmatisme.
 snr = 2.6					   # Le rapport signal sur bruit désiré.
+base_background = 500		   # Intensité de fond de base du microscope, typiquement autour de 500.
+base_noise_std = 12			   # Écart-type du bruit gaussien de fond.
 
-sample = generate_sample(size, pixel_size, density, pattern, pattern_options, intensity, variation, astigmatism_ratio, snr)
+sample = generate_sample(size, pixel_size, density, pattern, pattern_options, intensity, variation, astigmatism_ratio, snr, base_background, base_noise_std)
 save_sample_as_png(sample, f"{OUTPUT_DIR}/Sample_Square_noisy.png", 100)  # Enregistrement de l'échantillon au format png
 
 ##################################################
@@ -70,9 +76,11 @@ intensity = 5000			   # Intensité de base du fluorophore.
 variation = 500				   # Variation d'intensité du fluorophore.
 astigmatism_ratio = 2   	   # Ratio de l'astigmatisme.
 snr = 10					   # Le rapport signal sur bruit désiré.
+base_background = 500		   # Intensité de fond de base du microscope, typiquement autour de 500.
+base_noise_std = 12			   # Écart-type du bruit gaussien de fond.
 
 localisation = compute_molecule_grid(size, shift)
 sample = compute_psf(size, localisation, intensity, variation, astigmatism_ratio)
-sample = add_snr(sample, snr)
+sample = add_snr(sample, snr, base_background, base_noise_std)
 save_sample_as_png(sample, f"{OUTPUT_DIR}/Sample_Grid.png", 100)  # Enregistrement de l'échantillon au format png
 

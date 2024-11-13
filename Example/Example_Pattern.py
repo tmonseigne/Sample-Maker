@@ -7,6 +7,7 @@ from FileIO import save_boolean_mask_as_png
 from PatternGenerator import generate_mask, Pattern
 
 # Gestion des dossiers
+INPUT_DIR = Path(__file__).parent / "Input"
 OUTPUT_DIR = Path(__file__).parent / "Output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)  # Créer le dossier de sorties (la première fois, il n'existe pas)
 

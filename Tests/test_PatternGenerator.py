@@ -252,7 +252,7 @@ def test_existing_mask_options_bad_filename():
 def test_none_mask():
 	"""
 	Test de la génération d'un masque nulle (donc entièrement blanc).
-	Vérifie que le masque est de la bonne taille, de type booléen et est entièrement blanc.
+	Vérifie que le masque est de la bonne taille, de type booléen et est blanc.
 	"""
 	size = 256
 	mask = generate_mask(Pattern.NONE, size)

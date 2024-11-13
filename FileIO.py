@@ -52,7 +52,7 @@ def open_png_as_boolean_mask(filename: str) -> NDArray[np.bool_]:
 def save_sample_as_png(sample: NDArray[np.float32], filename: str, percentile: float = 100):
 	"""
 	Enregistre un échantillon en tant qu'image PNG en niveaux de gris.
-	On normalize le tableau par rapport au percentile passé en paramètre.
+	On normalise le tableau par rapport au percentile passé en paramètre.
 	Si le percentile est égale à 100, l'intensité max deviendra 255
 	Si on réduit le percentile, on considère que les quelques pourcents supérieurs sont des abhérations.
 
@@ -68,7 +68,7 @@ def save_sample_as_png(sample: NDArray[np.float32], filename: str, percentile: f
 		grayscale = np.zeros_like(sample, dtype=np.uint8)		  # Si le maximum est 0, on remplit l'image avec des valeurs nulles
 	else:
 		grayscale = (sample * MAX_UI_8 / max_i).astype(np.uint8)  # Normalisation entre 0 et 255
-		grayscale = np.clip(grayscale, 0, MAX_UI_8)				  # On s'assure que toutes les valeurs sont entre 0 et 255
+		grayscale = np.clip(grayscale, 0, MAX_UI_8)				  # On s'assure que toutes les valeurs sont entre 0 et 255.
 	image = Image.fromarray(grayscale, mode='L')				  # L pour niveau de gris
 	image.save(filename)
 
