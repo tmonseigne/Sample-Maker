@@ -106,6 +106,16 @@ def test_add_snr():
 
 
 ##################################################
+def test_add_snr_bad():
+	"""
+	Test de la fonction add_snr avec une image nulle.
+	"""
+	image = np.zeros((256, 256), dtype=np.float32)  # Exemple d'image avec des pixels égaux à 500
+	res = add_snr(image, snr=10, base_background=500, base_noise_std=12)
+	assert res.shape == (256, 256), f"Le résultat est une image de taille {res.shape} au lieu de (256, 256)."
+
+
+##################################################
 def test_generate_sample():
 	"""
 	Test de la fonction generate_sample.

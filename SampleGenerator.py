@@ -189,6 +189,21 @@ def compute_psf(size: int, localisation: NDArray[np.float32],
 
 	return image
 
+def create_noise(size: int = 256, base_background: float = 500, base_noise_std: float = 12) -> NDArray[np.float32]:
+	"""
+	Créé du bruit gaussien et poissonien.
+
+	:param size: Taille de l'image.
+	:param base_background: Intensité de fond de base du microscope, typiquement autour de 500.
+	:param base_noise_std: Écart-type du bruit gaussien de fond.
+	:return: Bruit à ajouter à une image.
+	"""
+
+	noisy = np.random.normal(loc=base_background, scale=base_noise_std, size=(size, size))
+	noisy = np.nan_to_num(np.maximum(noisy, 0), nan=0)  # Met à zéro toutes les valeurs négatives et remplace NaNs par 0 pour éviter les crash.
+	noisy = np.random.poisson(noisy).astype(float)		# Ajouter le bruit poissonien (modèle pour le bruit photonique) au signal
+	return noisy
+
 
 ##################################################
 def add_snr(image: NDArray[np.float32], snr: float = 10.0, base_background: float = 500, base_noise_std: float = 12) -> NDArray[np.float32]:
@@ -202,18 +217,23 @@ def add_snr(image: NDArray[np.float32], snr: float = 10.0, base_background: floa
 	:return: L'image bruitée avec un SNR approximatif.
 	"""
 
-	# Crée une image de fond (background) avec un bruit gaussien de base
-	background_noise = np.random.normal(loc=base_background, scale=base_noise_std, size=image.shape)
+	# Crée une image de fond (background) avec un bruit gaussien de base et un bruit poissonien
+	background_noise = create_noise(image.shape[0], base_background, base_noise_std)
+	noisy = image + background_noise							    # Ajout du bruit de fon au signal
 
 	# Calcul du bruit requis pour obtenir le SNR
-	signal_mean = np.mean(image[image > 0])  # Moyenne des pixels non-nuls pour éviter la majorité noire
-	if signal_mean == 0:
-		print_warning("Attention : le signal moyen est nul, impossible d'ajouter du SNR")
-		return np.clip(background_noise, 0, MAX_INTENSITY).astype(np.float32)
+	signal_mean = np.mean(image[image > np.finfo(np.float32).eps])  # Moyenne des pixels non-nuls pour éviter la majorité noire
+	signal_std = np.std(image[image > np.finfo(np.float32).eps])    # Écart-type des pixels non-nuls pour éviter la majorité noire
 
-	noise_std = signal_mean / snr												 # Calculer l'écart-type du bruit nécessaire pour le SNR
-	gaussian_noise = np.random.normal(loc=0, scale=noise_std, size=image.shape)  # Générer le bruit gaussien pour le signal
-	poisson_noise = np.random.poisson(image).astype(float)						 # Ajouter le bruit poissonien (modèle pour le bruit photonique) au signal
-	noisy_image = image + gaussian_noise + poisson_noise + background_noise		 # Somme du bruit gaussien et poissonien
-	noisy_image = np.clip(noisy_image, 0, MAX_INTENSITY)						 # Clipper les valeurs pour éviter les débordements
-	return noisy_image
+	if np.fabs(signal_mean) <= np.finfo(np.float32).eps or np.isnan(signal_mean):
+		print_warning("Attention : le signal moyen est nul, impossible d'ajouter du SNR. Un fond bruité est généré")
+	elif np.fabs(signal_std) <= np.finfo(np.float32).eps or np.isnan(signal_std):
+		print_warning("Attention : le signal est constant, impossible d'ajouter du SNR. Un fond bruité est généré")
+	else:
+		noise_std = signal_mean / snr							   # Calculer l'écart-type du bruit nécessaire pour le SNR
+		print(noise_std)
+		signal_noise = create_noise(image.shape[0], 0, noise_std)  # Calcul du bruit du signal (en fonction du SNR)
+		noisy += signal_noise			   						   # Ajout du bruit du signal
+
+	noisy = np.clip(noisy, 0, MAX_INTENSITY)				   # Clipper les valeurs pour éviter les débordements
+	return noisy
