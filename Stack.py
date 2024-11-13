@@ -36,18 +36,18 @@ class Stack:
 	Classe permettant de stocker une pile d'image
 
 	Attributs :
-		pixel_size (int) : Taille d'un pixel en nanomètres.
-		density (float) : Densité de molécules par micromètre carré.
-		pattern (Pattern) : Motif à utiliser pour générer le masque.
-		pattern_options (Dict) : Options spécifiques pour le motif.
-		intensity (float) : Intensité de base du fluorophore.
-		variation (float) : Variation d'intensité aléatoire.
-		astigmatism_ratio (float) : Ratio de l'astigmatisme.
-		snr (float) : Rapport signal sur bruit désiré.
-		base_background (float) : Intensité de fond de base du microscope, typiquement autour de 500.
-		stack_model (StackModel) : Modèle de la pile.
-		stack_model_options (Dict) : Options spécifiques pour le modèle de la pile.
-		stack (np.ndarray) : Tableau numpy 3D stockant la pile d'images.
+		- **pixel_size (int)** : Taille d'un pixel en nanomètres.
+		- **density (float)** : Densité de molécules par micromètre carré.
+		- **pattern (Pattern)** : Motif à utiliser pour générer le masque.
+		- **pattern_options (Dict)** : Options spécifiques pour le motif.
+		- **intensity (float)** : Intensité de base du fluorophore.
+		- **variation (float)** : Variation d'intensité aléatoire.
+		- **astigmatism_ratio (float)** : Ratio de l'astigmatisme.
+		- **snr (float)** : Rapport signal sur bruit désiré.
+		- **base_background (float)** : Intensité de fond de base du microscope, typiquement autour de 500.
+		- **stack_model (StackModel)** : Modèle de la pile.
+		- **stack_model_options (Dict)** : Options spécifiques pour le modèle de la pile.
+		- **stack (np.ndarray)** : Tableau numpy 3D stockant la pile d'images.
 	"""
 
 	# ==================================================
