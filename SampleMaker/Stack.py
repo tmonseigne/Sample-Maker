@@ -13,10 +13,10 @@ from SampleGenerator import compute_area
 ##################################################
 class StackModel(Enum):
 	"""
-	Enumération représentant les différents modèles de piles disponibles.
+	Énumération représentant les différents modèles de piles disponibles.
 	Chaque modèle est associé à un identifiant unique pour être utilisé dans la fonction `generate`.
 
-	- NONE : Aucun modèle particulier (Les échantillons sont indépendants les uns des autres).
+	- NONE : Aucun modèle particulier (les échantillons sont indépendants les uns des autres).
 	"""
 	NONE = 0
 
@@ -33,7 +33,7 @@ class StackModel(Enum):
 ##################################################
 class Stack:
 	"""
-	Classe permettant de stocker une pile d'image
+	Classe permettant de stocker une pile d'images
 
 	Attributs :
 		- **pixel_size (int)** : Taille d'un pixel en nanomètres.

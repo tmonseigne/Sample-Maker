@@ -28,7 +28,7 @@ class Mask:
 	mask: NDArray[np.bool_] = field(init=False)
 
 	# ==================================================
-	# region Initialisation / Setter
+	# region Initialization / Setter
 	# ==================================================
 	##################################################
 	def __post_init__(self):
@@ -59,7 +59,7 @@ class Mask:
 		self._generate()
 
 	# ==================================================
-	# endregion Initialisation / Setter
+	# endregion Initialization / Setter
 	# ==================================================
 
 	# ==================================================
@@ -125,7 +125,7 @@ class Mask:
 
 		r = self.pattern.options.ray_count
 		if not (r & r - 1) == 0:											# Vérifie que rays est une puissance de 2.
-			print_warning("Le nombre de rayon est introuvable ou manquant dans les options. Masque blanc généré.")
+			print_warning("Le nombre de rayons est introuvable ou manquant dans les options. Masque blanc généré.")
 			self.mask = ~self.mask											# Transformation en masque blanc
 			return
 
@@ -149,19 +149,21 @@ class Mask:
 	# region IO
 	# ==================================================
 	##################################################
-	def __str__(self):
+	def tostring(self) -> str:
 		"""
-		Retourne un résumé des caractéristiques de la pile.
+		Retourne une chaîne de caractères correspondant à la taille et aux options du motif.
+
+		:return: la taille et la liste des options.
 		"""
-		summary = (
-				f"Size: {self.size}, {self.pattern}"
-		)
-		return summary
+		return f"Size: {self.size}, {self.pattern}"
+
+	##################################################
+	def __str__(self) -> str: return self.tostring()
 
 	##################################################
 	def save(self, filename):
 		"""
-		Enregistre le masque comme un fichier png.
+		Enregistre le masque comme un fichier PNG.
 		:param filename: Nom du fichier à enregistrer
 		"""
 		save_boolean_mask_as_png(self.mask, filename)
@@ -169,7 +171,7 @@ class Mask:
 	##################################################
 	def open(self, filename):
 		"""
-		Ouvre un fichier png et le transforme en masque de booléen
+		Ouvre un fichier PNG et le transforme en masque de booléen
 		:param filename: Nom du fichier à ouvrir
 		"""
 		self.pattern = Pattern.from_pattern(PatternType.EXISTING_IMAGE, {"path": filename})

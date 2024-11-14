@@ -8,11 +8,11 @@ def test_pattern_type():
 	Test de l'objet PatternType (utile réellement uniquement pour le code coverage à l'heure actuelle tostring non utilisé).
 	"""
 
-	assert PatternType.NONE.tostring() == "None", "La chaine de caractère ne correspond pour le pattern None"
-	assert PatternType.STRIPES.tostring() == "Bandes", "La chaine de caractère ne correspond pour le pattern Bandes"
-	assert PatternType.SQUARES.tostring() == "Carrés", "La chaine de caractère ne correspond pour le pattern Carrés"
-	assert PatternType.SUN.tostring() == "Soleil", "La chaine de caractère ne correspond pour le pattern Soleil"
-	assert PatternType.EXISTING_IMAGE.tostring() == "Image existante", "La chaine de caractère ne correspond pour le pattern Image existante"
+	assert PatternType.NONE.tostring() == "None", "La chaine de caractère ne correspond pas pour le pattern None"
+	assert PatternType.STRIPES.tostring() == "Bandes", "La chaine de caractère ne correspond pas pour le pattern Bandes"
+	assert PatternType.SQUARES.tostring() == "Carrés", "La chaine de caractère ne correspond pas pour le pattern Carrés"
+	assert PatternType.SUN.tostring() == "Soleil", "La chaine de caractère ne correspond pas pour le pattern Soleil"
+	assert PatternType.EXISTING_IMAGE.tostring() == "Image existante", "La chaine de caractère ne correspond pas pour le pattern Image existante"
 
 ##################################################
 def test_pattern():
@@ -29,7 +29,7 @@ def test_pattern():
 	assert pattern.pattern == PatternType.STRIPES, "Ce n'est pas le bon type de pattern."
 	print(pattern)
 
-	pattern = Pattern.from_pattern(PatternType.SQUARES, None)  # Si aucune option, il va prendre celles par defaut
+	pattern = Pattern.from_pattern(PatternType.SQUARES, None)  # Si aucune option, il va prendre celles par défaut
 	assert pattern.pattern == PatternType.SQUARES, "Ce n'est pas le bon type de pattern."
 	assert pattern.options.size == SquaresOptions.size, "Ce n'est pas la taille par défaut du motif."
 	print(pattern)

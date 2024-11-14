@@ -4,7 +4,8 @@ import os
 from pathlib import Path
 
 from SampleMaker.FileIO import save_boolean_mask_as_png
-from SampleMaker.Mask import generate_mask, MaskPattern
+from SampleMaker.Mask import Mask
+from SampleMaker.Pattern import Pattern, PatternType
 
 # Gestion des dossiers
 INPUT_DIR = Path(__file__).parent / "Input"
@@ -16,11 +17,11 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)  # Créer le dossier de sorties (la premi
 # Sprawls P (1995) Physical Principles of Medical Imaging: Medical Physics Publishing Corporation.
 size = 256							 # Taille de l'image
 lengths = [200, 100, 50, 25, 12, 6]  # Largeur des bandes
-mirror = True						 # On définit l'option miroir pour que les bandes soient déssinée de façon décroissante puis croissante
-oriantation = True					 # On définit l'oriantation à true pour avoir des bandes verticales
-options = {"Lengths": lengths, "Mirrored": mirror, "Orientation": oriantation}  # Création du dictionnaire d'options
-mask = generate_mask(MaskPattern.STRIPES, size, options)							# Génération du masque
-save_boolean_mask_as_png(mask, f"{OUTPUT_DIR}/Mask_Radio.png")					# Enregistrement du masque au format png
+mirror = True						 # On définit l'option miroir pour que les bandes soient dessinées de façon décroissante puis croissante
+orientation = True					 # On définit l'oriantation à true pour avoir des bandes verticales
+options = {"lengths": lengths, "mirror": mirror, "orientation": orientation}  # Création du dictionnaire d'options
+mask = Mask(size, Pattern.from_pattern(PatternType.STRIPES, options))
+mask.save(f"{OUTPUT_DIR}/Mask_Radio.png")					# Enregistrement du masque au format png
 
 
 ##################################################
@@ -32,7 +33,7 @@ save_boolean_mask_as_png(mask, f"{OUTPUT_DIR}/Mask_Square.png")  # Enregistremen
 
 
 ##################################################
-# Création d'un masque de type SOleil afin d'alterner des triangles blanc et noir.
+# Création d'un masque de type Soleil afin d'alterner des triangles blanc et noir.
 size = 256													  # Taille de l'image
 options = {"Rays": 16}										  # Image avec 16 rayons
 mask = generate_mask(MaskPattern.SUN, size, options)			  # Génération du masque

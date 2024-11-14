@@ -101,7 +101,7 @@ def test_squares_mask_options_little():
 def test_squares_mask_options_bad():
 	"""
 	Test de la fonction squares_mask avec des options spécifiques.
-	Vérifie que les options de taille produisent un masque blanc si la taille et trop elevé.
+	Vérifie que les options de taille produisent un masque blanc si la taille est trop élevée.
 	"""
 	size = 128
 	options = {"size": 65}  # Taille trop grande
@@ -116,7 +116,7 @@ def test_squares_mask_options_bad():
 	with pytest.raises(TypeError) as excinfo:
 		mask = Mask(size, Pattern.from_pattern(PatternType.SQUARES, options))
 
-	assert excinfo.type == TypeError, "L'erreur relevé n'est pas correcte."
+	assert excinfo.type == TypeError, "L'erreur relevée n'est pas correcte."
 	assert mask is None, "Le masque a été créé au lieu de crash."
 
 
@@ -193,7 +193,7 @@ def test_sun_mask_options_bad():
 def test_generate_mask_existing_image():
 	"""
 	Test de la génération de masque pour le motif 'Image existante'.
-	Vérifie que le masque est de type booléen (la taille en entrée est théorique, car dépend du fichier en entrée).
+	Vérifie que le masque est de type booléen (la taille en entrée est théorique, car elle dépend du fichier en entrée).
 	"""
 	options = {"path": f"{INPUT_DIR}/PALM_ref.png"}
 	mask = Mask(pattern=Pattern.from_pattern(PatternType.EXISTING_IMAGE, options))
