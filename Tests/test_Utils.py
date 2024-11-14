@@ -3,8 +3,8 @@ import os
 from pathlib import Path
 import numpy as np
 
-from FileIO import open_png_as_sample, save_sample_as_png
-from Utils import add_grid, add_extension, print_error, print_warning
+from SampleMaker.FileIO import open_png_as_sample, save_sample_as_png
+from SampleMaker.Utils import add_grid, add_extension, print_error, print_warning
 
 INPUT_DIR = Path(__file__).parent / "Input"
 OUTPUT_DIR = Path(__file__).parent / "Output"
@@ -63,9 +63,9 @@ def test_add_grid():
 	"""
 
 	size = 256
-	image = np.zeros((size, size), dtype=np.float32)   # Image Noire
-	image = add_grid(image, 30, 20, 255)   # Image avec la grille
+	image = np.zeros((size, size), dtype=np.float32)  # Image noire
+	image = add_grid(image, 30, 20, 255)			  # Image avec la grille
 	save_sample_as_png(image, f"{OUTPUT_DIR}/Grid.png")
 	ref = open_png_as_sample(f"{INPUT_DIR}/Grid.png")
-	assert np.allclose(ref, image), "L'imagee devrait correspondre à la référence."
+	assert np.allclose(ref, image), "L'image devrait correspondre à la référence."
 

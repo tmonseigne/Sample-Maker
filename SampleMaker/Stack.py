@@ -6,17 +6,16 @@ from typing import Any
 import numpy as np
 from numpy.typing import NDArray
 
-from PatternGenerator import Pattern
-from SampleGenerator import compute_area
+from .SampleGenerator import compute_area
 
 
 ##################################################
 class StackModel(Enum):
 	"""
-	Enumération représentant les différents modèles de piles disponibles.
+	Énumération représentant les différents modèles de piles disponibles.
 	Chaque modèle est associé à un identifiant unique pour être utilisé dans la fonction `generate`.
 
-	- NONE : Aucun modèle particulier (Les échantillons sont indépendants les uns des autres).
+	- NONE : Aucun modèle particulier (les échantillons sont indépendants les uns des autres).
 	"""
 	NONE = 0
 
@@ -33,7 +32,7 @@ class StackModel(Enum):
 ##################################################
 class Stack:
 	"""
-	Classe permettant de stocker une pile d'image
+	Classe permettant de stocker une pile d'images
 
 	Attributs :
 		- **pixel_size (int)** : Taille d'un pixel en nanomètres.
@@ -75,7 +74,7 @@ class Stack:
 
 	##################################################
 	def initialize(self, size: int = 256, pixel_size: int = 160, density: float = 1.0,
-				   pattern: Pattern = Pattern.NONE, pattern_options: Any = None,
+				   pattern: MaskPattern = MaskPattern.NONE, pattern_options: Any = None,
 				   intensity: float = 100, variation: float = 10, astigmatism_ratio: float = 2.0,
 				   snr: float = 10.0, base_background: float = 500, base_noise_std: float = 12,
 				   stack_model: StackModel = StackModel.NONE, stack_model_options: Any = None):

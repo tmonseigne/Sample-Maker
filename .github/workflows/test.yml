@@ -8,6 +8,9 @@ on:
     branches:
       - master
 
+  # Permet d'exécuter le workflow manuellement depuis l'onglet Actions
+  workflow_dispatch:
+
 jobs:
   test:
     name: ${{ matrix.platform }} py${{ matrix.python-version }}

@@ -6,6 +6,8 @@ import numpy as np
 from numpy.typing import NDArray
 from PIL import Image
 
+from .Utils import add_extension
+
 MAX_UI_8 = np.iinfo(np.uint8).max
 MAX_UI_16 = np.iinfo(np.uint16).max
 
@@ -20,21 +22,23 @@ def save_boolean_mask_as_png(mask: NDArray[np.bool_], filename: str):
 	:param mask: Tableau numpy 2D de type booléen représentant le masque.
 	:param filename: Chemin du fichier PNG de sortie.
 	"""
+	name = add_extension(filename, ".png")
 	grayscale = (mask * MAX_UI_8).astype(np.uint8)	 # Convertir le masque booléen en image en niveaux de gris (255 pour True, 0 pour False)
 	image = Image.fromarray(grayscale, mode='L')	 # L pour niveau de gris
-	image.save(filename)
+	image.save(name)
 
 
 ##################################################
 def open_png_as_boolean_mask(filename: str) -> NDArray[np.bool_]:
 	"""
-	Ouvre une image PNG en niveaux de gris et la convertit en un masque booléen.
+	Ouvre une image PNG en niveaux de gris et la convertie en un masque booléen.
 
 	:param filename: Chemin du fichier PNG d'entrée.
 	:return: Tableau numpy 2D de type booléen représentant le masque (True pour les pixels blancs, False pour les pixels noirs).
 	"""
-	if not os.path.isfile(filename): raise OSError(f"Le fichier \"{filename}\" est introuvable.")
-	image = Image.open(filename).convert("L")   # Charger l'image en niveaux de gris
+	name = add_extension(filename, ".png")
+	if not os.path.isfile(name): raise OSError(f"Le fichier \"{name}\" est introuvable.")
+	image = Image.open(name).convert("L")   	# Charger l'image en niveaux de gris
 	grayscale = np.array(image)				  	# Convertir l'image en tableau numpy
 	boolean_mask = grayscale >= (MAX_UI_8 / 2)  # Convertir les niveaux de gris en booléen : True pour les pixels >= 128, False pour < 128
 	return boolean_mask
@@ -53,8 +57,8 @@ def save_sample_as_png(sample: NDArray[np.float32], filename: str, percentile: f
 	"""
 	Enregistre un échantillon en tant qu'image PNG en niveaux de gris.
 	On normalise le tableau par rapport au percentile passé en paramètre.
-	Si le percentile est égale à 100, l'intensité max deviendra 255
-	Si on réduit le percentile, on considère que les quelques pourcents supérieurs sont des abhérations.
+	Si le percentile est égal à 100, l'intensité maximum deviendra 255
+	Si on réduit le percentile, on considère que les quelques pour cent supérieurs sont des aberrations.
 
 	:param sample: Tableau numpy 2D de type flottant représentant l'échantillon.
 	:param filename: Chemin du fichier PNG de sortie.
@@ -80,7 +84,7 @@ def open_png_as_sample(filename: str, intensity_factor: float = 1.0) -> NDArray[
 	Ouvre une image PNG en niveaux de gris.
 
 	:param filename: Chemin du fichier PNG d'entrée.
-	:param intensity_factor: Factor multiplicatif d'intensité (la valeur max pour un png en niveau de gris est 255 l'intensité n'a pas la même échelle)
+	:param intensity_factor: Factor multiplicatif d'intensité (la valeur maximum pour un PNG en niveau de gris est 255 l'intensité n'a pas la même échelle)
 	:return: Tableau numpy 2D de type flottant représentant l'échantillon.
 	"""
 	if not os.path.isfile(filename): raise OSError(f"Le fichier \"{filename}\" est introuvable.")
@@ -101,12 +105,12 @@ def open_png_as_sample(filename: str, intensity_factor: float = 1.0) -> NDArray[
 ##################################################
 def save_stack_as_tiff(stack: NDArray[np.float32], filename: str):
 	"""
-	Enregistre un échantillon en tant que pile d'image TIFF en niveaux de gris.
+	Enregistre un échantillon en tant que pile d'images TIFF en niveaux de gris.
 
 	:param stack: Tableau numpy 2D de type flottant représentant l'échantillon.
 	:param filename: Chemin du fichier PNG de sortie.
 
-	.. note:: Une image simple sera enregistré comme une pile d'une image.
+	.. note:: Une image simple sera enregistrée comme une pile d'une image.
 	"""
 	np.clip(stack, 0, MAX_UI_16)				 # On s'assure que toutes les valeurs sont entre 0 et max uint16
 	image = Image.fromarray(stack, mode='I;16')  # I;16 pour uint16
@@ -116,7 +120,7 @@ def save_stack_as_tiff(stack: NDArray[np.float32], filename: str):
 ##################################################
 def open_tiff_as_stack(filename: str) -> NDArray[np.float32]:
 	"""
-	Ouvre une pile d'image TIFF en niveaux de gris.
+	Ouvre une pile d'images TIFF en niveaux de gris.
 
 	:param filename: Chemin du fichier TIFF d'entrée.
 	:return: Tableau numpy 2D de type flottant représentant l'échantillon.

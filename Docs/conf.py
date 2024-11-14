@@ -1,9 +1,12 @@
-"""
-Configuration file for the Sphinx documentation builder.
+""" Configuration file for the Sphinx documentation builder. """
 
-For the full list of built-in configuration values, see the documentation:
-https://www.sphinx-doc.org/en/master/usage/configuration.html
-"""
+# -- Gestion des fichiers à ajouter ------------------------------------------
+import os
+import sys
+
+# Ajout du chemin vers le dossier SampleMaker
+sys.path.insert(0, os.path.abspath('../SampleMaker'))
+
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
@@ -19,6 +22,7 @@ extensions = [
 		'sphinx.ext.autosummary',
 		'sphinx.ext.napoleon',
 		'sphinx.ext.todo',
+		'sphinx.ext.viewcode',
 		]
 
 templates_path = ['_templates']
@@ -37,12 +41,6 @@ autodoc_default_options = {
 		'undoc-members':    True,
 		'show-inheritance': True,
 		}
+autodoc_member_order = 'bysource'
 
 todo_include_todos = True
-
-# -- Gestion des fichiers à ajouter ------------------------------------------
-import os
-import sys
-
-sys.path.insert(0, os.path.abspath('../'))  # Ajustez le chemin selon votre structure
-# sys.path.insert(0, os.path.abspath('../Tests'))  # Ajustez le chemin selon votre structure

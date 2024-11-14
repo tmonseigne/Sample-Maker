@@ -1,4 +1,4 @@
-""" Fonctions de génération d'images Simulées """
+""" Fonctions de génération d'images simulées """
 
 from typing import Any
 
@@ -6,28 +6,27 @@ import numpy as np
 from numpy.typing import NDArray
 from scipy.stats import multivariate_normal
 
-from PatternGenerator import generate_mask, Pattern
-from Utils import print_warning
+from .Mask import Mask
+from .Utils import print_warning
 
 MAX_INTENSITY = np.iinfo(np.uint16).max  # Pour des entiers sur 16 bits (soit 65535).
 
 
 ##################################################
 def generate_sample(size: int = 256, pixel_size: int = 160, density: float = 1.0,
-					pattern: Pattern = Pattern.NONE, pattern_options: Any = None,
+					mask: Mask = Mask(),
 					intensity: float = 100, variation: float = 10, astigmatism_ratio: float = 2.0,
 					snr: float = 10.0, base_background: float = 500, base_noise_std: float = 12) -> NDArray[np.float32]:
 	"""
 	Calcule une répartition des molécules sur une image carrée en fonction de sa taille, de la taille d'un pixel et de la densité de molécules.
 	Un masque est appliqué selon un pattern (prédéfini ou chargé à partir d'une image).
 	Les molécules sont positionnées sur une image 2D.
-	UNe simulation de bruit optique est ajouté afin d'avoir une image avec un SNR prédéfinie.
+	Une simulation de bruit optique est ajoutée afin d'avoir une image avec un SNR prédéfini.
 
 	:param size: Taille de l'image en pixels (par défaut : 256). Cela correspond à la dimension d'un côté de l'image carrée.
 	:param pixel_size: Taille d'un pixel en nanomètres (par défaut : 160). Utilisé pour calculer la surface de l'image.
+	:param mask: MAsque à appliquer (par défaut un masque blanc).
 	:param density: Densité de molécules par micromètre carré (par défaut 1.0).
-	:param pattern: Le motif à utiliser pour générer le masque (Pattern.STRIPES, Pattern.SQUARES, etc.).
-	:param pattern_options: Dictionnaire contenant des options spécifiques au motif (longueur des bandes, effet miroir, etc.).
 	:param intensity: Intensité de base du fluorophore (par défaut 100).
 	:param variation: Variation d'intensité aléatoire appliquée à l'intensité du fluorophore (par défaut 10).
 	:param astigmatism_ratio: Ratio de l'astigmatisme (par défaut 2 indique une déformation de X par rapport à Y de maximum 2).
@@ -38,7 +37,6 @@ def generate_sample(size: int = 256, pixel_size: int = 160, density: float = 1.0
 	"""
 
 	localisation = compute_molecule_localisation(size, pixel_size, density)
-	mask = generate_mask(pattern, size, pattern_options)
 	localisation = apply_mask(localisation, mask)
 	sample = compute_psf(size, localisation, intensity, variation, astigmatism_ratio)
 	sample = add_snr(sample, snr, base_background, base_noise_std)
@@ -117,7 +115,7 @@ def compute_molecule_grid(size: int = 256, shift: int = 10) -> NDArray[np.float3
 	start = int(shift / 2)  					   # Position de départ
 	coord = np.arange(start, size - start, shift)  # On voit le centre des carrés de taille shift present dans notre image.
 	n_molecules = len(coord) ** 2				   # On a NxN molécules.
-	x, y = np.meshgrid(coord, coord)			   # Grille de cordonnées X et Y.
+	x, y = np.meshgrid(coord, coord)			   # Grille de coordonnées X et Y.
 	x = x.flatten()								   # Aplatir les coordonnées X pour les transformer en une liste de points.
 	y = y.flatten()								   # Aplatir les coordonnées Y pour les transformer en une liste de points.
 	z = np.linspace(-1, 1, n_molecules)			   # Tous les Z possibles sur cette grille.
@@ -126,7 +124,7 @@ def compute_molecule_grid(size: int = 256, shift: int = 10) -> NDArray[np.float3
 
 
 ##################################################
-def apply_mask(localisation: NDArray[np.float32], mask: NDArray[np.bool_]) -> NDArray[np.float32]:
+def apply_mask(localisation: NDArray[np.float32], mask: Mask) -> NDArray[np.float32]:
 	"""
 	Filtre les positions des molécules en fonction d'un masque booléen 2D, ne conservant que celles dont les coordonnées
 	(x arrondi, y arrondi) correspondent à des positions "True" dans le masque.
@@ -134,13 +132,13 @@ def apply_mask(localisation: NDArray[np.float32], mask: NDArray[np.bool_]) -> ND
 	:param localisation: Tableau numpy de positions des molécules de forme (N, 3), où chaque ligne contient les coordonnées (x, y, z).
 		Les coordonnées x et y sont en flottants et doivent être dans les limites de `mask`.
 	:param mask: Tableau numpy 2D de type booléen indiquant les zones de validité (True) pour les molécules.
-		La forme de `mask` doit être (size, size), où `size` correspond à la taille de l'image.
+		La forme de `mask` doit être (size, size), où `size` corresponds à la taille de l'image.
 	:return: Tableau numpy filtré de positions de molécules (x, y, z) où seules les molécules dans les zones "True" du masque sont conservées.
 	"""
 
-	# Convertir les coordonnées x et y en entiers pour correspondre aux pixels dans le masque, clip permet d'éviter les positions en dehors du masque.
-	x_int = np.clip(localisation[:, 0].astype(int), 0, mask.shape[0] - 1)
-	y_int = np.clip(localisation[:, 1].astype(int), 0, mask.shape[1] - 1)
+	# Convertir les coordonnées x et y en type entier pour correspondre aux pixels dans le masque, clip permet d'éviter les positions en dehors du masque.
+	x_int = np.clip(localisation[:, 0].astype(int), 0, mask.mask.shape[0] - 1)
+	y_int = np.clip(localisation[:, 1].astype(int), 0, mask.mask.shape[1] - 1)
 
 	# Sélectionner les positions des molécules dont le masque est "True" aux indices (x, y)
 	valid_indices = mask[x_int, y_int]
@@ -162,21 +160,21 @@ def compute_psf(size: int, localisation: NDArray[np.float32],
 	:param astigmatism_ratio: Ratio de l'astigmatisme (par défaut 2 indique une déformation de X par rapport à Y de maximum 2).
 	:return: Image 2D de taille (size, size) avec les PSF ajoutées pour chaque molécule.
 
-	.. todo:: Régler la taille des psf plus précisement avec une option psf_size. le ratio de la matrice de covariance va influer la taille de la psf.
-		Il faudra faire des tests et voir comment régler précisement la taille des psf pour se rapprocher de données réelles.
+	.. todo:: Régler la taille des psf plus précisément avec une option psf_size. Le ratio de la matrice de covariance va influer la taille de la psf.
+		Il faudra faire des tests et voir comment régler précisément la taille des psf pour se rapprocher de données réelles.
 	"""
 
 	image = np.zeros((size, size), dtype=np.float32)
 	if astigmatism_ratio <= 0:  # Si à un ratio négatif ce n'est pas logique
-		print_warning("Le ratio d'astygmatisme doit être strictement positif, l'image sera noire.")
+		print_warning("Le ratio d'astigmatisme doit être strictement positif, l'image sera noire.")
 		return image
 
-	# Déterminer les bornes pour le ratio d'aspect (si l'astigmatisme est inférieure à 1, on inverse l'étirement horizontal et vertical)
+	# Déterminer les bornes pour le ratio d'aspect (si l'astigmatisme est inférieur à 1, on inverse l'étirement horizontal et vertical)
 	min_ratio = min(astigmatism_ratio, 1 / astigmatism_ratio)
 	max_ratio = max(astigmatism_ratio, 1 / astigmatism_ratio)
 
 	for x, y, z in localisation:
-		# Calculer le ratio linéairement en fonction de z, mais borné aux limites logiques en cas de valeurs abhérantes
+		# Calculer le ratio linéairement en fonction de z, mais borné aux limites logiques en cas de valeurs aberrantes
 		ratio = np.clip(1 + z * (astigmatism_ratio - 1), min_ratio, max_ratio)
 
 		# Générer une intensité aléatoire autour de l'intensité de base
@@ -230,11 +228,11 @@ def add_snr(image: NDArray[np.float32], snr: float = 10.0, base_background: floa
 
 	# Crée une image de fond (background) avec un bruit gaussien de base et un bruit poissonien
 	background_noise = create_noise(image.shape[0], base_background, base_noise_std)
-	noisy = image + background_noise							    # Ajout du bruit de fon au signal
+	noisy = image + background_noise							    # Ajout du bruit de fond au signal
 
 	# Calcul du bruit requis pour obtenir le SNR
-	signal_mean = np.mean(image[image > np.finfo(np.float32).eps])  # Moyenne des pixels non-nuls pour éviter la majorité noire
-	signal_std = np.std(image[image > np.finfo(np.float32).eps])    # Écart-type des pixels non-nuls pour éviter la majorité noire
+	signal_mean = np.mean(image[image > np.finfo(np.float32).eps])  # Moyenne des pixels non nuls pour éviter la majorité noire
+	signal_std = np.std(image[image > np.finfo(np.float32).eps])    # Écart-type des pixels non nuls pour éviter la majorité noire
 
 	if np.fabs(signal_mean) <= np.finfo(np.float32).eps or np.isnan(signal_mean):
 		print_warning("Attention : le signal moyen est nul, impossible d'ajouter du SNR. Un fond bruité est généré")

@@ -5,8 +5,8 @@ from pathlib import Path
 
 import numpy as np
 
-from FileIO import open_png_as_boolean_mask, open_png_as_sample, save_boolean_mask_as_png, save_sample_as_png
-from Utils import print_warning
+from SampleMaker.FileIO import open_png_as_boolean_mask, open_png_as_sample, save_boolean_mask_as_png, save_sample_as_png
+from SampleMaker.Utils import print_warning
 
 OUTPUT_DIR = Path(__file__).parent / "Output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)  # Créer le dossier de sorties (la première fois, il n'existe pas)
@@ -49,7 +49,7 @@ def test_open_png_as_sample():
 	Test de la fonction open_png_as_sample.
 	"""
 	sample = open_png_as_sample(f"{OUTPUT_DIR}/test_save_sample.png")
-	new_ref = ref.astype(np.uint8).astype(np.float32)  # cast forcé car les pixels ont des valeurs entières.
+	new_ref = ref.astype(np.uint8).astype(np.float32)  # cast forcée, car les pixels ont des valeurs entières.
 	assert np.allclose(new_ref, sample, atol=1e-5), "L'échantillon devrait correspondre à la référence avec une tolérance d'erreur."
 
 	sample = open_png_as_sample(f"{OUTPUT_DIR}/test_save_sample_normalized.png")
@@ -65,7 +65,7 @@ def test_save_stack_as_tiff():
 	"""
 	Test de la fonction save_sample_as_png.
 
-	.. todo:: A faire
+	.. todo:: À faire
 	"""
 	print_warning("TODO")
 
@@ -74,7 +74,7 @@ def test_open_tiff_as_stack():
 	"""
 	Test de la fonction save_sample_as_png.
 
-	.. todo:: A faire
+	.. todo:: À faire
 	"""
 	print_warning("TODO")
 
