@@ -6,7 +6,7 @@ import numpy as np
 from numpy.typing import NDArray
 from scipy.stats import multivariate_normal
 
-from Mask import generate_mask, MaskPattern
+from Mask import Mask
 from Utils import print_warning
 
 MAX_INTENSITY = np.iinfo(np.uint16).max  # Pour des entiers sur 16 bits (soit 65535).
@@ -14,7 +14,7 @@ MAX_INTENSITY = np.iinfo(np.uint16).max  # Pour des entiers sur 16 bits (soit 65
 
 ##################################################
 def generate_sample(size: int = 256, pixel_size: int = 160, density: float = 1.0,
-					pattern: MaskPattern = MaskPattern.NONE, pattern_options: Any = None,
+					mask: Mask = Mask(),
 					intensity: float = 100, variation: float = 10, astigmatism_ratio: float = 2.0,
 					snr: float = 10.0, base_background: float = 500, base_noise_std: float = 12) -> NDArray[np.float32]:
 	"""
@@ -25,9 +25,8 @@ def generate_sample(size: int = 256, pixel_size: int = 160, density: float = 1.0
 
 	:param size: Taille de l'image en pixels (par défaut : 256). Cela correspond à la dimension d'un côté de l'image carrée.
 	:param pixel_size: Taille d'un pixel en nanomètres (par défaut : 160). Utilisé pour calculer la surface de l'image.
+	:param mask: MAsque à appliquer (par défaut un masque blanc).
 	:param density: Densité de molécules par micromètre carré (par défaut 1.0).
-	:param pattern: Le motif à utiliser pour générer le masque (Pattern.STRIPES, Pattern.SQUARES, etc.).
-	:param pattern_options: Dictionnaire contenant des options spécifiques au motif (longueur des bandes, effet miroir, etc.).
 	:param intensity: Intensité de base du fluorophore (par défaut 100).
 	:param variation: Variation d'intensité aléatoire appliquée à l'intensité du fluorophore (par défaut 10).
 	:param astigmatism_ratio: Ratio de l'astigmatisme (par défaut 2 indique une déformation de X par rapport à Y de maximum 2).
@@ -38,7 +37,6 @@ def generate_sample(size: int = 256, pixel_size: int = 160, density: float = 1.0
 	"""
 
 	localisation = compute_molecule_localisation(size, pixel_size, density)
-	mask = generate_mask(pattern, size, pattern_options)
 	localisation = apply_mask(localisation, mask)
 	sample = compute_psf(size, localisation, intensity, variation, astigmatism_ratio)
 	sample = add_snr(sample, snr, base_background, base_noise_std)
@@ -126,7 +124,7 @@ def compute_molecule_grid(size: int = 256, shift: int = 10) -> NDArray[np.float3
 
 
 ##################################################
-def apply_mask(localisation: NDArray[np.float32], mask: NDArray[np.bool_]) -> NDArray[np.float32]:
+def apply_mask(localisation: NDArray[np.float32], mask: Mask) -> NDArray[np.float32]:
 	"""
 	Filtre les positions des molécules en fonction d'un masque booléen 2D, ne conservant que celles dont les coordonnées
 	(x arrondi, y arrondi) correspondent à des positions "True" dans le masque.
@@ -139,8 +137,8 @@ def apply_mask(localisation: NDArray[np.float32], mask: NDArray[np.bool_]) -> ND
 	"""
 
 	# Convertir les coordonnées x et y en type entier pour correspondre aux pixels dans le masque, clip permet d'éviter les positions en dehors du masque.
-	x_int = np.clip(localisation[:, 0].astype(int), 0, mask.shape[0] - 1)
-	y_int = np.clip(localisation[:, 1].astype(int), 0, mask.shape[1] - 1)
+	x_int = np.clip(localisation[:, 0].astype(int), 0, mask.mask.shape[0] - 1)
+	y_int = np.clip(localisation[:, 1].astype(int), 0, mask.mask.shape[1] - 1)
 
 	# Sélectionner les positions des molécules dont le masque est "True" aux indices (x, y)
 	valid_indices = mask[x_int, y_int]

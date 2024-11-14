@@ -6,7 +6,6 @@ from typing import Any
 import numpy as np
 from numpy.typing import NDArray
 
-from Mask import MaskPattern
 from SampleGenerator import compute_area
 
 
