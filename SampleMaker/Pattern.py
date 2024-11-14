@@ -78,6 +78,10 @@ class StripesOptions:
 	"""
 	Options pour le motif bandes.
 
+	Les bandes sont alternées entre noire et blanche, et leur taille est spécifiée par le dictionnaire `options`.
+	Si l'option `Mirrored` est activée, le motif est symétrique (miroir central).
+	L'option `Orientation` détermine si les bandes sont verticales (True) ou horizontales (False).
+
 	Attributs :
 		- **lengths (List[int])** : Liste des longueurs des bandes.
 		- **mirror (bool)** : Booléen indiquant si le motif est symétrique (miroir central).
@@ -107,8 +111,12 @@ class SquaresOptions:
 	"""
 	Options pour le motif carré.
 
+	Un nombre de carrés maximum sera généré en fonction de la taille de ceux-ci.
+
 	Attributs :
 		- **size (int)** : Taille des carrées (en pixel).
+
+	.. todo:: Ajouter la possibilité d'avoir une option nombre de carrés. (en cas de double options priorité au nombre de carrés et bords plus grand)
 	"""
 	size: int = 32
 
@@ -129,6 +137,8 @@ class SquaresOptions:
 class SunOptions:
 	"""
 	Options pour le motif soleil.
+
+	La masque aura des segments triangulaires défini par le nombre de rayons indiqué, ceux-ci se croisant au centre de l'image.
 
 	Attributs :
 		- **ray_count (int)** : Nombre de rayons du soleil.
@@ -151,7 +161,9 @@ class SunOptions:
 @dataclass
 class ExistingImageOptions:
 	"""
-	Options pour le motif soleil.
+	Options pour le motif Existing Image.
+
+	CHarge une image comme un masque.
 
 	Attributs :
 		- **path (str)** : Chemin du fichier.

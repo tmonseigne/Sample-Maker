@@ -2,192 +2,184 @@
 
 import math
 import os
-from enum import Enum
+from dataclasses import dataclass, field
 from itertools import accumulate
-from typing import Any
 
 import numpy as np
 from numpy.typing import NDArray
 
-from FileIO import open_png_as_boolean_mask
-from Utils import print_warning
+from SampleMaker.FileIO import open_png_as_boolean_mask, save_boolean_mask_as_png
+from SampleMaker.Pattern import Pattern, PatternType
+from SampleMaker.Utils import print_warning
+
 
 ##################################################
-class MaskPattern(Enum):
+@dataclass
+class Mask:
 	"""
-	Enumération représentant les différents motifs disponibles pour la génération de masque.
-	Chaque motif est associé à un identifiant unique pour être utilisé dans la fonction `generate_mask`.
+	Classe permettant de créer et stocker un masque.
 
-	- NONE : Aucun masque (ou plutôt un masque entièrement blanc).
-	- STRIPES : Bandes verticales (alternance de bandes noires et blanches).
-	- SQUARES : Carrés (pas encore implémenté).
-	- SUN : Motif en forme de soleil (pas encore implémenté).
-	- EXISTING_IMAGE : Charge une image existante pour créer le masque (pas encore implémenté).
+	Attributs :
+		- **size (int)** : Taille du masque.
+		- **pattern (Pattern)** : Motif à utiliser pour générer le masque.
 	"""
-	NONE = 0
-	STRIPES = 1
-	SQUARES = 2
-	SUN = 3
-	EXISTING_IMAGE = 4
+	size: int = 256
+	pattern: Pattern = field(default_factory=Pattern)
+	mask: NDArray[np.bool_] = field(init=False)
 
-	def to_string(self) -> str:
+	# ==================================================
+	# region Initialisation / Setter
+	# ==================================================
+	##################################################
+	def __post_init__(self):
 		"""
-		Retourne une chaîne de caractères représentant le motif correspondant.
-
-		:return: Le nom du motif en français.
+		Méthode appelée automatiquement après l'initialisation du dataclass.
+		Initialise le masque avec le motif spécifié.
 		"""
-		return {
-				MaskPattern.NONE:           "None",
-				MaskPattern.STRIPES:        "Bandes",
-				MaskPattern.SQUARES:        "Carrés",
-				MaskPattern.SUN:            "Soleil",
-				MaskPattern.EXISTING_IMAGE: "Image existante"
-				}[self]
+		self._generate()
 
-##################################################
-def generate_mask(pattern: MaskPattern, size: int = 256, options: Any = None) -> NDArray[np.bool_]:
-	"""
-	Génère un masque en fonction du motif sélectionné.
+	##################################################
+	def set_size(self, size: int):
+		"""
+		Change la taille du masque et le (re)génère.
 
-	:param pattern: Le motif à utiliser pour générer le masque (Pattern.STRIPES, Pattern.SQUARES, etc.).
-	:param size: Taille de l'image (optionnelle), par défaut 256.
-	:param options: Dictionnaire contenant des options spécifiques au motif (longueur des bandes, effet miroir, etc.).
+		:param size: Nouvelle taille du masque.
+		"""
+		self.size = size
+		self._generate()
 
-	:return: Masque sous forme de tableau numpy 2D de type booléen.
-	"""
-	# Création de l'image selon le motif
-	if pattern == MaskPattern.STRIPES: return stripes_mask(size, options)
-	if pattern == MaskPattern.SQUARES: return squares_mask(size, options)
-	if pattern == MaskPattern.SUN: return sun_mask(size, options)
-	if pattern == MaskPattern.EXISTING_IMAGE: return load_mask(size, options)
-	return np.full((size, size), True, dtype=bool)
+	##################################################
+	def set_pattern(self, pattern: Pattern):
+		"""
+		Change le motif du masque et le (re)génère.
 
+		:param pattern: Nouveau motif du masque.
+		"""
+		self.pattern = pattern
+		self._generate()
 
-##################################################
-def stripes_mask(size: int = 256, options: Any = None) -> NDArray[np.bool_]:
-	"""
-	Génération d'un masque avec un motif de bandes de différentes largeurs.
+	# ==================================================
+	# endregion Initialisation / Setter
+	# ==================================================
 
-	Les bandes sont alternées entre noire et blanche, et leur taille est spécifiée par le dictionnaire `options`.
-	Si l'option `Mirrored` est activée, le motif est symétrique (miroir central).
-	L'option `Orientation` détermine si les bandes sont verticales (True) ou horizontales (False).
+	# ==================================================
+	# region Mask Generator
+	# ==================================================
+	##################################################
+	def _generate(self):
+		"""
+		Génère un masque
+		"""
+		# Création de l'image selon le motif
+		if self.pattern.pattern == PatternType.STRIPES: self._stripes_mask()
+		elif self.pattern.pattern == PatternType.SQUARES: self._squares_mask()
+		elif self.pattern.pattern == PatternType.SUN: self._sun_mask()
+		elif self.pattern.pattern == PatternType.EXISTING_IMAGE: self.open(self.pattern.options.path)
+		else: self.mask = np.full((self.size, self.size), True, dtype=bool)
 
-	:param size: Taille de l'image (optionnelle), par défaut 256.
-	:param options: Dictionnaire avec les options spécifiques au motif des bandes :
-		- "Lengths" : Liste des longueurs des bandes.
-		- "Mirrored" : Booléen indiquant si le motif est symétrique (miroir central).
-		- "Orientation" : Booléen pour l'orientation des bandes (True pour verticale, False pour horizontale).
+	##################################################
+	def _stripes_mask(self):
+		"""
+		Génération d'un masque avec un motif de bandes.
+		"""
+		self.mask = np.full((self.size, self.size), False, dtype=bool)				 # Masque "noir" par défaut
+		limits = [float(x) for x in self.pattern.options.lengths for _ in range(2)]  # Dupliquer chaque élément (bande noire et blanche de même taille)
+		if self.pattern.options.mirror: limits.extend([1] + limits[::-1])			 # Ajout du miroir
+		cumulative_limits = list(accumulate(limits))								 # Les limites sont cumulées pour avoir leur position par rapport à 0.
+		ratio = float(self.size) / cumulative_limits[-1]							 # Calcul du ratio pixel / longueur
+		pixel_limits = [0] + [int(x * ratio) for x in cumulative_limits]			 # Conversion des positions en pixel
+		for i in range(0, len(pixel_limits) - 1, 2):								 # Parcours des Bandes Blanches
+			start, end = pixel_limits[i], pixel_limits[i + 1]						 # Définition des limites en pixel
+			# Les X sont les colonnes et les Y les lignes dans un tableau donc attention aux indices.
+			if self.pattern.options.orientation: self.mask[:, start:end] = True
+			else:   self.mask[start:end, :] = True
 
-	:return: Masque sous forme de tableau numpy 2D de type booléen.
-	"""
-	# Options par défaut si aucunes en entrée
-	if not options: options = dict(Lengths=[200, 100, 50, 25, 12, 6], Mirrored=True, Orientation=True)
-	mask = np.full((size, size), False, dtype=bool) 				   # Masque "noir" par défaut
+	##################################################
+	def _squares_mask(self):
+		"""
+		Génération d'un masque avec un motif de carrés.
+		"""
+		self.mask = np.full((self.size, self.size), False, dtype=bool)  # Masque "noir" par défaut
 
-	# Vérifie que les options existent
-	if "Lengths" not in options:
-		print_warning("Les longueurs sont introuvables dans les options. Masque blanc généré.")
-		return ~mask
-	if "Mirrored" not in options:
-		print_warning("L'option miroir est introuvable dans les options. Masque blanc généré.")
-		return ~mask
-	if "Orientation" not in options:
-		print_warning("L'orientation est introuvable dans les options. Masque blanc généré.")
-		return ~mask
+		s = self.pattern.options.size  # Taille de chaque carré blanc
+		if s * 2 > self.size:		   # Si on ne peut même pas placer un carré, le masque reste noir
+			print_warning("La taille est trop grande. Masque blanc généré.")
+			self.mask = ~self.mask	   # Transformation en masque blanc
+			return
 
-	limits = [float(x) for x in options["Lengths"] for _ in range(2)]  # Dupliquer chaque élément (bande noire et blanche de même taille)
-	if options["Mirrored"]: limits.extend([1] + limits[::-1])  		   # Ajout du miroir
-	cumulative_limits = list(accumulate(limits))  					   # Les limites sont cumulées pour avoir leur position par rapport à 0.
-	ratio = float(size) / cumulative_limits[-1]  					   # Calcul du ratio pixel / longueur (la dernière case des limites cumulatives donne la somme des limites
-	pixel_limits = [0] + [int(x * ratio) for x in cumulative_limits]   # Conversion des positions en pixel
-	for i in range(0, len(pixel_limits) - 1, 2):  					   # Parcours des Bandes Blanches
-		start, end = pixel_limits[i], pixel_limits[i + 1]  			   # Définition des limites en pixel
-		if options["Orientation"]: mask[:, start:end] = True  		   # Les X sont les colonnes et les Y les lignes dans un tableau donc on inverse les indices
-		else:   mask[start:end, :] = True
-	return mask
+		n = (self.size - s) // (s * 2) + 1  # Calcul du nombre de carrés dans chaque direction (+1 pour maximiser le nombre de carrés)
+		# Remplissage des carrés dans le masque
+		start = (self.size - (n * (s * 2) - s)) // 2  # Calcul de la position du premier carré
+		for i in range(n):
+			for j in range(n):
+				x_start = start + i * (s * 2)
+				y_start = start + j * (s * 2)
+				self.mask[x_start:x_start + s, y_start:y_start + s] = True
 
+	##################################################
+	def _sun_mask(self):
+		"""
+		Génération d'un masque avec un motif en forme de soleil.
+		"""
+		self.mask = np.full((self.size, self.size), False, dtype=bool)  # Masque "noir" par défaut
 
-##################################################
-def squares_mask(size: int = 256, options: Any = None) -> NDArray[np.bool_]:
-	"""
-	Génération d'un masque avec un motif de carrés (actuellement vide, à implémenter).
+		r = self.pattern.options.ray_count
+		if not (r & r - 1) == 0:											# Vérifie que rays est une puissance de 2.
+			print_warning("Le nombre de rayon est introuvable ou manquant dans les options. Masque blanc généré.")
+			self.mask = ~self.mask											# Transformation en masque blanc
+			return
 
-	:param size: Taille de l'image (optionnelle), par défaut 256.
-	:param options: Dictionnaire avec les options spécifiques au motif des carrés :
-		- "Size" : Taille des carrées (en pixel).
+		center = self.size // 2												# Centre de l'image
+		n_segments = r * 2													# Nombre de segments
+		angle_per_segment = 2 * math.pi / n_segments						# Calcul de l'angle par segment (en radians)
 
-	:return: Masque sous forme de tableau numpy 2D de type booléen.
+		# Remplissage du masque
+		for x in range(self.size):
+			for y in range(self.size):
+				dx, dy = x - center, y - center								# Coordonnées par rapport au centre
+				angle = (math.atan2(dy, dx) + 2 * math.pi) % (2 * math.pi)  # Calcul de l'angle en radians par rapport au centre
+				segment = int(angle // angle_per_segment)					# Déterminer le segment dans lequel le point se situe
+				self.mask[x, y] = segment % 2 == 0							# Alterner la couleur (noir ou blanc) selon le segment
 
-	.. todo:: Ajouter la possibilité d'avoir une option nombre de carrés. (en cas de double options priorité au nombre de carrés et bords plus grand)
-	"""
-	if not options: options = dict(Size=32)			 # Options par défaut si aucunes en entrée
-	mask = np.full((size, size), False, dtype=bool)  # Masque "noir" par défaut
+	# ==================================================
+	# endregion Mask Generator
+	# ==================================================
 
-	# Vérifie que la taille existe
-	if "Size" not in options:
-		print_warning("La taille est introuvable ou manquant dans les options. Masque blanc généré.")
-		return ~mask
+	# ==================================================
+	# region IO
+	# ==================================================
+	##################################################
+	def __str__(self):
+		"""
+		Retourne un résumé des caractéristiques de la pile.
+		"""
+		summary = (
+				f"Size: {self.size}, {self.pattern}"
+		)
+		return summary
 
-	s = options["Size"]								 # Taille de chaque carré blanc
-	if s * 2 > size: 				 				 # Si on ne peut même pas placer un carré, le masque reste noir
-		print_warning("La taille est trop grande. Masque blanc généré.")
-		return ~mask
-	n = (size - s) // (s * 2) + 1  					 # Calcul du nombre de carrés dans chaque direction (+1 pour maximiser le nombre de carrés)
+	##################################################
+	def save(self, filename):
+		"""
+		Enregistre le masque comme un fichier png.
+		:param filename: Nom du fichier à enregistrer
+		"""
+		save_boolean_mask_as_png(self.mask, filename)
 
-	start = (size - (n * (s * 2) - s)) // 2			 # Calcul de la position du premier carré
-	# Remplissage des carrés dans le masque
-	for i in range(n):
-		for j in range(n):
-			x_start = start + i * (s * 2)
-			y_start = start + j * (s * 2)
-			mask[x_start:x_start + s, y_start:y_start + s] = True
-	return mask
+	##################################################
+	def open(self, filename):
+		"""
+		Ouvre un fichier png et le transforme en masque de booléen
+		:param filename: Nom du fichier à ouvrir
+		"""
+		self.pattern = Pattern.from_pattern(PatternType.EXISTING_IMAGE, {"path": filename})
+		if not os.path.isfile(self.pattern.options.path):
+			print_warning(f"Aucun fichier spécifié ou le fichier est introuvable. Masque blanc de taille {self.size} généré.")
+			self.mask = np.full((self.size, self.size), True, dtype=bool)
+		else:
+			self.mask = open_png_as_boolean_mask(filename)
+			self.size = self.mask.shape[0]
 
-
-##################################################
-def sun_mask(size: int = 256, options: Any = None) -> NDArray[np.bool_]:
-	"""
-	Génération d'un masque avec un motif en forme de soleil (actuellement vide, à implémenter).
-
-	:param size: Taille de l'image (optionnelle), par défaut 256.
-	:param options: Dictionnaire avec les options spécifiques au motif du soleil.
-
-	:return: Masque sous forme de tableau numpy 2D de type booléen.
-	"""
-	if not options: options = dict(Rays=16)			  # Options par défaut si aucunes en entrée
-	mask = np.full((size, size), False, dtype=bool)   # Masque "noir" par défaut
-
-	# Vérifie que rays existe et est une puissance de 2.
-	if "Rays" not in options or not (options["Rays"] & (options["Rays"] - 1)) == 0:
-		print_warning("Le nombre de rayon est introuvable ou manquant dans les options. Masque blanc généré.")
-		return ~mask
-
-	center = size // 2								  # Centre de l'image
-	n_segments = options["Rays"] * 2				  # Nombre de segments
-	angle_per_segment = 2 * math.pi / n_segments      # Calcul de l'angle par segment (en radians)
-
-	# Remplissage du masque
-	for x in range(size):
-		for y in range(size):
-			dx, dy = x - center, y - center			 					# Coordonnées par rapport au centre
-			angle = (math.atan2(dy, dx) + 2 * math.pi) % (2 * math.pi)  # Calcul de l'angle en radians par rapport au centre
-			segment = int(angle // angle_per_segment)					# Déterminer le segment dans lequel le point se situe
-			mask[x, y] = segment % 2 == 0								# Alterner la couleur (noir ou blanc) selon le segment
-
-	return mask
-
-
-##################################################
-def load_mask(size: int = 256, options: Any = None) -> NDArray[np.bool_]:
-	"""
-	Charge un masque à partir d'une image existante (actuellement vide, à implémenter).
-
-	:param size: Taille de l'image (optionnelle), par défaut 256.
-	:param options: Dictionnaire avec les options pour charger une image existante.
-
-	:return: Masque sous forme de tableau numpy 2D de type booléen.
-	"""
-	if not options or "Filename" not in options or not os.path.isfile(options["Filename"]):
-		print_warning("Aucun fichier spécifié ou le fichier est introuvable. Masque blanc généré.")
-		return np.full((size, size), True, dtype=bool)
-	return open_png_as_boolean_mask(options["Filename"])
+# ==================================================
+# endregion IO
+# ==================================================

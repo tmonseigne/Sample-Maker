@@ -6,6 +6,8 @@ import numpy as np
 from numpy.typing import NDArray
 from PIL import Image
 
+from SampleMaker.Utils import add_extension
+
 MAX_UI_8 = np.iinfo(np.uint8).max
 MAX_UI_16 = np.iinfo(np.uint16).max
 
@@ -20,9 +22,10 @@ def save_boolean_mask_as_png(mask: NDArray[np.bool_], filename: str):
 	:param mask: Tableau numpy 2D de type booléen représentant le masque.
 	:param filename: Chemin du fichier PNG de sortie.
 	"""
+	name = add_extension(filename, ".png")
 	grayscale = (mask * MAX_UI_8).astype(np.uint8)	 # Convertir le masque booléen en image en niveaux de gris (255 pour True, 0 pour False)
 	image = Image.fromarray(grayscale, mode='L')	 # L pour niveau de gris
-	image.save(filename)
+	image.save(name)
 
 
 ##################################################
@@ -33,8 +36,9 @@ def open_png_as_boolean_mask(filename: str) -> NDArray[np.bool_]:
 	:param filename: Chemin du fichier PNG d'entrée.
 	:return: Tableau numpy 2D de type booléen représentant le masque (True pour les pixels blancs, False pour les pixels noirs).
 	"""
-	if not os.path.isfile(filename): raise OSError(f"Le fichier \"{filename}\" est introuvable.")
-	image = Image.open(filename).convert("L")   # Charger l'image en niveaux de gris
+	name = add_extension(filename, ".png")
+	if not os.path.isfile(name): raise OSError(f"Le fichier \"{name}\" est introuvable.")
+	image = Image.open(name).convert("L")   	# Charger l'image en niveaux de gris
 	grayscale = np.array(image)				  	# Convertir l'image en tableau numpy
 	boolean_mask = grayscale >= (MAX_UI_8 / 2)  # Convertir les niveaux de gris en booléen : True pour les pixels >= 128, False pour < 128
 	return boolean_mask
