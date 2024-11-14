@@ -6,7 +6,7 @@ from typing import Any
 import numpy as np
 from numpy.typing import NDArray
 
-from SampleGenerator import compute_area
+from .SampleGenerator import compute_area
 
 
 ##################################################
