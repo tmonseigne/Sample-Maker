@@ -50,21 +50,20 @@ class Noiser:
 		:return: L'image bruitée avec un SNR approximatif.
 		"""
 
-		# Crée une image de fond (background) avec un bruit gaussien de base et un bruit poissonien
-		background_noise = self.create_noise(image.shape[0], self.background, self.std)
-		noisy = image + background_noise  # Ajout du bruit de fond au signal
+		size = image.shape[0]  # Récupère la taille de l'image
+		# Crée une image de fond (background) avec un bruit gaussien de base et un bruit poissonien et l'ajoute au signal
+		noisy = image + self.create_noise(size, self.background, self.std)
 
 		# Calcul du bruit requis pour obtenir le SNR
-		signal_mean = np.mean(image[image > np.finfo(np.float32).eps])  # Moyenne des pixels non nuls pour éviter la majorité noire
+		signal_mean = np.mean(noisy[noisy > np.finfo(np.float32).eps])  # Moyenne des pixels non nuls (pour éviter la majorité noire)
 
 		if np.fabs(signal_mean) <= np.finfo(np.float32).eps or np.isnan(signal_mean):
 			print_warning("Attention : le signal moyen est nul, impossible d'ajouter du SNR. Un fond bruité est généré")
 		else:
-			noise_std = signal_mean / self.snr								# Calculer l'écart-type du bruit nécessaire pour le SNR
-			signal_noise = self.create_noise(image.shape[0], 0, noise_std)  # Calcul du bruit du signal (en fonction du SNR)
-			noisy += signal_noise											# Ajout du bruit du signal
+			noise_std = signal_mean / self.snr				# Calculer l'écart-type du bruit nécessaire pour le SNR
+			noisy += self.create_noise(size, 0, noise_std)  # Calcul du bruit du signal (en fonction du SNR) et l'ajoute.
 
-		return np.clip(noisy, 0, MAX_INTENSITY)								# Clipper les valeurs pour éviter les débordements
+		return np.clip(noisy, 0, MAX_INTENSITY)				# Clipper les valeurs pour éviter les débordements
 
 	# ==================================================
 	# region IO
@@ -72,9 +71,9 @@ class Noiser:
 	##################################################
 	def tostring(self) -> str:
 		"""
-		Retourne une chaîne de caractères correspondant aux caractéristiques du bruiter.
+		Retourne une chaîne de caractères correspondant aux caractéristiques du bruiteur.
 
-		:return: Une description textuelle des attributs du fluorophore.
+		:return: Une description textuelle des attributs du bruiteur.
 		"""
 		return f"snr: {self.snr}, background: {self.background}, deviation: {self.std} %"
 
