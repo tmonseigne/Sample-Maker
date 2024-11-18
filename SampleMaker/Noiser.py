@@ -19,11 +19,11 @@ class Noiser:
 	Attributs :
 		- **snr (float)** : Le rapport signal sur bruit désiré (par défaut 10 un excellent SNR).
 		- **base_background (float)** : Intensité de fond de base du microscope, typiquement autour de 500.
-		- **base_noise_std (float)** : Écart-type du bruit gaussien de fond en pourcent.
+		- **variation (float)** : Écart-type du bruit gaussien de fond en pourcent.
 	"""
 	snr: float = 10
 	background: float = 500
-	std: float = 10
+	variation: float = 20
 
 	##################################################
 	@staticmethod
@@ -51,17 +51,22 @@ class Noiser:
 		"""
 
 		size = image.shape[0]  # Récupère la taille de l'image
-		# Crée une image de fond (background) avec un bruit gaussien de base et un bruit poissonien et l'ajoute au signal
-		noisy = image + self.create_noise(size, self.background, self.std)
+		noisy = np.copy(image)
+		# Si le bruit de fond est non nul
+		if abs(self.background) > np.finfo(np.float32).eps and abs(self.variation) > np.finfo(np.float32).eps:
+			# Crée une image de fond (background) avec un bruit gaussien de base et un bruit poissonien et l'ajoute au signal
+			noisy += self.create_noise(size, self.background, (self.background * self.variation/100))
 
-		# Calcul du bruit requis pour obtenir le SNR
-		signal_mean = np.mean(noisy[noisy > np.finfo(np.float32).eps])  # Moyenne des pixels non nuls (pour éviter la majorité noire)
+		# Si le SNR est non nul
+		if abs(self.snr) > np.finfo(np.float32).eps:
+			# Calcul du bruit requis pour obtenir le SNR
+			signal_mean = np.mean(noisy[noisy > np.finfo(np.float32).eps])  # Moyenne des pixels non nuls (pour éviter la majorité noire)
 
-		if np.fabs(signal_mean) <= np.finfo(np.float32).eps or np.isnan(signal_mean):
-			print_warning("Attention : le signal moyen est nul, impossible d'ajouter du SNR. Un fond bruité est généré")
-		else:
-			noise_std = signal_mean / self.snr				# Calculer l'écart-type du bruit nécessaire pour le SNR
-			noisy += self.create_noise(size, 0, noise_std)  # Calcul du bruit du signal (en fonction du SNR) et l'ajoute.
+			if abs(signal_mean) <= np.finfo(np.float32).eps or np.isnan(signal_mean):
+				print_warning("Attention : le signal moyen est nul, impossible d'ajouter du SNR. Un fond bruité est généré")
+			else:
+				noise_std = signal_mean / self.snr				# Calculer l'écart-type du bruit nécessaire pour le SNR
+				noisy += self.create_noise(size, 0, noise_std)  # Calcul du bruit du signal (en fonction du SNR) et l'ajoute.
 
 		return np.clip(noisy, 0, MAX_INTENSITY)				# Clipper les valeurs pour éviter les débordements
 
@@ -75,7 +80,7 @@ class Noiser:
 
 		:return: Une description textuelle des attributs du bruiteur.
 		"""
-		return f"snr: {self.snr}, background: {self.background}, deviation: {self.std} %"
+		return f"SNR: {self.snr}, Background: {self.background} (± {self.variation} %)"
 
 	##################################################
 	def __str__(self) -> str: return self.tostring()
