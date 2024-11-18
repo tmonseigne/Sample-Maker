@@ -13,17 +13,17 @@ class Fluorophore:
 
 	Attributs :
 		- **wavelength (int)** : Longueur d'onde d'émission du fluorophore (nécessaire au calcul de la taille de la PSF).
-		- **intensity (int)** : Intensité de base du fluorophore.
-		- **delta (int)** : Variation maximale d'intensité en pourcentage.
+		- **intensity (float)** : Intensité de base du fluorophore.
+		- **delta (float)** : Variation maximale d'intensité en pourcentage.
 		- **flickering (int)** : Vitesse de scintillement en millisecondes.
 	"""
 	wavelength: int = 600
-	intensity: int = 5000
-	delta: int = 10
+	intensity: float = 5000
+	delta: float = 10
 	flickering: int = 50
 
 	##################################################
-	def get_intensity(self, variation: bool = False) -> int:
+	def get_intensity(self, variation: bool = False) -> float:
 		"""
 		Calcule l'intensité actuelle du fluorophore.
 
@@ -33,8 +33,8 @@ class Fluorophore:
 		if variation:
 			# Variation en pourcentage entre -delta et +delta
 			variation_percent = random.uniform(-self.delta, self.delta) / 100
-			return max(0, int(self.intensity * (1 + variation_percent)))
-		return max(0, self.intensity)
+			return max(0.0, (self.intensity * (1 + variation_percent)))
+		return max(0.0, self.intensity)
 
 	# ==================================================
 	# region IO
@@ -56,10 +56,9 @@ class Fluorophore:
 	##################################################
 	def __str__(self) -> str: return self.tostring()
 
-
-# ==================================================
-# endregion IO
-# ==================================================
+	# ==================================================
+	# endregion IO
+	# ==================================================
 
 
 ##################################################
