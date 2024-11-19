@@ -1,4 +1,4 @@
-""" Fonctions de génération de pattern pour des masques de structure """
+""" Fichier des classes de motifs pour des masques de structure """
 
 from dataclasses import dataclass, field
 from enum import Enum

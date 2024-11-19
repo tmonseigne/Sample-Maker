@@ -1,4 +1,4 @@
-""" Classe de génération d'images simulées """
+""" Fichier de la classe du générateur d'échantillons simulés """
 
 from dataclasses import dataclass, field
 from typing import List

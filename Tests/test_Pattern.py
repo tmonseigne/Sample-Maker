@@ -1,4 +1,4 @@
-""" Tests pour la génération de pattern """
+""" Fichier des tests pour la génération de pattern """
 
 from SampleMaker.Pattern import Pattern, PatternType, SquaresOptions
 

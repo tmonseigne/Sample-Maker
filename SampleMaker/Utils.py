@@ -1,4 +1,4 @@
-""" Fonctions génériques """
+""" Fichier de fonctions génériques """
 
 import numpy as np
 from colorama import Fore, Style

@@ -1,4 +1,4 @@
-""" Tests pour la génération de pattern """
+""" Fichier des tests pour le Noiser : le générateur de bruit """
 
 import os
 from pathlib import Path
@@ -8,7 +8,6 @@ import numpy as np
 from SampleMaker.FileIO import save_sample_as_png
 from SampleMaker.Noiser import Noiser
 
-INPUT_DIR = Path(__file__).parent / "Input"
 OUTPUT_DIR = Path(__file__).parent / "Output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)						# Créer le dossier de sorties (la première fois, il n'existe pas)
 size, n_tile = 512, 2										# Taille de l'image de test

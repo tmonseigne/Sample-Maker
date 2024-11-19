@@ -1,4 +1,4 @@
-""" Fonctions de manipulation de fichiers """
+""" Fichier de fonctions de manipulation de fichiers """
 
 import os
 

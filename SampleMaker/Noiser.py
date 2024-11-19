@@ -1,4 +1,4 @@
-""" Classe de génération de bruit """
+""" Fichier de la classe du générateur de bruit """
 
 from dataclasses import dataclass
 

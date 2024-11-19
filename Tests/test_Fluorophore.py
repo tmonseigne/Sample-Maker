@@ -1,4 +1,4 @@
-""" Tests pour la génération de pattern """
+""" Fichier des tests pour la classe Fluorophore """
 
 from SampleMaker.Fluorophore import Fluorophore, PREDEFINED_FLUOROPHORES
 

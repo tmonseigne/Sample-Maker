@@ -1,4 +1,4 @@
-""" Fonctions de génération de pattern pour des masques de structure """
+""" Fichier des classes de masques de structure """
 
 import math
 import os

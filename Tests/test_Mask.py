@@ -1,5 +1,6 @@
-""" Tests pour la génération de pattern """
+""" Fichier des tests pour la génération de masque """
 
+import os
 from pathlib import Path
 
 import numpy as np
@@ -10,11 +11,13 @@ from SampleMaker.Mask import Mask
 from SampleMaker.Pattern import Pattern, PatternType
 
 INPUT_DIR = Path(__file__).parent / "Input"
+OUTPUT_DIR = Path(__file__).parent / "Output"
+os.makedirs(OUTPUT_DIR, exist_ok=True)  # Créer le dossier de sorties (la première fois, il n'existe pas)
 
 
 ##################################################
 def test_mask():
-	""" Test basique de la classe"""
+	""" Test basique de la classe (constructeur, getter, setter) """
 	mask = Mask()
 	new_size = 128
 	new_pattern = Pattern.from_pattern(PatternType.STRIPES)
@@ -23,7 +26,7 @@ def test_mask():
 	mask.pattern = new_pattern
 	assert mask.pattern == new_pattern, "Le masque n'a pas la taille attendue."
 	print(f"\n{mask}")
-
+	mask.save(f"{OUTPUT_DIR}/test_mask.png")
 
 ##################################################
 def test_generate_mask_stripes():

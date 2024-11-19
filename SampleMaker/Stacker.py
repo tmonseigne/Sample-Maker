@@ -1,4 +1,4 @@
-""" Fichier de la classe permettant de stocker et manipuler des piles d'échantillons """
+""" Fichier de la classe du générateur de pile d'échantillons simulés """
 
 #from enum import Enum
 #from typing import Any
