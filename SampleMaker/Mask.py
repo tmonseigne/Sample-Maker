@@ -8,9 +8,9 @@ from itertools import accumulate
 import numpy as np
 from numpy.typing import NDArray
 
-from .FileIO import open_png_as_boolean_mask, save_boolean_mask_as_png
-from .Pattern import Pattern, PatternType
-from .Utils import print_warning
+from SampleMaker.FileIO import open_png_as_boolean_mask, save_boolean_mask_as_png
+from SampleMaker.Pattern import Pattern, PatternType
+from SampleMaker.Utils import print_warning
 
 
 ##################################################
