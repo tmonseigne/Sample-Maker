@@ -41,7 +41,7 @@ class Sampler:
 	area: float = 0.0
 	max_molecules: int = 0
 	n_molecules: List[int] = field(default_factory=lambda: [])
-	#last_localisations: NDArray[np.float32] = field(default_factory=np.array((0,3), dtype=np.float32_))
+	last_localisations: NDArray[np.float32] = field(default_factory=lambda: np.empty((0, 3), dtype=np.float32))
 
 	# ==================================================
 	# region Initialization / Setter
@@ -207,10 +207,12 @@ class Sampler:
 		:return: Une description textuelle des attributs du fluorophore.
 		"""
 		return (
-				f"size: {self.size}, pixel size: {self.pixel_size} nm, molecule density : {self.density}\n"
-				f"mask: {self.mask}\n"
+				f"size: {self.size}, Pixel Size: {self.pixel_size} nm, Molecule Density : {self.density}\n"
+				f"Area: {self.area}, Maximum molecule number: {self.max_molecules}\n"
+				f"Mask: {self.mask}\n"
 				f"Fluorophore: {self.fluorophore}\n"
-				f"noise: {self.noise}"
+				f"Noise: {self.noise}\n"
+				f"Generation number : {len(self.n_molecules)}"
 		)
 
 	##################################################

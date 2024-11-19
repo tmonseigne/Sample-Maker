@@ -13,7 +13,6 @@ INPUT_DIR = Path(__file__).parent / "Input"
 OUTPUT_DIR = Path(__file__).parent / "Output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)						# Créer le dossier de sorties (la première fois, il n'existe pas)
 
-
 ##################################################
 def test_sampler():
 	""" Test basique sur le sampler. """
