@@ -51,3 +51,10 @@ def test_noiser_only_background():
 	noiser = Noiser(0, 50, 50)
 	res = noiser.apply(ref_image)
 	save_sample_as_png(res, f"{OUTPUT_DIR}/test_noiser_background.png", 0)
+
+##################################################
+def test_noiser_black_image():
+	""" Test sur le noiser avec une image noire en entrée et aucun bruit de fond. """
+	noiser = Noiser(snr=10, background=0, variation=0)
+	res = noiser.apply(np.zeros((size, size), dtype=np.float32))
+	save_sample_as_png(res, f"{OUTPUT_DIR}/test_noiser_black.png", 0)

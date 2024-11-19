@@ -63,7 +63,7 @@ class Noiser:
 			signal_mean = np.mean(noisy[noisy > np.finfo(np.float32).eps])  # Moyenne des pixels non nuls (pour éviter la majorité noire)
 
 			if abs(signal_mean) <= np.finfo(np.float32).eps or np.isnan(signal_mean):
-				print_warning("Attention : le signal moyen est nul, impossible d'ajouter du SNR. Un fond bruité est généré")
+				print_warning("Attention : le signal moyen est nul, impossible d'ajouter du SNR.")
 			else:
 				noise_std = signal_mean / self.snr				# Calculer l'écart-type du bruit nécessaire pour le SNR
 				noisy += self.create_noise(size, 0, noise_std)  # Calcul du bruit du signal (en fonction du SNR) et l'ajoute.
