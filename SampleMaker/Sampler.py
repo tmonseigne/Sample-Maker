@@ -40,8 +40,8 @@ class Sampler:
 
 	area: float = 0.0
 	max_molecules: int = 0
-	n_molecules: List[int] = field(default_factory=List[int])
-	last_localisations: NDArray[np.float32] = field(default_factory=NDArray[np.float32])
+	n_molecules: List[int] = field(default_factory=lambda: [])
+	#last_localisations: NDArray[np.float32] = field(default_factory=np.array((0,3), dtype=np.float32_))
 
 	# ==================================================
 	# region Initialization / Setter
