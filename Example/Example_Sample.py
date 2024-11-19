@@ -4,83 +4,45 @@ import os
 from pathlib import Path
 
 from SampleMaker.FileIO import save_sample_as_png
-from SampleMaker.Mask import MaskPattern
-from SampleMaker.SampleGenerator import add_snr, compute_molecule_grid, compute_psf, generate_sample
+from SampleMaker.Fluorophore import Fluorophore
+from SampleMaker.Mask import Mask
+from SampleMaker.Noiser import Noiser
+from SampleMaker.Pattern import Pattern, PatternType
+from SampleMaker.Sampler import Sampler
 
 # Gestion des dossiers
 OUTPUT_DIR = Path(__file__).parent / "Output"
 INPUT_DIR = Path(__file__).parent / "Input"
 os.makedirs(OUTPUT_DIR, exist_ok=True)  # Créer le dossier de sorties (la première fois, il n'existe pas)
 
-
 ##################################################
 # Création d'un échantillon sans restriction
 
-size = 256				# Taille de l'image, Cela correspond à la dimension d'un côté de l'image carrée.
-pixel_size = 160		# Taille d'un pixel en nanomètres.
-density = 0.25			# Densité de molécules par micromètre carré.
-pattern = MaskPattern.NONE  # Aucun motif à utiliser pour générer le masque
-pattern_options = None  # Aucune option pour ce motif
-intensity = 5000		# Intensité de base du fluorophore.
-variation = 500			# Variation d'intensité du fluorophore.
-astigmatism_ratio = 2   # Ratio de l'astigmatisme.
-snr = 10				# Le rapport signal sur bruit désiré.
-base_background = 500   # Intensité de fond de base du microscope, typiquement autour de 500.
-base_noise_std = 12		# Écart-type du bruit gaussien de fond.
-
-sample = generate_sample(size, pixel_size, density, pattern, pattern_options, intensity, variation, astigmatism_ratio, snr, base_background, base_noise_std)
-save_sample_as_png(sample, f"{OUTPUT_DIR}/Sample_Base.png", 100)  # Enregistrement de l'échantillon au format png
+size = 256  # Taille de l'image, Cela correspond à la dimension d'un côté de l'image carrée.
+mask = Mask(size, Pattern.from_pattern(PatternType.NONE))
+fluorophore = Fluorophore(wavelength=600, intensity=5000, delta=10, flickering=50)
+noiser = Noiser(snr=10, background=500, variation=20)
+sampler = Sampler(size=size, pixel_size=160, density=0.25, astigmatism_ratio=2.0, mask=mask, fluorophore=fluorophore, noiser=noiser)
+sample = sampler.generate_sample()
+save_sample_as_png(sample, f"{OUTPUT_DIR}/Sample_Base.png")
 
 ##################################################
 # Création d'un échantillon avec une structure et un snr faible
 
-size = 256					   # Taille de l'image, Cela correspond à la dimension d'un côté de l'image carrée.
-pixel_size = 160			   # Taille d'un pixel en nanomètres.
-density = 0.25				   # Densité de molécules par micromètre carré.
-pattern = MaskPattern.SQUARES	   # Aucun motif à utiliser pour générer le masque
-pattern_options ={"Size": 64}  # Aucune option pour ce motif
-intensity = 5000			   # Intensité de base du fluorophore.
-variation = 500				   # Variation d'intensité du fluorophore.
-astigmatism_ratio = 2   	   # Ratio de l'astigmatisme.
-snr = 2.6					   # Le rapport signal sur bruit désiré.
-base_background = 500 		   # Intensité de fond de base du microscope, typiquement autour de 500.
-base_noise_std = 12			   # Écart-type du bruit gaussien de fond.
-
-sample = generate_sample(size, pixel_size, density, pattern, pattern_options, intensity, variation, astigmatism_ratio, snr, base_background, base_noise_std)
+size = 256  # Taille de l'image, Cela correspond à la dimension d'un côté de l'image carrée.
+mask = Mask(size, Pattern.from_pattern(PatternType.SQUARES, {"size": 64}))
+fluorophore = Fluorophore(wavelength=600, intensity=5000, delta=10, flickering=50)
+noiser = Noiser(snr=2.6, background=500, variation=20)
+sampler = Sampler(size=size, pixel_size=160, density=0.25, astigmatism_ratio=2.0, mask=mask, fluorophore=fluorophore, noiser=noiser)
+sample = sampler.generate_sample()
 save_sample_as_png(sample, f"{OUTPUT_DIR}/Sample_Square_noisy.png", 100)  # Enregistrement de l'échantillon au format png
 
 ##################################################
-# Création d'un échantillon avec une molécule toutes les N cases.
+# Création d'un échantillon avec une grille de PSF fixe et aucun bruit.
 
-size = 256					   # Taille de l'image, Cela correspond à la dimension d'un côté de l'image carrée.
-pixel_size = 160			   # Taille d'un pixel en nanomètres.
-density = 0.25				   # Densité de molécules par micromètre carré.
-pattern = MaskPattern.SQUARES	   # Aucun motif à utiliser pour générer le masque
-pattern_options ={"Size": 64}  # Aucune option pour ce motif
-intensity = 5000			   # Intensité de base du fluorophore.
-variation = 500				   # Variation d'intensité du fluorophore.
-astigmatism_ratio = 2   	   # Ratio de l'astigmatisme.
-snr = 2.6					   # Le rapport signal sur bruit désiré.
-base_background = 500		   # Intensité de fond de base du microscope, typiquement autour de 500.
-base_noise_std = 12			   # Écart-type du bruit gaussien de fond.
-
-sample = generate_sample(size, pixel_size, density, pattern, pattern_options, intensity, variation, astigmatism_ratio, snr, base_background, base_noise_std)
-save_sample_as_png(sample, f"{OUTPUT_DIR}/Sample_Square_noisy.png", 100)  # Enregistrement de l'échantillon au format png
-
-##################################################
-# Création d'un échantillon avec une grille de PSF fixe.
-
-size = 128					   # Taille de l'image, Cela correspond à la dimension d'un côté de l'image carrée.
-shift = 20					   # Espacement en pixel entre les molécules (ou plus simplement chaque molécule est au centre d'un carré de taille shift).
-intensity = 5000			   # Intensité de base du fluorophore.
-variation = 500				   # Variation d'intensité du fluorophore.
-astigmatism_ratio = 2   	   # Ratio de l'astigmatisme.
-snr = 10					   # Le rapport signal sur bruit désiré.
-base_background = 500		   # Intensité de fond de base du microscope, typiquement autour de 500.
-base_noise_std = 12			   # Écart-type du bruit gaussien de fond.
-
-localisation = compute_molecule_grid(size, shift)
-sample = compute_psf(size, localisation, intensity, variation, astigmatism_ratio)
-sample = add_snr(sample, snr, base_background, base_noise_std)
+size = 128  # Taille de l'image, Cela correspond à la dimension d'un côté de l'image carrée.
+fluorophore = Fluorophore(wavelength=600, intensity=5000, delta=10, flickering=50)
+noiser = Noiser(snr=0, background=0, variation=0)
+sampler = Sampler(size=size, pixel_size=160, astigmatism_ratio=2.0, fluorophore=fluorophore, noiser=noiser)
+sample = sampler.generate_grid()
 save_sample_as_png(sample, f"{OUTPUT_DIR}/Sample_Grid.png", 100)  # Enregistrement de l'échantillon au format png
-

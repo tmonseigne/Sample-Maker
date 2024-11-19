@@ -36,12 +36,12 @@ class Sampler:
 	astigmatism_ratio: float = 2.0
 	mask: Mask = field(default_factory=Mask)
 	fluorophore: Fluorophore = field(default_factory=Fluorophore)
-	noise: Noiser = field(default_factory=Noiser)
+	noiser: Noiser = field(default_factory=Noiser)
 
-	area: float = 0.0
-	max_molecules: int = 0
-	n_molecules: List[int] = field(default_factory=lambda: [])
-	last_localisations: NDArray[np.float32] = field(default_factory=lambda: np.empty((0, 3), dtype=np.float32))
+	area: float = field(init=False, default=0.0)
+	max_molecules: int = field(init=False, default=0)
+	n_molecules: List[int] = field(init=False, default_factory=list)
+	last_localisations: NDArray[np.float32] = field(init=False, default_factory=lambda: np.empty((0, 3), dtype=np.float32))
 
 	# ==================================================
 	# region Initialization / Setter
@@ -162,17 +162,18 @@ class Sampler:
 		return np.clip(image, 0, MAX_INTENSITY)										 # Clipper les valeurs pour éviter les débordements
 
 	##################################################
-	def generate_grid(self) -> NDArray[np.float32]:
+	def generate_grid(self, shift: int = 10) -> NDArray[np.float32]:
 		"""
 		Calcule une répartition des molécules sur une grille.
 		Positionne les molécules sur une image 2D et calcule leur psf.
 		Simule un bruit optique afin d'avoir une image avec un SNR prédéfini.
 
+		:param shift: Espace en pixel entre 2 molécules (par défaut 10). On peut considérer que chaque molécule est au centre d'un carré de taille shift.
 		:return: Image 2D de taille (size, size) avec les molécules affichées.
 		"""
-		self.last_localisations = self.generate_grid_localisation()
+		self.last_localisations = self.generate_grid_localisation(shift)
 		self.n_molecules.append(self.last_localisations.shape[0])
-		return self.noise.apply(self.generate_psf(self.last_localisations))
+		return self.noiser.apply(self.generate_psf(self.last_localisations))
 
 	##################################################
 	def generate_sample(self) -> NDArray[np.float32]:
@@ -185,7 +186,7 @@ class Sampler:
 		"""
 		self.last_localisations = self.generate_localisation()
 		self.n_molecules.append(self.last_localisations.shape[0])
-		return self.noise.apply(self.generate_psf(self.last_localisations))
+		return self.noiser.apply(self.generate_psf(self.last_localisations))
 
 	# ==================================================
 	# region Compute Image
@@ -211,7 +212,7 @@ class Sampler:
 				f"Area: {self.area}, Maximum molecule number: {self.max_molecules}\n"
 				f"Mask: {self.mask}\n"
 				f"Fluorophore: {self.fluorophore}\n"
-				f"Noise: {self.noise}\n"
+				f"Noise: {self.noiser}\n"
 				f"Generation number : {len(self.n_molecules)}"
 		)
 

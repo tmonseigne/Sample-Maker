@@ -23,7 +23,7 @@ class Noiser:
 	"""
 	snr: float = 10
 	background: float = 500
-	variation: float = 20
+	variation: float = 10
 
 	##################################################
 	@staticmethod
