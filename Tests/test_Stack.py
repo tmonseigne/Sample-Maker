@@ -56,6 +56,10 @@ def test_stack_setter_getter():
 	with pytest.raises(ValueError) as exception_info: stack.add_sample(bad)
 	assert exception_info.type == ValueError, "L'erreur relevé n'est pas correcte."
 
+	bad = np.ones(5).astype(np.float32)
+	with pytest.raises(ValueError) as exception_info: stack.add_sample(bad)
+	assert exception_info.type == ValueError, "L'erreur relevé n'est pas correcte."
+
 	# récupère un échantillon
 	sample = stack.get_sample(0)
 	assert np.allclose(sample, sample4, atol=1e-5), "L'échantillon devrait correspondre à la référence avec une tolérance d'erreur."
