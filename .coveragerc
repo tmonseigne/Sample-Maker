@@ -3,5 +3,5 @@ branch = True
 
 [coverage:report]
 exclude_lines =
-    # Exclure tous les fichiers dans le dossier "Tests"
-    */Tests/*
+	# Exclure tous les fichiers dans le dossier "Tests"
+	^Tests/
