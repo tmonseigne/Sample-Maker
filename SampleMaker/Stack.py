@@ -1,199 +1,116 @@
 """ Fichier de la classe permettant de stocker et manipuler des piles d'échantillons """
 
-#from enum import Enum
-#from typing import Any
-#
-#import numpy as np
-#from numpy.typing import NDArray
-#
-#from .SampleGenerator import compute_area
-#
-#
-###################################################
-#class StackModel(Enum):
-#	"""
-#	Énumération représentant les différents modèles de piles disponibles.
-#	Chaque modèle est associé à un identifiant unique pour être utilisé dans la fonction `generate`.
-#
-#	- NONE : Aucun modèle particulier (les échantillons sont indépendants les uns des autres).
-#	"""
-#	NONE = 0
-#
-#	def to_string(self) -> str:
-#		"""
-#		Retourne une chaîne de caractères représentant le motif correspondant.
-#
-#		:return: Le nom du motif en français.
-#		"""
-#		return {
-#				StackModel.NONE: "None",
-#				}[self]
-#
-###################################################
-#class Stack:
-#	"""
-#	Classe permettant de stocker une pile d'images
-#
-#	Attributs :
-#		- **pixel_size (int)** : Taille d'un pixel en nanomètres.
-#		- **density (float)** : Densité de molécules par micromètre carré.
-#		- **pattern (Pattern)** : Motif à utiliser pour générer le masque.
-#		- **pattern_options (Dict)** : Options spécifiques pour le motif.
-#		- **intensity (float)** : Intensité de base du fluorophore.
-#		- **variation (float)** : Variation d'intensité aléatoire.
-#		- **astigmatism_ratio (float)** : Ratio de l'astigmatisme.
-#		- **snr (float)** : Rapport signal sur bruit désiré.
-#		- **base_background (float)** : Intensité de fond de base du microscope, typiquement autour de 500.
-#		- **stack_model (StackModel)** : Modèle de la pile.
-#		- **stack_model_options (Dict)** : Options spécifiques pour le modèle de la pile.
-#		- **stack (np.ndarray)** : Tableau numpy 3D stockant la pile d'images.
-#	"""
-#
-#	# ==================================================
-#	# region Initialization
-#	# ==================================================
-#	##################################################
-#	def __init__(self):
-#		"""
-#		Constructeur par défaut (vide)
-#		"""
-#		self.size = None
-#		self.pixel_size = None
-#		self.density = None
-#		self.pattern = None
-#		self.pattern_options = None
-#		self.intensity = None
-#		self.variation = None
-#		self.astigmatism_ratio = None
-#		self.snr = None
-#		self.base_background = None
-#		self.base_noise_std = None
-#		self.stack_model = None
-#		self.stack_model_options = None
-#		self.stack = None
-#
-#	##################################################
-#	def initialize(self, size: int = 256, pixel_size: int = 160, density: float = 1.0,
-#				   pattern: MaskPattern = MaskPattern.NONE, pattern_options: Any = None,
-#				   intensity: float = 100, variation: float = 10, astigmatism_ratio: float = 2.0,
-#				   snr: float = 10.0, base_background: float = 500, base_noise_std: float = 12,
-#				   stack_model: StackModel = StackModel.NONE, stack_model_options: Any = None):
-#		"""
-#		Initialise une instance de la classe Stack avec un tableau numpy 3D de type float.
-#
-#		:param size: Taille de l'image en pixels (par défaut : 256). Cela correspond à la dimension d'un côté de l'image carrée.
-#		:param pixel_size: Taille d'un pixel en nanomètres (par défaut : 160). Utilisé pour calculer la surface de l'image.
-#		:param density: Densité de molécules par micromètre carré (par défaut 1.0).
-#		:param pattern: Le motif à utiliser pour générer le masque (Pattern.STRIPES, Pattern.SQUARES, etc.).
-#		:param pattern_options: Dictionnaire contenant des options spécifiques au motif (longueur des bandes, effet miroir, etc.).
-#		:param intensity: Intensité de base du fluorophore (par défaut 100).
-#		:param variation: Variation d'intensité aléatoire appliquée à l'intensité du fluorophore (par défaut 10).
-#		:param astigmatism_ratio: Ratio de l'astigmatisme (par défaut 2 indique une déformation de X par rapport à Y de maximum 2).
-#		:param snr: Le rapport signal sur bruit désiré (par défaut 10 un excellent SNR).
-#		:param base_background: Intensité de fond de base du microscope, typiquement autour de 500.
-#		:param base_noise_std: Écart-type du bruit gaussien de fond.
-#		:param stack_model: Modèle de la pile.
-#		:param stack_model_options: Options spécifiques pour le modèle de la pile.
-#		"""
-#		self.size = size
-#		self.pixel_size = pixel_size
-#		self.density = density
-#		self.pattern = pattern
-#		self.pattern_options = pattern_options
-#		self.intensity = intensity
-#		self.variation = variation
-#		self.astigmatism_ratio = astigmatism_ratio
-#		self.snr = snr
-#		self.base_background = base_background
-#		self.base_noise_std = base_noise_std
-#		self.stack_model = stack_model
-#		self.stack_model_options = stack_model_options
-#		self.stack = np.zeros((size, size, 0), dtype=np.float32)
-#
-#	# ==================================================
-#	# endregion Initialization
-#	# ==================================================
-#
-#	# ==================================================
-#	# region Layer Manipulation
-#	# ==================================================
-#	##################################################
-#	def add_layer(self, layer: NDArray[np.float32], index: int):
-#		"""
-#		Ajoute une couche à la pile d'images.
-#
-#		:param layer: Une couche 2D à ajouter à la pile.
-#		:param index: Index de la profondeur où ajouter la couche.
-#		"""
-#		if index < 0: index = self.stack.shape[0]  										  # Un index négatif permet de placer à la fin
-#		if layer.shape != self.stack.shape[1:]: raise ValueError(f"La taille de la couche doit être {self.stack.shape[1:]} pour correspondre à la pile.")
-#		if index < self.stack.shape[0]: self.stack[index] = layer 						  # Si l'index est dans les limites, remplace la couche
-#		else: self.stack = np.concatenate((self.stack, layer[np.newaxis, :, :]), axis=0)  # Si l'index est au-delà, ajoute la couche à la fin
-#
-#	##################################################
-#	def get_layer(self, index: int) -> NDArray[np.float32]:
-#		"""
-#		Récupère une couche de la pile.
-#
-#		:param index: Index de la couche à récupérer.
-#		:return: La couche 2D correspondante.
-#		"""
-#		if not (0 <= index < self.stack.shape[0]): raise IndexError("Index hors de la profondeur de la pile.")
-#		return self.stack[index]
-#
-#	# ==================================================
-#	# endregion Layer Manipulation
-#	# ==================================================
-#
-#	# ==================================================
-#	# region Stack Generator
-#	# ==================================================
-#	##################################################
-#	def generate(self, n: int):
-#		"""
-#		Génère une pile de n échantillons
-#		:param n: Nombre d'échantillons de la pile
-#
-#		.. todo:: A faire
-#		"""
-#		# générer un sample
-#		# Ajouter le sample à la pile
-#		print("TODO")
-#
-#	# ==================================================
-#	# endregion Stack Generator
-#	# ==================================================
-#
-#	# ==================================================
-#	# region IO
-#	# ==================================================
-#	##################################################
-#	def __str__(self):
-#		"""
-#		Retourne un résumé des caractéristiques de la pile.
-#		"""
-#		summary = (
-#				f"Stack Summary:\n"
-#				f"  Pixel size: {self.pixel_size} nm, Surface: {compute_area(self.size, self.pixel_size)} um², Density: {self.density}\n"
-#				f"  Pattern: {self.pattern}, Options: {self.pattern_options}\n"
-#				f"  Intensity: {self.intensity}, Varition: {self.variation}, Astigmatisme Ratio: {self.astigmatism_ratio}\n"
-#				f"  SNR: {self.snr}, Background: {self.base_background}, Deviation: {self.base_noise_std}\n"
-#				f"  Stack Model: {self.stack_model}, Options: {self.stack_model_options}\n"
-#				f"  Shape: {self.stack.shape if self.stack is not None else 'None'}\n"
-#				f"  Max Value: {self.stack.max() if self.stack is not None else 'None'}\n"
-#				f"  Min Value: {self.stack.min() if self.stack is not None else 'None'}"
-#		)
-#		return summary
-#
-#	##################################################
-#	def save(self, filename):
-#		print("TODO")
-#
-#	##################################################
-#	def open(self, filename):
-#		print("TODO")
-#
-#	# ==================================================
-#	# endregion IO
-#	# ==================================================
-#
+import os
+from dataclasses import dataclass, field
+from typing import List
+
+import numpy as np
+from numpy.typing import NDArray
+from scipy.stats import multivariate_normal
+
+from SampleMaker.FileIO import open_tiff_as_stack, save_stack_as_tiff
+from SampleMaker.Utils import print_warning
+
+
+##################################################
+@dataclass
+class Stack:
+	"""
+	Classe permettant de stocker une pile d'images
+
+	Attributs :
+		- **stack (np.ndarray)** : Tableau numpy 3D stockant la pile d'images.
+	"""
+	stack: NDArray[np.float32] = field(init=False, default_factory=lambda: np.empty((0,0,0), dtype=np.float32))
+
+	# ==================================================
+	# region Sample Manipulation
+	# ==================================================
+	##################################################
+	def add_sample(self, sample: NDArray[np.float32], index: int=-1):
+		"""
+		Ajoute un échantillon 2D à la pile 3D de la classe.
+
+		L'échantillon est inséré à l'index spécifié. Si l'index est supérieur à la taille actuelle
+		de la pile ou négatif, l'échantillon est ajouté à la fin de la pile.
+
+		Si la pile est vide, une pile 3D est créée en ajoutant l'échantillon comme premier élément.
+		Sinon, des vérifications de taille sont effectuées pour s'assurer de la compatibilité.
+
+		:param sample: Tableau 2D représentant l'échantillon à ajouter.
+		:param index: Position dans la pile où insérer l'échantillon.
+		:raises ValueError: Si le tableau fourni n'est pas un tableau 2D.
+		:raises ValueError: Si la taille de l'échantillon ne correspond pas à celle des échantillons
+							déjà présents dans la pile.
+		"""
+		# Vérifie que le sample est un tableau 2D
+		if sample.ndim != 2:
+			raise ValueError(f"Le sample doit être un tableau 2D, mais un tableau de {sample.ndim} dimensions a été fourni.")
+
+		# Si la pile est vide ou nulle, initialise la pile avec le sample
+		if getattr(self, 'stack', None) is None or self.stack.size == 0:
+			self.stack = sample[np.newaxis, :, :]  # Crée une pile 3D avec sample comme premier élément
+			return
+
+		# Vérifie la compatibilité de taille
+		if sample.shape != self.stack.shape[1:]:
+			raise ValueError(f"La taille de l'échantillon {sample.shape} ne correspond pas à la taille actuelle {self.stack.shape[1:]}.")
+
+		# Ajuste l'index si nécessaire
+		if index < 0 or index > self.stack.shape[0]: index = self.stack.shape[0]
+
+		# Ajoute ou remplace l'échantillon dans la pile
+		if index < self.stack.shape[0]: self.stack[index] = sample
+		else: self.stack = np.concatenate((self.stack, sample[np.newaxis, :, :]), axis=0)
+
+	##################################################
+	def get_sample(self, index: int) -> NDArray[np.float32]:
+		"""
+		Récupère une couche de la pile.
+
+		:param index: Index de la couche à récupérer.
+		:return: La couche 2D correspondante.
+		"""
+		if not (0 <= index < self.stack.shape[0]): raise IndexError("Index hors de la profondeur de la pile.")
+		return self.stack[index]
+
+	# ==================================================
+	# endregion Sample Manipulation
+	# ==================================================
+
+	# ==================================================
+	# region IO
+	# ==================================================
+	def tostring(self) -> str:
+		"""
+		Retourne une représentation textuelle de la pile 3D (stack).
+
+		:return: Chaîne décrivant la pile, incluant ses dimensions et son contenu si elle existe.
+		"""
+		if getattr(self, 'stack', None) is None or self.stack.size == 0:
+			return "La pile est vide ou non initialisée."
+		return f"Pile 3D : {self.stack.shape}\nContenu :\n{self.stack}"
+
+	##################################################
+	def __str__(self) -> str: return self.tostring()
+
+	##################################################
+	def save(self, filename):
+		"""
+		Enregistre le masque comme un fichier PNG.
+		:param filename: Nom du fichier à enregistrer
+		"""
+		save_stack_as_tiff(self.stack, filename)
+
+	##################################################
+	def open(self, filename):
+		"""
+		Ouvre un fichier PNG et le transforme en masque de booléen
+		:param filename: Nom du fichier à ouvrir
+		"""
+		if not os.path.isfile(filename): raise ValueError(f"Aucun fichier spécifié ou le fichier est introuvable.")
+		else: self.stack = open_tiff_as_stack(filename)
+
+	# ==================================================
+	# endregion IO
+	# ==================================================

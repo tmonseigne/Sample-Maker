@@ -130,10 +130,10 @@ def test_squares_mask_options_bad():
 
 	mask = None
 	options = {"Taille": 4}  # Dictionnaire incorrect
-	with pytest.raises(TypeError) as excinfo:
+	with pytest.raises(TypeError) as exception_info:
 		mask = Mask(size, Pattern.from_pattern(PatternType.SQUARES, options))
 
-	assert excinfo.type == TypeError, "L'erreur relevée n'est pas correcte."
+	assert exception_info.type == TypeError, "L'erreur relevée n'est pas correcte."
 	assert mask is None, "Le masque a été créé au lieu de crash."
 
 
