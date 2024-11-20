@@ -40,7 +40,7 @@ jobs:
       - name: Tests
         uses: aganders3/headless-gui@v2
         with:
-          run: python -m pytest -s -v --color=yes --cov=. --cov-report=xml
+          run: python -m pytest
 
       - name: Upload coverage to Codecov
         if: matrix.platform == 'ubuntu-latest' && matrix.python-version == '3.12'

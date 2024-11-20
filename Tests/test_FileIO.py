@@ -6,7 +6,6 @@ from pathlib import Path
 import numpy as np
 
 from SampleMaker.FileIO import open_png_as_boolean_mask, open_png_as_sample, open_tif_as_stack, save_boolean_mask_as_png, save_sample_as_png, save_stack_as_tif
-from SampleMaker.Utils import print_warning
 
 OUTPUT_DIR = Path(__file__).parent / "Output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)  # Créer le dossier de sorties (la première fois, il n'existe pas)
@@ -14,10 +13,11 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)  # Créer le dossier de sorties (la premi
 # np.random.seed(42) # Possibilité de fixer la graine du random pour avoir un aléatoire "controlé".
 ref = np.random.rand(256, 256) * 255
 ref_boolean_mask = ref > 128
-size = 512									# Taille de l'image de test
+size = 512												# Taille de l'image de test
 gradient = np.linspace(0, 255, size, dtype=np.float32)  # Création du dégradé croissant de 0 à 255
-ref_gradient = np.tile(gradient, (size, 1))					# Répète le dégradé sur toutes les lignes
+ref_gradient = np.tile(gradient, (size, 1))				# Répète le dégradé sur toutes les lignes
 ref_stack = np.stack((ref_gradient, np.fliplr(ref_gradient)), axis=0)
+
 
 ##################################################
 def test_save_boolean_mask_as_png():
@@ -70,6 +70,7 @@ def test_save_stack_as_tif():
 	"""
 	save_stack_as_tif(ref_stack, f"{OUTPUT_DIR}/test_save_stack.tif")
 
+
 ##################################################
 def test_open_tif_as_stack():
 	"""
@@ -77,4 +78,3 @@ def test_open_tif_as_stack():
 	"""
 	stack = open_tif_as_stack(f"{OUTPUT_DIR}/test_save_stack.tif")
 	assert np.allclose(ref_stack, stack, atol=1), "L'échantillon devrait correspondre à la référence avec une tolérance d'erreur."
-

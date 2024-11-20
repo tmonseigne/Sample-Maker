@@ -1,8 +1,12 @@
 colorama
 numpy
 pillow
+GPUtil
+psutil
+py-cpuinfo
 pytest
 pytest-cov
+pytest-html
 PyQt5
 scipy
 tifffile

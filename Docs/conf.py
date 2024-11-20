@@ -3,6 +3,7 @@
 # -- Gestion des fichiers à ajouter ------------------------------------------
 import os
 import sys
+import shutil
 
 # Ajout du chemin vers le dossier SampleMaker
 sys.path.insert(0, os.path.abspath('../'))
@@ -46,3 +47,15 @@ autodoc_default_options = {
 autodoc_member_order = 'bysource'
 
 todo_include_todos = True
+
+# Copie des fichiers de rapport
+# Spécifie les répertoires source et destination
+source_dir = 'test_reports'
+destination_dir = '_build/html/test_reports'
+
+# Copie les fichiers si le dossier source existe
+if os.path.exists(source_dir):
+    # Crée le dossier de destination s'il n'existe pas.
+    os.makedirs(destination_dir, exist_ok=True)
+    # Copie récursivement les fichiers du dossier source vers le dossier de destination.
+    shutil.copytree(source_dir, destination_dir, dirs_exist_ok=True)
