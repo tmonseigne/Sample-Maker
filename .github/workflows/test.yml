@@ -43,10 +43,11 @@ jobs:
           run: python -m pytest --html=Reports/CI_${{ matrix.platform }}_${{ matrix.python-version }}_test_report.html --self-contained-html
 
       - name: Upload Test Reports as Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-          name: test-reports_${{ github.run_id }}
+          name: test-reports
           path: Reports/*.html
+        continue-on-error: true  # Permet de continuer même si cette étape échoue
 
       - name: Upload coverage to Codecov
         if: matrix.platform == 'ubuntu-latest' && matrix.python-version == '3.12'
