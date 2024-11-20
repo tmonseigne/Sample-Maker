@@ -5,6 +5,7 @@ import os
 import sys
 
 # Ajout du chemin vers le dossier SampleMaker
+sys.path.insert(0, os.path.abspath('../'))
 sys.path.insert(0, os.path.abspath('../SampleMaker'))
 
 # -- Project information -----------------------------------------------------
@@ -13,6 +14,7 @@ sys.path.insert(0, os.path.abspath('../SampleMaker'))
 project = 'Sample Maker'
 copyright = '2024, Thibaut Monseigne'
 author = 'Thibaut Monseigne'
+language = 'fr'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
