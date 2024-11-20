@@ -43,14 +43,14 @@ jobs:
           run: python -m pytest --html=Reports/CI_${{ matrix.platform }}_${{ matrix.python-version }}_test_report.html --self-contained-html
 
       - name: Upload Test Reports as Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-reports
           path: Reports/*.html
 
       - name: Upload coverage to Codecov
         if: matrix.platform == 'ubuntu-latest' && matrix.python-version == '3.12'
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.xml
