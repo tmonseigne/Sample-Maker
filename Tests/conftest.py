@@ -1,16 +1,25 @@
 import platform
-import psutil
-import cpuinfo
 
+import cpuinfo
+import psutil
+from pytest import hookimpl
+
+from Tests.Tools.Monitoring import Monitoring
+
+monitoring = Monitoring()
+
+##################################################
 def cpu_infos() -> str:
 	info = cpuinfo.get_cpu_info()
 	res = info.get('processor', 'Unknown Processor')
-	try: 	# En cas e problème notamment sur mac
+	try:  # En cas e problème notamment sur mac
 		cpu_info = psutil.cpu_freq(percpu=False)
 		res += f" ({cpu_info.current / 1000} GHz - {psutil.cpu_count(logical=False)} Cores ({psutil.cpu_count(logical=True)} Logical))"
 	except RuntimeError: cpu_info = None
 	return res
 
+
+##################################################
 # Fonction pour configurer les métadonnées du rapport
 def pytest_metadata(metadata):
 	metadata['System'] = platform.system()
@@ -27,3 +36,17 @@ def pytest_metadata(metadata):
 	except ImportError:
 		metadata['GPU'] = 'GPUtil not installed'
 
+
+##################################################
+@hookimpl(tryfirst=True)
+def pytest_sessionstart(session):
+	global monitoring
+	monitoring.start()
+
+##################################################
+@hookimpl(tryfirst=True)
+def pytest_sessionfinish(session, exitstatus):
+	global monitoring
+	monitoring.stop()
+	monitoring.draw_png("Test.png")
+	monitoring.draw_html("Test.html")
