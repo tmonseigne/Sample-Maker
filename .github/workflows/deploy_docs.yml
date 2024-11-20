@@ -36,17 +36,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Télécharge les artefacts générés par 'test.yml'
-      - name: Download Test Reports
-        uses: actions/download-artifact@v3
-        with:
-          name: test-reports
-          path: Docs/test_reports/  # Le répertoire où tu veux les stocker
-
       - name: Build documentation
         run: |
           sphinx-apidoc -o Docs/generated ./SampleMaker  # Pour générer la documentation API dans `Docs/generated`
           sphinx-build -b html Docs/ Docs/_build/html    # Pour construire le HTML
+
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
