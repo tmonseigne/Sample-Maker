@@ -8,7 +8,7 @@ import numpy as np
 from numpy.typing import NDArray
 from scipy.stats import multivariate_normal
 
-from SampleMaker.FileIO import open_tiff_as_stack, save_stack_as_tiff
+from SampleMaker.FileIO import open_tif_as_stack, save_stack_as_tif
 from SampleMaker.Utils import print_warning
 
 
@@ -100,7 +100,7 @@ class Stack:
 		Enregistre le masque comme un fichier PNG.
 		:param filename: Nom du fichier à enregistrer
 		"""
-		save_stack_as_tiff(self.stack, filename)
+		save_stack_as_tif(self.stack, filename)
 
 	##################################################
 	def open(self, filename):
@@ -109,7 +109,7 @@ class Stack:
 		:param filename: Nom du fichier à ouvrir
 		"""
 		if not os.path.isfile(filename): raise ValueError(f"Aucun fichier spécifié ou le fichier est introuvable.")
-		else: self.stack = open_tiff_as_stack(filename)
+		else: self.stack = open_tif_as_stack(filename)
 
 	# ==================================================
 	# endregion IO

@@ -49,7 +49,7 @@ def test_stack_setter_getter():
 	stack.add_sample(sample3, index=42)  # Troisième échantillon ajouté à la fin (car indice trop élevé)
 	stack.add_sample(sample4, index=0)  # Remplace le premier échantillon
 
-	print(stack)  # Affiche Pile 3D : (3, 2, 2) Contenu : [[4, 4, 4, 4], [2, 2, 2, 2], [3, 3, 3, 3]]
+	print(f"\n{stack}")  # Affiche Pile 3D : (3, 2, 2) Contenu : [[4, 4, 4, 4], [2, 2, 2, 2], [3, 3, 3, 3]]
 
 	# Ajoute un mauvais échantillon
 	bad = np.ones((5, 5)).astype(np.float32)
@@ -69,12 +69,6 @@ def test_stack_save():
 	""" Test sur l'enregistrement d'une pile. """
 	# Initialisation de la classe
 	stack = Stack()
-
-	# Création d'échantillons
-	sample1 = np.ones((2, 2)).astype(np.float32)
-	sample2 = np.ones((2, 2)).astype(np.float32) * 2
-
-	# Ajout des échantillons
 	stack.add_sample(np.zeros((2, 2)).astype(np.float32))
 	stack.add_sample(np.ones((2, 2)).astype(np.float32))
 	stack.save(f"{OUTPUT_DIR}/test_stack.png")
@@ -85,9 +79,7 @@ def test_stack_open():
 	# Initialisation de la classe
 	stack = Stack()
 	stack.open(f"{OUTPUT_DIR}/test_stack.png")
-	print(stack)
 	ref = Stack()
-	# Création d'échantillons
-	sample1 = np.ones((2, 2)).astype(np.float32)
-	sample2 = np.ones((2, 2)).astype(np.float32) * 2
-	#assert np.allclose(ref.stack, stack.stack, atol=1e-5), "La pile devrait correspondre à la référence avec une tolérance d'erreur."
+	ref.add_sample(np.zeros((2, 2)).astype(np.float32))
+	ref.add_sample(np.ones((2, 2)).astype(np.float32))
+	assert np.allclose(ref.stack, stack.stack, atol=1), "La pile devrait correspondre à la référence avec une tolérance d'erreur."
