@@ -11,6 +11,8 @@ import plotly.graph_objects as go
 import psutil
 from plotly.subplots import make_subplots
 
+from SampleMaker.Tools.Drawing import add_color_map_legend_to_go
+
 MEMORY_RATIO = 1.0 / (1024 * 1024)
 
 
@@ -26,6 +28,7 @@ class Monitoring:
 	monitoring: bool = field(init=False, default=False)
 	thread: threading.Thread = field(init=False, default_factory=threading.Thread)
 	tests_info: List[dict] = field(init=False, default_factory=list)  # Liste des informations des tests
+	interval: float = 1.0
 
 	# ==================================================
 	# region Monitoring Manipulation
@@ -47,40 +50,45 @@ class Monitoring:
 		self.thread = threading.Thread()
 
 	##################################################
-	def start(self, interval: float = 1):
+	def _update(self):
+		# Sélection de processus
+		pytest_pid = os.getpid()  # PID de pytest
+		pytest_proc = psutil.Process(pytest_pid)  # Récupère le processus parent
+		children = pytest_proc.children(recursive=True)  # Cible les processus enfants
+		processes = [pytest_proc] + children  # Inclut le processus principal et ses enfants
+		cpu = sum(proc.cpu_percent(interval=self.interval) for proc in processes)
+		memory = sum(proc.memory_info().rss for proc in processes)
+		disk = sum(proc.io_counters().write_bytes for proc in processes)
+		self.cpu.append(cpu)
+		self.memory.append(memory)
+		self.disk.append(disk)
+		self.times.append(time.time())
+
+	##################################################
+	def start(self, interval: float = 1.0):
 		""" Autorise le monitoring """
 		self._reset()
+		self.interval = interval
 		self.monitoring = True
-		self.thread = threading.Thread(target=self.monitor, args=(interval,))
+		self.thread = threading.Thread(target=self.monitor)
 		self.thread.start()
 
 	##################################################
-	def monitor(self, interval: float = 1):
+	def monitor(self):
 		"""
 		Monitoring qui doit se lancer dans un thread séparé, récupère l'utilisation système et non uniquement de python et ses tests.
 
 		Voir dans un second plan si c'est possible avec Getpid.
 		"""
-		pytest_pid = os.getpid()  # PID de pytest
-		pytest_proc = psutil.Process(pytest_pid)
 		while self.monitoring:
-			# Cibler les processus enfants
-			children = pytest_proc.children(recursive=True)
-			processes = [pytest_proc] + children  # Inclut le processus principal et ses enfants
-			cpu = sum(proc.cpu_percent(interval=0) for proc in processes)
-			memory = sum(proc.memory_info().rss for proc in processes)
-			disk = sum(proc.io_counters().write_bytes for proc in processes)
-
-			self.cpu.append(cpu)
-			self.memory.append(memory)
-			self.disk.append(disk)
-			self.times.append(time.time())
-			time.sleep(interval)
+			self._update()
+			time.sleep(self.interval)
 
 	##################################################
 	def stop(self):
 		""" Stoppe le monitoring """
 		self.monitoring = False
+		self._update() # Dernière entrée
 		self._update_array_for_readability()
 		self.thread.join()
 
@@ -98,8 +106,12 @@ class Monitoring:
 	##################################################
 	def _update_array_for_readability(self, round_time: int = 2):
 		first_time = self.times[0]
+
 		for test_info in self.tests_info: test_info["Timestamp"] = round(test_info["Timestamp"] - first_time, round_time)
 		self.times = [round(t - first_time, round_time) for t in self.times]
+
+		num_cores = psutil.cpu_count(logical=True)
+		self.cpu = [c / num_cores for c in self.cpu]
 		self.memory = [m * MEMORY_RATIO for m in self.memory]
 		self.disk = [(self.disk[i] - self.disk[i - 1]) * MEMORY_RATIO for i in range(1, len(self.disk))]
 		self.disk.insert(0, 0)  # Ajouter 0 au début pour correspondre à la longueur de `timestamps`
@@ -113,49 +125,56 @@ class Monitoring:
 	# ==================================================
 	##################################################
 	@staticmethod
-	def get_y_range(data):
+	def get_y_range(data, padding_ratio: float = 0.0):
 		min_val, max_val = min(data), max(data)
-		padding = (max_val - min_val) * 0.1  # Ajouter 10% de marge en haut et en bas
+		padding = (max_val - min_val) * padding_ratio  # Ajouter une marge en haut et en bas
 		return [min_val - padding, max_val + padding]
 
 	##################################################
 	def _get_file_color_map(self) -> dict:
 		# Récupérer les noms de fichiers uniques
-		file_names = set(test_info["File"] for test_info in self.tests_info)
+		filenames = set(test_info["File"] for test_info in self.tests_info)
 
 		# Générer une couleur unique pour chaque fichier
-		color_palette = px.colors.qualitative.Plotly  # Choisir une palette de couleurs
-		file_color_map = {}  # Dictionnaire pour associer chaque fichier à une couleur
+		palette = px.colors.qualitative.Plotly  # Choisir une palette de couleurs
+		color_map = {}  # Dictionnaire pour associer chaque fichier à une couleur
 
 		# Associer une couleur unique à chaque fichier
 		color_index = 0
-		for file_name in file_names:
-			file_color_map[file_name] = color_palette[color_index % len(color_palette)]
+		for file in filenames:
+			color_map[file] = palette[color_index % len(palette)]
 			color_index += 1  # Passer à la couleur suivante
 
-		return file_color_map
+		return color_map
 
 	##################################################
-	def _draw_tests(self, fig: go.Figure, file_color_map: dict):
-		# Ajouter les barres verticales pour chaque test
-		for test in self.tests_info:
+	def _draw_tests(self, fig: go.Figure, color_map: dict):
+		y_ranges = [self.get_y_range(self.cpu), self.get_y_range(self.memory), self.get_y_range(self.disk)]
+		print(y_ranges)
+		# Ajouter les barres verticales pour chaque test et des zones colorées en fonction du fichier
+		for i, test in enumerate(self.tests_info):
 			timestamp = test["Timestamp"]
 			file = test["File"]
 			name = test["Test"]
 
 			# Récupérer la couleur associée au fichier
-			color = file_color_map[file]
+			color = color_map[file]
 
-			# Ajouter une ligne verticale pointillée
-			fig.add_trace(go.Scatter(x=[timestamp, timestamp], y=self.get_y_range(self.cpu),
-									 mode='lines', line=dict(color=color, width=0.5, dash='dash'),
-									 name=f"{file} - {name}", hoverinfo='text', text=f"{file} - {name}"), row=1, col=1)
-			fig.add_trace(go.Scatter(x=[timestamp, timestamp], y=self.get_y_range(self.memory),
-									 mode='lines', line=dict(color=color, width=0.5, dash='dash'),
-									 name=f"{file} - {name}", hoverinfo='text', text=f"{file} - {name}"), row=2, col=1)
-			fig.add_trace(go.Scatter(x=[timestamp, timestamp], y=self.get_y_range(self.disk),
-									 mode='lines', line=dict(color=color, width=0.5, dash='dash'),
-									 name=f"{file} - {name}", hoverinfo='text', text=f"{file} - {name}"), row=3, col=1)
+			# Déterminer la plage pour la zone colorée
+			# Si ce n'est pas le dernier test, la fin de la zone est le timestamp du test suivant sinon le dernier timestamp
+			if i < len(self.tests_info) - 1: next_timestamp = self.tests_info[i + 1]["Timestamp"]
+			else: next_timestamp = self.times[-1]
+
+			for j in range(len(y_ranges)):
+				# Ajouter une zone colorée
+				fig.add_shape(type="rect", x0=timestamp, x1=next_timestamp, y0=y_ranges[j][0], y1=y_ranges[j][1],
+							  fillcolor=color, opacity=0.2, line=dict(width=0), row=j + 1, col=1)
+				# Ajouter une ligne verticale pointillée
+				fig.add_trace(go.Scatter(x=[timestamp, timestamp], y=y_ranges[j],
+										 mode='lines', line=dict(color=color, width=0.5, dash='dash'),
+										 name=f"{file} - {name}", hoverinfo='text', text=f"{file} - {name}"), row=j + 1, col=1)
+
+
 
 	##################################################
 	@staticmethod
@@ -184,14 +203,23 @@ class Monitoring:
 		fig = make_subplots(rows=3, cols=1, shared_xaxes=True, vertical_spacing=0.05,
 							subplot_titles=("CPU Usage (%)", "Memory Usage (Mo)", "Disk Usage (IO Mo)"))
 
-		fig.add_trace(go.Scatter(x=self.times, y=self.cpu, mode="lines+markers", name="CPU Usage (%)", line=dict(color="blue")), row=1, col=1)
-		fig.add_trace(go.Scatter(x=self.times, y=self.memory, mode="lines+markers", name="Memory Usage (Mo)", line=dict(color="green")), row=2, col=1)
-		fig.add_trace(go.Scatter(x=self.times, y=self.disk, mode="lines+markers", name="Disk Usage (IO Mo)", line=dict(color="red")), row=3, col=1)
+		params = [
+				{"y": self.cpu, "name": "CPU Usage (%)", "line": dict(color="blue")},
+				{"y": self.memory, "name": "Memory Usage (Mo)", "line": dict(color="green")},
+				{"y": self.disk, "name": "Disk Usage (IO Mo)", "line": dict(color="red")},
+				]
+		for i in range(len(params)):
+			fig.add_trace(go.Scatter(x=self.times, y=params[i]["y"], mode="lines",
+									 name=params[i]["name"], line=params[i]["line"]), row=i + 1, col=1)
 
-		self._draw_tests(fig, self._get_file_color_map())
+		color_map = self._get_file_color_map()
+		self._draw_tests(fig, color_map)
+		#add_color_map_legend_to_go(fig, color_map)
 
 		fig.update_layout(height=900, title_text="Resource Usage Over Time", showlegend=False)
-		for i in range(3): fig.update_yaxes(showgrid=False, row=i + 1, col=1)  # SUpprimer la grille verticale
+		for i in range(3):
+			fig.update_yaxes(showgrid=False, row=i + 1, col=1)  # Supprimer la grille verticale
+			fig.update_xaxes(showgrid=False, row=i + 1, col=1)  # Supprimer la grille horizontale
 		fig.update_xaxes(title_text="Time (s)", row=3, col=1)  # Place le titre X uniquement sur le graphique du bas
 
 		fig.write_html(filename)
@@ -203,6 +231,21 @@ class Monitoring:
 	# ==================================================
 	# endregion IO
 	# ==================================================
+
+	##################################################
+	def save(self, filename: str):
+		with open(filename, "w") as f:
+			f.write(f"Timestamps : {self.times}\n")
+			f.write(f"CPU Usage : {self.cpu}\n")
+			#f.write(f"GPU Usage : {self.gpu}\n")
+			f.write(f"Memory Usage : {self.memory}\n")
+			f.write(f"Disk Usage : {self.disk}\n")
+			f.write(f"Liste des tests : \n")
+			for test in self.tests_info:
+				f.write(f"{test["File"]}, {test["Test"]}, {test["Timestamp"]}\n")
+
+
+	##################################################
 	def tostring(self) -> str:
 		"""
 		Retourne une représentation textuelle du monitoring.
@@ -219,6 +262,6 @@ class Monitoring:
 	##################################################
 	def __str__(self) -> str: return self.tostring()
 
-# ==================================================
-# endregion IO
-# ==================================================
+	# ==================================================
+	# endregion IO
+	# ==================================================

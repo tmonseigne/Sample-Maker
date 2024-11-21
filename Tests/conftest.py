@@ -41,7 +41,7 @@ def pytest_metadata(metadata):
 @hookimpl(tryfirst=True)
 def pytest_sessionstart(session):
 	global all_tests_monitoring
-	all_tests_monitoring.start()
+	all_tests_monitoring.start(0.1)
 
 ##################################################
 @hookimpl(tryfirst=True)
@@ -50,10 +50,7 @@ def pytest_sessionfinish(session, exitstatus):
 	all_tests_monitoring.stop()
 	all_tests_monitoring.draw_png("Reports/Monitoring.png")
 	all_tests_monitoring.draw_html("Reports/Monitoring.html")
-	# Sauvegarder la liste des tests et leurs informations
-	with open("Reports/test_info.txt", "w") as f:
-		for test in all_tests_monitoring.tests_info:
-			f.write(f"{test["File"]}, {test["Test"]}, {test["Timestamp"]}\n")
+	all_tests_monitoring.save("Reports/test_info.txt")
 
 ##################################################
 @hookimpl(tryfirst=True)

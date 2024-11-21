@@ -42,7 +42,8 @@ def test_monitoring_save():
 	""" Test d'enregistrement des graphiques. """
 	monitoring = Monitoring()
 	monitoring.start(0.1)
-	simulate_memory_usage(100, 5)
+	simulate_memory_usage(50, 2)
 	monitoring.stop()
 	monitoring.draw_png(f"{OUTPUT_DIR}/test_monitoring.png")
 	monitoring.draw_html(f"{OUTPUT_DIR}/test_monitoring.html")
+	monitoring.save(f"{OUTPUT_DIR}/test_monitoring.txt")
