@@ -20,21 +20,28 @@ class Monitoring:
 	monitoring: bool = field(init=False, default=False)
 	thread: threading.Thread = field(init=False, default_factory=threading.Thread)
 
-	##################################################
-	@property
-	def n_entries(self)->int: return len(self.timestamps)
-
 	# ==================================================
 	# region Monitoring Manipulation
 	# ==================================================
 	##################################################
-	def start(self, interval: float = 1):
-		""" Autorise le monitoring """
+	@property
+	def n_entries(self)->int: return len(self.timestamps)
+
+	##################################################
+	def _reset(self):
+		"""Réinitialise les tableaux"""
 		self.cpu = []
 		# self.gpu = []
 		self.memory = []
 		self.disk = []
 		self.timestamps = []
+		self.monitoring = False
+		self.thread = threading.Thread()
+
+	##################################################
+	def start(self, interval: float = 1):
+		""" Autorise le monitoring """
+		self._reset()
 		self.monitoring = True
 		self.thread = threading.Thread(target=self.monitor, args=(interval,))
 		self.thread.start()
@@ -68,10 +75,11 @@ class Monitoring:
 	# region Drawing
 	# ==================================================
 	##################################################
-	def _plot_usage(self, ax: plt.axes, datas: List, resource: str):
+	def _plot_usage(self, ax: plt.axes, times: List, datas: List, resource: str):
 		""" Trace les données sur l'axe donné. """
-		ax.plot(self.timestamps, datas)
+		ax.plot(times, datas)
 		ax.set_ylabel(f"{resource} Usage (%)")  # Ajout du label sur l'axe Y
+		ax.set_xlim([times[0], times[-1]])
 
 	##################################################
 	def draw_png(self, filename: str):
@@ -79,9 +87,10 @@ class Monitoring:
 		plt.close()  # Fermeture des précédentes figures
 		_, axs = plt.subplots(3, 1, figsize=(16, 9), sharex=True)
 
-		self._plot_usage(axs[0], self.cpu, "CPU")
-		self._plot_usage(axs[1], self.memory, "Memory")
-		self._plot_usage(axs[2], self.disk, "Disk")
+		new_times = [t - self.timestamps[0] for t in self.timestamps]
+		self._plot_usage(axs[0], new_times, self.cpu, "CPU")
+		self._plot_usage(axs[1], new_times, self.memory, "Memory")
+		self._plot_usage(axs[2], new_times, self.disk, "Disk")
 
 		plt.xlabel('Time (s)')
 		plt.savefig(filename, bbox_inches="tight")
@@ -90,9 +99,10 @@ class Monitoring:
 	##################################################
 	def draw_html(self, filename: str):
 		fig = go.Figure()
-		fig.add_trace(go.Scatter(x=self.timestamps, y=self.cpu, mode='lines', name='CPU Usage'))
-		fig.add_trace(go.Scatter(x=self.timestamps, y=self.memory, mode='lines', name='Memory Usage'))
-		fig.add_trace(go.Scatter(x=self.timestamps, y=self.disk, mode='lines', name='Disk Usage'))
+		new_times = [t - self.timestamps[0] for t in self.timestamps]
+		fig.add_trace(go.Scatter(x=new_times, y=self.cpu, mode='lines', name='CPU Usage'))
+		fig.add_trace(go.Scatter(x=new_times, y=self.memory, mode='lines', name='Memory Usage'))
+		fig.add_trace(go.Scatter(x=new_times, y=self.disk, mode='lines', name='Disk Usage'))
 		fig.update_layout(title='Resource Usage Over Time', xaxis_title='Time (s)', yaxis_title='% Usage')
 		fig.write_html(filename)
 	# ==================================================
@@ -108,7 +118,7 @@ class Monitoring:
 
 		:return: Chaîne décrivant le monitoring.
 		"""
-		return (f"{len(self.timestamps)} entrées.\n"
+		return (f"{self.n_entries} entrées.\n"
 				f"Timestamps : {self.timestamps}\n"
 				f"CPU Usage : {self.cpu}\n"
 				#f"GPU Usage : {self.gpu}\n"
