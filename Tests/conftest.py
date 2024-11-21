@@ -4,7 +4,7 @@ import cpuinfo
 import psutil
 from pytest import hookimpl
 
-from Tests.Tools.Monitoring import Monitoring
+from SampleMaker.Tools.Monitoring import Monitoring
 
 monitoring = Monitoring()
 
@@ -48,5 +48,5 @@ def pytest_sessionstart(session):
 def pytest_sessionfinish(session, exitstatus):
 	global monitoring
 	monitoring.stop()
-	monitoring.draw_png("Test.png")
-	monitoring.draw_html("Test.html")
+	monitoring.draw_png("Reports/Monitoring.png")
+	monitoring.draw_html("Reports/Monitoring.html")

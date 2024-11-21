@@ -21,7 +21,14 @@ class Monitoring:
 	thread: threading.Thread = field(init=False, default_factory=threading.Thread)
 
 	##################################################
-	def start(self):
+	@property
+	def n_entries(self)->int: return len(self.timestamps)
+
+	# ==================================================
+	# region Monitoring Manipulation
+	# ==================================================
+	##################################################
+	def start(self, interval: float = 1):
 		""" Autorise le monitoring """
 		self.cpu = []
 		# self.gpu = []
@@ -29,7 +36,7 @@ class Monitoring:
 		self.disk = []
 		self.timestamps = []
 		self.monitoring = True
-		self.thread = threading.Thread(target=self.monitor, args=(0.1,))
+		self.thread = threading.Thread(target=self.monitor, args=(interval,))
 		self.thread.start()
 
 	##################################################
@@ -53,6 +60,13 @@ class Monitoring:
 		self.monitoring = False
 		self.thread.join()
 
+	# ==================================================
+	# endregion Monitoring Manipulation
+	# ==================================================
+
+	# ==================================================
+	# region Drawing
+	# ==================================================
 	##################################################
 	def _plot_usage(self, ax: plt.axes, datas: List, resource: str):
 		""" Trace les données sur l'axe donné. """
@@ -81,19 +95,29 @@ class Monitoring:
 		fig.add_trace(go.Scatter(x=self.timestamps, y=self.disk, mode='lines', name='Disk Usage'))
 		fig.update_layout(title='Resource Usage Over Time', xaxis_title='Time (s)', yaxis_title='% Usage')
 		fig.write_html(filename)
+	# ==================================================
+	# endregion Drawing
+	# ==================================================
 
-# @hookimpl(tryfirst=True)
-# def pytest_sessionstart(session):
-#	global stop_monitoring
-#	stop_monitoring = False
-#	# Lancer le suivi des ressources dans un thread
-#	monitoring_thread = threading.Thread(target=monitor_resources, args=(1,))
-#	monitoring_thread.start()
-#
-# @hookimpl(tryfirst=True)
-# def pytest_sessionfinish(session, exitstatus):
-#	global stop_monitoring
-#	stop_monitoring = True
-#	# Attendre que le thread de surveillance des ressources se termine
-#	monitoring_thread.join()
-#
+	# ==================================================
+	# endregion IO
+	# ==================================================
+	def tostring(self) -> str:
+		"""
+		Retourne une représentation textuelle du monitoring.
+
+		:return: Chaîne décrivant le monitoring.
+		"""
+		return (f"{len(self.timestamps)} entrées.\n"
+				f"Timestamps : {self.timestamps}\n"
+				f"CPU Usage : {self.cpu}\n"
+				#f"GPU Usage : {self.gpu}\n"
+				f"Memory Usage : {self.memory}\n"
+				f"Disk Usage : {self.disk}")
+
+	##################################################
+	def __str__(self) -> str: return self.tostring()
+
+	# ==================================================
+	# endregion IO
+	# ==================================================
