@@ -164,5 +164,4 @@ cython_debug/
 # Artifacts
 *Docs/generated/*
 **/Output/**
-
-test_report.html
+**/Reports/**
