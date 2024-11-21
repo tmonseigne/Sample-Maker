@@ -6,7 +6,7 @@ from pytest import hookimpl
 
 from SampleMaker.Tools.Monitoring import Monitoring
 
-monitoring = Monitoring()
+all_tests_monitoring = Monitoring()
 
 ##################################################
 def cpu_infos() -> str:
@@ -40,13 +40,25 @@ def pytest_metadata(metadata):
 ##################################################
 @hookimpl(tryfirst=True)
 def pytest_sessionstart(session):
-	global monitoring
-	monitoring.start()
+	global all_tests_monitoring
+	all_tests_monitoring.start()
 
 ##################################################
 @hookimpl(tryfirst=True)
 def pytest_sessionfinish(session, exitstatus):
-	global monitoring
-	monitoring.stop()
-	monitoring.draw_png("Reports/Monitoring.png")
-	monitoring.draw_html("Reports/Monitoring.html")
+	global all_tests_monitoring
+	all_tests_monitoring.stop()
+	all_tests_monitoring.draw_png("Reports/Monitoring.png")
+	all_tests_monitoring.draw_html("Reports/Monitoring.html")
+	# Sauvegarder la liste des tests et leurs informations
+	with open("Reports/test_info.txt", "w") as f:
+		for test in all_tests_monitoring.tests_info:
+			f.write(f"{test["File"]}, {test["Test"]}, {test["Timestamp"]}\n")
+
+##################################################
+@hookimpl(tryfirst=True)
+def pytest_runtest_protocol(item, nextitem):
+	""" Capture les informations sur chaque test """
+	global all_tests_monitoring
+	all_tests_monitoring.add_test_info(item.nodeid)
+	return None

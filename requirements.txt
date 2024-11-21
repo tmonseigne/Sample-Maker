@@ -1,6 +1,7 @@
 colorama
 matplotlib
 numpy
+pandas
 plotly
 pillow
 GPUtil
