@@ -1,4 +1,5 @@
 import os
+import platform
 import re
 import threading
 import time
@@ -80,16 +81,16 @@ class Monitoring:
 		Met à jour les valeurs d'utilisation du CPU, de la mémoire et du disque en fonction des processus en cours.
 		"""
 		# Sélection de processus
-		pytest_pid = os.getpid()  # PID de pytest
-		pytest_proc = psutil.Process(pytest_pid)  # Récupère le processus parent
+		pytest_pid = os.getpid()						 # PID de pytest
+		pytest_proc = psutil.Process(pytest_pid)		 # Récupère le processus parent
 		children = pytest_proc.children(recursive=True)  # Cible les processus enfants
-		processes = [pytest_proc] + children  # Inclut le processus principal et ses enfants
-		cpu = sum(proc.cpu_percent(interval=self.interval) for proc in processes)
-		memory = sum(proc.memory_info().rss for proc in processes)
-		disk = sum(proc.io_counters().write_bytes for proc in processes)
-		self.cpu.append(cpu)
-		self.memory.append(memory)
-		self.disk.append(disk)
+		processes = [pytest_proc] + children			 # Inclut le processus principal et ses enfants
+
+		self.cpu.append(sum(proc.cpu_percent(interval=self.interval) for proc in processes))
+		self.memory.append(sum(proc.memory_info().rss for proc in processes))
+		# "Darwin" est le nom de macOS dans platform.system()
+		if platform.system() != "Darwin": self.disk.append(sum(proc.io_counters().write_bytes for proc in processes))
+		else: self.disk.append(0)
 		self.times.append(time.time())
 
 	##################################################
@@ -150,10 +151,10 @@ class Monitoring:
 		self.times = [round(t - first_time, round_time) for t in self.times]
 
 		num_cores = psutil.cpu_count(logical=True)
-		self.cpu = [c / num_cores for c in self.cpu]
-		self.memory = [m * MEMORY_RATIO for m in self.memory]
-		self.disk = [(self.disk[i] - self.disk[i - 1]) * MEMORY_RATIO for i in range(1, len(self.disk))]
-		self.disk.insert(0, 0)  # Ajouter 0 au début pour correspondre à la longueur de `timestamps`
+		self.cpu = [c / num_cores for c in self.cpu]													  # Division par le nombre de CPU
+		self.memory = [m * MEMORY_RATIO for m in self.memory]											  # Passage en Mo
+		self.disk = [(self.disk[i] - self.disk[i - 1]) * MEMORY_RATIO for i in range(1, len(self.disk))]  # Passage en Mo et en delta d'utilisation
+		self.disk.insert(0, 0)												  							  # Ajouter 0 au début pour avoir une taille correcte
 
 	# ==================================================
 	# endregion Monitoring Manipulation
@@ -173,7 +174,7 @@ class Monitoring:
 		:return: La plage calculée [min, max] avec l'espacement ajouté.
 		"""
 		min_val, max_val = min(data), max(data)
-		padding = (max_val - min_val) * padding_ratio  # Ajouter une marge en haut et en bas
+		padding = (max_val - min_val) * padding_ratio  # Calcul de la marge en haut et en bas
 		return [min_val - padding, max_val + padding]
 
 	##################################################
@@ -234,7 +235,7 @@ class Monitoring:
 		for i in range(3):
 			fig.update_yaxes(showgrid=False, row=i + 1, col=1)  # Supprimer la grille verticale
 			fig.update_xaxes(showgrid=False, row=i + 1, col=1)  # Supprimer la grille horizontale
-		fig.update_xaxes(title_text="Time (s)", row=3, col=1)  # Place le titre X uniquement sur le graphique du bas
+		fig.update_xaxes(title_text="Time (s)", row=3, col=1)   # Place le titre X uniquement sur le graphique du bas
 
 		fig.write_html(filename)
 
@@ -269,12 +270,12 @@ class Monitoring:
 		:return: Chaîne décrivant les données de monitoring.
 		"""
 		return (f"{self.n_entries} entrées.\nTimestamps : {self.times}\n"
-				f"CPU Usage : {self.cpu}\n"# GPU Usage : {self.gpu}\n"
+				f"CPU Usage : {self.cpu}\n"  # GPU Usage : {self.gpu}\n"
 				f"Memory Usage : {self.memory}\nDisk Usage : {self.disk}")
 
 	##################################################
 	def __str__(self) -> str: return self.tostring()
 
-	# ==================================================
-	# endregion IO
-	# ==================================================
+# ==================================================
+# endregion IO
+# ==================================================
