@@ -11,7 +11,7 @@ import plotly.graph_objects as go
 import psutil
 from plotly.subplots import make_subplots
 
-from SampleMaker.Tools.Drawing import add_color_map_legend_to_go
+from SampleMaker.Tools.Drawing import draw_test_section, get_color_map_by_name
 
 MEMORY_RATIO = 1.0 / (1024 * 1024)
 
@@ -88,7 +88,7 @@ class Monitoring:
 	def stop(self):
 		""" Stoppe le monitoring """
 		self.monitoring = False
-		self._update() # Dernière entrée
+		self._update()  # Dernière entrée
 		self._update_array_for_readability()
 		self.thread.join()
 
@@ -131,52 +131,6 @@ class Monitoring:
 		return [min_val - padding, max_val + padding]
 
 	##################################################
-	def _get_file_color_map(self) -> dict:
-		# Récupérer les noms de fichiers uniques
-		filenames = set(test_info["File"] for test_info in self.tests_info)
-
-		# Générer une couleur unique pour chaque fichier
-		palette = px.colors.qualitative.Plotly  # Choisir une palette de couleurs
-		color_map = {}  # Dictionnaire pour associer chaque fichier à une couleur
-
-		# Associer une couleur unique à chaque fichier
-		color_index = 0
-		for file in filenames:
-			color_map[file] = palette[color_index % len(palette)]
-			color_index += 1  # Passer à la couleur suivante
-
-		return color_map
-
-	##################################################
-	def _draw_tests(self, fig: go.Figure, color_map: dict):
-		y_ranges = [self.get_y_range(self.cpu), self.get_y_range(self.memory), self.get_y_range(self.disk)]
-		print(y_ranges)
-		# Ajouter les barres verticales pour chaque test et des zones colorées en fonction du fichier
-		for i, test in enumerate(self.tests_info):
-			timestamp = test["Timestamp"]
-			file = test["File"]
-			name = test["Test"]
-
-			# Récupérer la couleur associée au fichier
-			color = color_map[file]
-
-			# Déterminer la plage pour la zone colorée
-			# Si ce n'est pas le dernier test, la fin de la zone est le timestamp du test suivant sinon le dernier timestamp
-			if i < len(self.tests_info) - 1: next_timestamp = self.tests_info[i + 1]["Timestamp"]
-			else: next_timestamp = self.times[-1]
-
-			for j in range(len(y_ranges)):
-				# Ajouter une zone colorée
-				fig.add_shape(type="rect", x0=timestamp, x1=next_timestamp, y0=y_ranges[j][0], y1=y_ranges[j][1],
-							  fillcolor=color, opacity=0.2, line=dict(width=0), row=j + 1, col=1)
-				# Ajouter une ligne verticale pointillée
-				fig.add_trace(go.Scatter(x=[timestamp, timestamp], y=y_ranges[j],
-										 mode='lines', line=dict(color=color, width=0.5, dash='dash'),
-										 name=f"{file} - {name}", hoverinfo='text', text=f"{file} - {name}"), row=j + 1, col=1)
-
-
-
-	##################################################
 	@staticmethod
 	def _plot(ax: plt.axes, times: List, datas: List, label: str):
 		""" Trace les données sur l'axe donné. """
@@ -202,20 +156,18 @@ class Monitoring:
 	def draw_html(self, filename: str):
 		fig = make_subplots(rows=3, cols=1, shared_xaxes=True, vertical_spacing=0.05,
 							subplot_titles=("CPU Usage (%)", "Memory Usage (Mo)", "Disk Usage (IO Mo)"))
+		color_map = get_color_map_by_name([test["File"] for test in self.tests_info], px.colors.qualitative.Plotly)
 
-		params = [
-				{"y": self.cpu, "name": "CPU Usage (%)", "line": dict(color="blue")},
-				{"y": self.memory, "name": "Memory Usage (Mo)", "line": dict(color="green")},
-				{"y": self.disk, "name": "Disk Usage (IO Mo)", "line": dict(color="red")},
-				]
+		params = [{"y": self.cpu, "name": "CPU Usage (%)", "line": dict(color="blue")},
+				  {"y": self.memory, "name": "Memory Usage (Mo)", "line": dict(color="green")},
+				  {"y": self.disk, "name": "Disk Usage (IO Mo)", "line": dict(color="red")}]
+
 		for i in range(len(params)):
 			fig.add_trace(go.Scatter(x=self.times, y=params[i]["y"], mode="lines",
 									 name=params[i]["name"], line=params[i]["line"]), row=i + 1, col=1)
+			draw_test_section(fig, self.get_y_range(params[i]["y"]), self.tests_info, color_map, self.times[-1], i + 1)
 
-		color_map = self._get_file_color_map()
-		self._draw_tests(fig, color_map)
-		#add_color_map_legend_to_go(fig, color_map)
-
+		# add_color_map_legend
 		fig.update_layout(height=900, title_text="Resource Usage Over Time", showlegend=False)
 		for i in range(3):
 			fig.update_yaxes(showgrid=False, row=i + 1, col=1)  # Supprimer la grille verticale
@@ -237,13 +189,11 @@ class Monitoring:
 		with open(filename, "w") as f:
 			f.write(f"Timestamps : {self.times}\n")
 			f.write(f"CPU Usage : {self.cpu}\n")
-			#f.write(f"GPU Usage : {self.gpu}\n")
+			# f.write(f"GPU Usage : {self.gpu}\n")
 			f.write(f"Memory Usage : {self.memory}\n")
 			f.write(f"Disk Usage : {self.disk}\n")
 			f.write(f"Liste des tests : \n")
-			for test in self.tests_info:
-				f.write(f"{test["File"]}, {test["Test"]}, {test["Timestamp"]}\n")
-
+			for test in self.tests_info: f.write(f"{test["File"]}, {test["Test"]}, {test["Timestamp"]}\n")
 
 	##################################################
 	def tostring(self) -> str:
@@ -252,12 +202,9 @@ class Monitoring:
 
 		:return: Chaîne décrivant le monitoring.
 		"""
-		return (f"{self.n_entries} entrées.\n"
-				f"Timestamps : {self.times}\n"
-				f"CPU Usage : {self.cpu}\n"
-				# f"GPU Usage : {self.gpu}\n"
-				f"Memory Usage : {self.memory}\n"
-				f"Disk Usage : {self.disk}")
+		return (f"{self.n_entries} entrées.\nTimestamps : {self.times}\n"
+				f"CPU Usage : {self.cpu}\n"# GPU Usage : {self.gpu}\n"
+				f"Memory Usage : {self.memory}\nDisk Usage : {self.disk}")
 
 	##################################################
 	def __str__(self) -> str: return self.tostring()

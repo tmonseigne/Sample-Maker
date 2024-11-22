@@ -42,7 +42,7 @@ API Documentation
    :nosignatures:
    
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
 
    generated/modules
    todo
