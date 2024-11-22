@@ -37,10 +37,13 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
+      - name: Clean old coverage reports
+        run: rm -f .coverage
+
       - name: Tests
         uses: aganders3/headless-gui@v2
         with:
-          run: python -m pytest --html=Reports/CI_${{ matrix.platform }}_${{ matrix.python-version }}_test_report.html --self-contained-html
+          run: python -m pytest --html=Reports/CI_${{ matrix.platform }}_${{ matrix.python-version }}_test_report.html
 
       - name: Upload Test Reports as Artifacts
         uses: actions/upload-artifact@v3
