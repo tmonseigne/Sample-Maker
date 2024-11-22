@@ -19,7 +19,24 @@ MEMORY_RATIO = 1.0 / (1024 * 1024)
 ##################################################
 @dataclass
 class Monitoring:
-	"""Classe de monitoring"""
+	"""
+	Classe de monitoring qui suit l'utilisation des ressources (CPU, mémoire, disque) pendant l'exécution des tests.
+
+	Cette classe collecte les informations sur l'utilisation des ressources du système pendant l'exécution des tests.
+	Elle fournit des fonctionnalités pour démarrer et arrêter la surveillance, mettre à jour les valeurs des ressources,
+	et générer des graphiques ou des fichiers texte avec ces données.
+
+	Attributs :
+		- **cpu (List[float])** : Liste des valeurs d'utilisation du CPU.
+		- **memory (List[float])** : Liste des valeurs d'utilisation de la mémoire.
+		- **disk (List[float])** : Liste des valeurs d'utilisation du disque.
+		- **times (List[float])** : Liste des timestamps correspondant aux valeurs des ressources.
+		- **monitoring (bool)** : Indique si la surveillance est en cours ou non.
+		- **thread (threading.Thread)** : Le thread qui exécute le monitoring.
+		- **tests_info (List[dict])** : Liste des informations relatives aux tests exécutés.
+		- **interval (float)** : Intervalle de temps entre chaque mise à jour des données en secondes.
+
+	"""
 	cpu: List[float] = field(init=False, default_factory=list)
 	# gpu: List[float] = field(init=False, default_factory=list)
 	memory: List[float] = field(init=False, default_factory=list)
@@ -35,11 +52,19 @@ class Monitoring:
 	# ==================================================
 	##################################################
 	@property
-	def n_entries(self) -> int: return len(self.times)
+	def n_entries(self) -> int:
+		"""
+		Retourne le nombre d'entrées (mesures) dans le monitoring.
+
+		:return: Nombre d'entrées dans les listes de données.
+		"""
+		return len(self.times)
 
 	##################################################
 	def _reset(self):
-		"""Réinitialise les tableaux"""
+		"""
+		Réinitialise toutes les données de monitoring (CPU, mémoire, disque, etc.).
+		"""
 		self.cpu = []
 		# self.gpu = []
 		self.memory = []
@@ -51,6 +76,9 @@ class Monitoring:
 
 	##################################################
 	def _update(self):
+		"""
+		Met à jour les valeurs d'utilisation du CPU, de la mémoire et du disque en fonction des processus en cours.
+		"""
 		# Sélection de processus
 		pytest_pid = os.getpid()  # PID de pytest
 		pytest_proc = psutil.Process(pytest_pid)  # Récupère le processus parent
@@ -66,7 +94,11 @@ class Monitoring:
 
 	##################################################
 	def start(self, interval: float = 1.0):
-		""" Autorise le monitoring """
+		"""
+		Démarre la surveillance des ressources.
+
+		:param interval: Intervalle de mise à jour des données (en secondes).
+		"""
 		self._reset()
 		self.interval = interval
 		self.monitoring = True
@@ -76,9 +108,7 @@ class Monitoring:
 	##################################################
 	def monitor(self):
 		"""
-		Monitoring qui doit se lancer dans un thread séparé, récupère l'utilisation système et non uniquement de python et ses tests.
-
-		Voir dans un second plan si c'est possible avec Getpid.
+		Surveille les ressources en continu dans un thread séparé.
 		"""
 		while self.monitoring:
 			self._update()
@@ -86,17 +116,21 @@ class Monitoring:
 
 	##################################################
 	def stop(self):
-		""" Stoppe le monitoring """
+		"""
+		Arrête la surveillance et effectue une dernière mise à jour des valeurs.
+		"""
 		self.monitoring = False
+		self.thread.join()
 		self._update()  # Dernière entrée
 		self._update_array_for_readability()
-		self.thread.join()
 
 	##################################################
 	def add_test_info(self, name: str):
-		"""Ajoute des informations sur le test dans la liste"""
-		# example avec name = Tests/test_FileIO.py::test_save_boolean_mask_as_png
-		# Je veux file = FileIO et test = Save Boolean Mask As PNG
+		"""
+		Ajoute des informations sur un test dans la liste des tests.
+
+		:param name: Le nom complet du test, au format "Tests/test_<file>.py::test_<test_name>".
+		"""
 		match = re.match(r"Tests/test_(.*)\.py::test_(.*)", name)
 		if match:
 			file = match.group(1).replace('_', ' ').title()  # Récupère le nom du fichier et change la casse
@@ -105,6 +139,11 @@ class Monitoring:
 
 	##################################################
 	def _update_array_for_readability(self, round_time: int = 2):
+		"""
+		Met à jour les tableaux pour faciliter la lecture (ajustement des timestamps et normalisation).
+
+		:param round_time: Le nombre de décimales pour arrondir les timestamps.
+		"""
 		first_time = self.times[0]
 
 		for test_info in self.tests_info: test_info["Timestamp"] = round(test_info["Timestamp"] - first_time, round_time)
@@ -126,6 +165,13 @@ class Monitoring:
 	##################################################
 	@staticmethod
 	def get_y_range(data, padding_ratio: float = 0.0):
+		"""
+		Calcule la plage de valeurs de l'axe Y avec un espacement supplémentaire autour des valeurs.
+
+		:param data: Liste des données pour lesquelles la plage doit être calculée.
+		:param padding_ratio: Rapport d'espacement ajouté à la plage des données.
+		:return: La plage calculée [min, max] avec l'espacement ajouté.
+		"""
 		min_val, max_val = min(data), max(data)
 		padding = (max_val - min_val) * padding_ratio  # Ajouter une marge en haut et en bas
 		return [min_val - padding, max_val + padding]
@@ -133,14 +179,25 @@ class Monitoring:
 	##################################################
 	@staticmethod
 	def _plot(ax: plt.axes, times: List, datas: List, label: str):
-		""" Trace les données sur l'axe donné. """
+		"""
+		Trace les données de `datas` contre les `times` sur l'axe spécifié.
+
+		:param ax: L'axe matplotlib sur lequel les données doivent être tracées.
+		:param times: Liste des temps pour l'axe des x.
+		:param datas: Liste des données pour l'axe des y.
+		:param label: Le label à afficher pour l'axe des y.
+		"""
 		ax.plot(times, datas)
 		ax.set_ylabel(label)  # Ajout du label sur l'axe Y
 		ax.set_xlim([times[0], times[-1]])
 
 	##################################################
 	def draw_png(self, filename: str):
-		""" Générer un graphique des ressources utilisées pendant l'exécution des tests """
+		"""
+		Génère un graphique PNG des ressources utilisées (CPU, mémoire, disque) pendant l'exécution des tests.
+
+		:param filename: Le chemin et nom du fichier PNG à enregistrer.
+		"""
 		plt.close()  # Fermeture des précédentes figures
 		_, axs = plt.subplots(3, 1, figsize=(16, 9), sharex=True)
 
@@ -154,6 +211,11 @@ class Monitoring:
 
 	##################################################
 	def draw_html(self, filename: str):
+		"""
+		Génère un graphique interactif HTML des ressources utilisées pendant les tests et l'enregistre.
+
+		:param filename: Le chemin et nom du fichier HTML à enregistrer.
+		"""
 		fig = make_subplots(rows=3, cols=1, shared_xaxes=True, vertical_spacing=0.05,
 							subplot_titles=("CPU Usage (%)", "Memory Usage (Mo)", "Disk Usage (IO Mo)"))
 		color_map = get_color_map_by_name([test["File"] for test in self.tests_info], px.colors.qualitative.Plotly)
@@ -183,9 +245,13 @@ class Monitoring:
 	# ==================================================
 	# endregion IO
 	# ==================================================
-
 	##################################################
 	def save(self, filename: str):
+		"""
+		Sauvegarde les données de monitoring dans un fichier texte.
+
+		:param filename: Le chemin et nom du fichier texte à enregistrer.
+		"""
 		with open(filename, "w") as f:
 			f.write(f"Timestamps : {self.times}\n")
 			f.write(f"CPU Usage : {self.cpu}\n")
@@ -198,9 +264,9 @@ class Monitoring:
 	##################################################
 	def tostring(self) -> str:
 		"""
-		Retourne une représentation textuelle du monitoring.
+		Retourne une représentation textuelle des données de monitoring.
 
-		:return: Chaîne décrivant le monitoring.
+		:return: Chaîne décrivant les données de monitoring.
 		"""
 		return (f"{self.n_entries} entrées.\nTimestamps : {self.times}\n"
 				f"CPU Usage : {self.cpu}\n"# GPU Usage : {self.gpu}\n"

@@ -16,12 +16,12 @@ def get_color_map_by_name(names: list[str], palette: list[str] = px.colors.quali
 	:param palette: Liste des couleurs à utiliser pour les fichiers. Si non spécifié, la palette `Plotly` est utilisée par défaut.
 	:return: Un dictionnaire où les clés sont les noms de fichiers et les valeurs sont les couleurs attribuées.
 	"""
-	filenames = set(names)  # Récupérer les noms uniques
+	unique_names = set(names)  # Récupérer les noms uniques
 	color_map = {}  # Dictionnaire pour associer chaque fichier à une couleur
 	# Associer une couleur unique à chaque fichier
 	color_index = 0
-	for file in filenames:
-		color_map[file] = palette[color_index % len(palette)]
+	for name in unique_names:
+		color_map[name] = palette[color_index % len(palette)]
 		color_index += 1  # Passer à la couleur suivante
 
 	return color_map

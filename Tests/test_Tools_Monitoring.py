@@ -16,6 +16,7 @@ def simulate_memory_usage(size:int, duration:float=10, pause: float=2):
 
 	:param size: Taille totale de mémoire à allouer (en mégaoctets).
 	:param duration: Temps pendant lequel la mémoire reste allouée (en secondes).
+	:param pause: Pause après la libération de la mémoire.
 	"""
 	print(f"Allocating {size} MB of memory...")
 	allocated_memory = bytearray(size * 1024 * 1024)  # Alloue un tableau de bytes
