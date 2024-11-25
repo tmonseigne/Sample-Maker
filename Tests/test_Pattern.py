@@ -4,9 +4,7 @@ from SampleMaker.Pattern import Pattern, PatternType, SquaresOptions
 
 ##################################################
 def test_pattern_type():
-	"""
-	Test de l'objet PatternType (utile réellement uniquement pour le code coverage à l'heure actuelle tostring non utilisé).
-	"""
+	""" Test de l'objet PatternType. """
 
 	assert PatternType.NONE.tostring() == "None", "La chaine de caractère ne correspond pas pour le pattern None"
 	assert PatternType.STRIPES.tostring() == "Bandes", "La chaine de caractère ne correspond pas pour le pattern Bandes"
@@ -16,9 +14,7 @@ def test_pattern_type():
 
 ##################################################
 def test_pattern():
-	"""
-	Test de l'objet Pattern.
-	"""
+	""" Test de l'objet Pattern. """
 
 	print()
 	pattern = Pattern.from_pattern(PatternType.NONE, None)

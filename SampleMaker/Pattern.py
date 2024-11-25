@@ -60,11 +60,12 @@ class NoneOptions:
 	"""
 
 	##################################################
-	def tostring(self) -> str:
+	@staticmethod
+	def tostring() -> str:
 		"""
 		Retourne une chaîne de caractères correspondant aux options.
 
-		:return: la liste des options.
+		:return: La liste des options.
 		"""
 		return "No Options"
 
@@ -96,7 +97,7 @@ class StripesOptions:
 		"""
 		Retourne une chaîne de caractères correspondant aux options.
 
-		:return: la liste des options.
+		:return: La liste des options.
 		"""
 		return (f"Lengths: {self.lengths}, "
 				f"{'mirrored' if self.mirror else 'not mirrored'}, "
@@ -125,7 +126,7 @@ class SquaresOptions:
 		"""
 		Retourne une chaîne de caractères correspondant aux options.
 
-		:return: la liste des options.
+		:return: La liste des options.
 		"""
 		return f"Size: {self.size}"
 
@@ -150,7 +151,7 @@ class SunOptions:
 		"""
 		Retourne une chaîne de caractères correspondant aux options.
 
-		:return: la liste des options.
+		:return: La liste des options.
 		"""
 		return f"Ray number: {self.ray_count}"
 
@@ -175,7 +176,7 @@ class ExistingImageOptions:
 		"""
 		Retourne une chaîne de caractères correspondant aux options.
 
-		:return: la liste des options.
+		:return: La liste des options.
 		"""
 		return f"Path: {self.path}"
 
@@ -221,7 +222,7 @@ class Pattern:
 	##################################################
 	def tostring(self) -> str:
 		"""
-		Conversiont en chaine de caractère.
+		Conversion en chaine de caractère.
 		"""
 		return f"Pattern: {self.pattern}, Options: {self.options}"
 
