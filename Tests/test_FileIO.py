@@ -10,7 +10,7 @@ from SampleMaker.FileIO import open_png_as_boolean_mask, open_png_as_sample, ope
 OUTPUT_DIR = Path(__file__).parent / "Output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)  # Créer le dossier de sorties (la première fois, il n'existe pas)
 
-# np.random.seed(42) # Possibilité de fixer la graine du random pour avoir un aléatoire "controlé".
+# np.random.seed(42) # Possibilité de fixer la graine du random pour avoir un aléatoire "contrôlé".
 ref = np.random.rand(256, 256) * 255
 ref_boolean_mask = ref > 128
 size = 512												# Taille de l'image de test

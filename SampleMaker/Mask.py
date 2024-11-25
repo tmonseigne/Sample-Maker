@@ -175,7 +175,7 @@ class Mask:
 		"""
 		Retourne une chaîne de caractères correspondant à la taille et aux options du motif.
 
-		:return: la taille et la liste des options.
+		:return: La taille et la liste des options.
 		"""
 		return f"Size: {self._size}, {self._pattern}"
 

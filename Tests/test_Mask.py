@@ -71,10 +71,10 @@ def test_stripes_mask_options_bad():
 	mask = None
 	size = 128
 	options = {"Longueurs": [200, 100, 50], "Mirrored": False, "Orientation": False}
-	with pytest.raises(TypeError) as excinfo:
+	with pytest.raises(TypeError) as exception_info:
 		mask = Mask(size, Pattern.from_pattern(PatternType.STRIPES, options))
 
-	assert excinfo.type == TypeError, "L'erreur relevé n'est pas correcte."
+	assert exception_info.type == TypeError, "L'erreur relevé n'est pas correcte."
 	assert mask is None, "Le masque a été créé au lieu de crash."
 
 
@@ -226,7 +226,7 @@ def test_existing_mask_options_bad_filename():
 	Test de la génération de masque pour le motif 'Image existante'.
 	Vérifie que le masque est de la bonne taille, de type booléen et est entièrement blanc.
 	"""
-	options = {"path": f"{INPUT_DIR}/badfile.png"}
+	options = {"path": f"{INPUT_DIR}/bad_file.png"}
 	mask = Mask(_pattern=Pattern.from_pattern(PatternType.EXISTING_IMAGE, options))
 
 	assert mask.mask.shape == (256, 256), "Le masque n'a pas la taille attendue."

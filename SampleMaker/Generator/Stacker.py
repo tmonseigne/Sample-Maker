@@ -1,27 +1,11 @@
 """ Fichier de la classe du générateur de pile d'échantillons simulés """
 
-from enum import Enum
-from typing import Any
-
-import numpy as np
-from numpy.typing import NDArray
-
 from dataclasses import dataclass, field
-from typing import List
 
-import numpy as np
-from numpy.typing import NDArray
-from scipy.stats import multivariate_normal
-
-from SampleMaker.Fluorophore import Fluorophore
-from SampleMaker.Generator.Noiser import Noiser
 from SampleMaker.Generator.Sampler import Sampler
 from SampleMaker.Generator.StackModel import StackModel
-from SampleMaker.Mask import Mask
 from SampleMaker.Stack import Stack
-from SampleMaker.Tools.Utils import print_warning
 
-MAX_INTENSITY = np.iinfo(np.uint16).max  # Pour des entiers sur 16 bits (soit 65535).
 
 ##################################################
 @dataclass
@@ -40,7 +24,7 @@ class Stacker:
 	# region Generate Stack
 	# ==================================================
 	##################################################
-	def generate(self, size:int = 100) -> Stack:
+	def generate(self, size: int = 100) -> Stack:
 		"""
 		Génère une pile.
 
@@ -77,6 +61,6 @@ class Stacker:
 	##################################################
 	def __str__(self) -> str: return self.tostring()
 
-	# ==================================================
-	# endregion IO
-	# ==================================================
+# ==================================================
+# endregion IO
+# ==================================================

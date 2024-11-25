@@ -15,7 +15,7 @@ def cpu_infos() -> str:
 	try:  # En cas e problème notamment sur mac
 		cpu_info = psutil.cpu_freq(percpu=False)
 		res += f" ({cpu_info.current / 1000} GHz - {psutil.cpu_count(logical=False)} Cores ({psutil.cpu_count(logical=True)} Logical))"
-	except RuntimeError: cpu_info = None
+	except RuntimeError: res += "(No CPU Infos)"
 	return res
 
 

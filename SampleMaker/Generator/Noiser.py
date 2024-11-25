@@ -37,7 +37,7 @@ class Noiser:
 		:return: Bruit à ajouter à une image.
 		"""
 		noise = np.random.normal(loc=loc, scale=scale, size=(size, size))
-		noise = np.nan_to_num(np.maximum(noise, 0), nan=0)  # Met à zéro toutes les valeurs négatives et remplace NaNs par 0 pour éviter les crash.
+		noise = np.nan_to_num(np.maximum(noise, 0), nan=0)  # Met à zéro toutes les valeurs négatives et remplace NaNs par 0 pour éviter les crashs.
 		noise = np.random.poisson(noise).astype(float)		# Ajouter le bruit poissonien (modèle pour le bruit photonique) au signal
 		return noise
 

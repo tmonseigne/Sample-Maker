@@ -23,7 +23,7 @@ class Monitoring:
 	"""
 	Classe de monitoring qui suit l'utilisation des ressources (CPU, mémoire, disque) pendant l'exécution des tests.
 
-	Cette classe collecte les informations sur l'utilisation des ressources du système pendant l'exécution des tests.
+	Cette classe collecte les informations sur l'utilisation des ressources du système durant l'exécution des tests.
 	Elle fournit des fonctionnalités pour démarrer et arrêter la surveillance, mettre à jour les valeurs des ressources,
 	et générer des graphiques ou des fichiers texte avec ces données.
 
@@ -186,7 +186,7 @@ class Monitoring:
 		:param ax: L'axe matplotlib sur lequel les données doivent être tracées.
 		:param times: Liste des temps pour l'axe des x.
 		:param datas: Liste des données pour l'axe des y.
-		:param label: Le label à afficher pour l'axe des y.
+		:param label: Label à afficher pour l'axe des y.
 		"""
 		ax.plot(times, datas)
 		ax.set_ylabel(label)  # Ajout du label sur l'axe Y

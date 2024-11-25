@@ -18,7 +18,7 @@ print("Génération d'un masque type bande.")
 size = 256							 # Taille de l'image
 lengths = [200, 100, 50, 25, 12, 6]  # Largeur des bandes
 mirror = True						 # On définit l'option miroir pour que les bandes soient dessinées de façon décroissante puis croissante
-orientation = True					 # On définit l'oriantation à true pour avoir des bandes verticales
+orientation = True					 # On définit l'orientation à true pour avoir des bandes verticales
 options = {"lengths": lengths, "mirror": mirror, "orientation": orientation}  # Création du dictionnaire d'options
 mask = Mask(size, Pattern.from_pattern(PatternType.STRIPES, options))		  # Génération du masque
 mask.save(f"{OUTPUT_DIR}/Mask_Radio.png")									  # Enregistrement du masque au format png
