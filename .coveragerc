@@ -2,6 +2,9 @@
 branch = True
 
 [coverage:report]
+# Exclure toutes les lignes de code dans les fichiers de test
+omit =
+    Tests/*
 exclude_lines =
-	# Exclure tous les fichiers dans le dossier "Tests"
-	^Tests/
+    # Ces commentaires excluent des lignes spécifiques si elles sont détectées
+    pragma: no cover
