@@ -1,10 +1,7 @@
 .. Sample Maker documentation master file.
 
 Sample Maker
-==========================
-
-Résumé
------------------
+==============================
 
 .. image:: https://img.shields.io/github/license/tmonseigne/Sample-Maker
    :target: license.html
@@ -25,24 +22,11 @@ Résumé
 Petit outil permettant de simuler une acquisition de microscopie.
 
 .. toctree::
-   :hidden:
    :maxdepth: 2
 
-   license
-   test_reports
-
-
-
-API Documentation
------------------
-
-.. autosummary::
-   :toctree: generated/
-   :recursive:
-   :nosignatures:
-   
-.. toctree::
-   :maxdepth: 2
-
-   generated/modules
-   todo
+   License
+   Installation
+   Utilisation
+   API/SampleMaker
+   Todo
+   Test_reports

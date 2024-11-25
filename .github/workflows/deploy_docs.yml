@@ -37,9 +37,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Build documentation
-        run: |
-          sphinx-apidoc -o Docs/generated ./SampleMaker  # Pour générer la documentation API dans `Docs/generated`
-          sphinx-build -b html Docs/ Docs/_build/html    # Pour construire le HTML
+        run: sphinx-build -b html Docs/ Docs/_build/html
 
 
       - name: Setup Pages

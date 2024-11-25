@@ -7,7 +7,7 @@ import tifffile as tiff
 from numpy.typing import NDArray
 from PIL import Image
 
-from SampleMaker.Utils import add_extension
+from SampleMaker.Tools.Utils import add_extension
 
 MAX_UI_8 = np.iinfo(np.uint8).max
 MAX_UI_16 = np.iinfo(np.uint16).max
@@ -64,7 +64,7 @@ def save_sample_as_png(sample: NDArray[np.float32], filename: str, percentile: f
 
 	:param sample: Tableau numpy 2D de type flottant représentant l'échantillon.
 	:param filename: Chemin du fichier PNG de sortie.
-	:param percentile: Percentile de l'intensité max qui deviendra un pixel blanc (par défaut 99%).
+	:param percentile: Percentile de l'intensité max qui deviendra un pixel blanc (par défaut 100%).
 	"""
 
 	percentile = np.clip(percentile, 0, 100)								# On évite les options bizarres des utilisateurs.
@@ -107,12 +107,12 @@ def open_png_as_sample(filename: str, intensity_factor: float = 1.0) -> NDArray[
 ##################################################
 def save_stack_as_tif(stack: NDArray[np.float32], filename: str):
 	"""
-	Sauvegarde un tableau 3D (ou 2D converti en 3D) dans un fichier TIFF multi-frame avec tifffile.
+	Sauvegarde un tableau 3D (ou 2D converti en 3D) dans un fichier TIF multi-frame avec tifffile.
 
-	:param stack: Tableau contenant l'image ou les frames :
-	              - Si 2D (hauteur x largeur), convertit en pile 3D avec une seule frame.
-	              - Si 3D (frames x hauteur x largeur), sauvegarde les frames en multi-frame.
-	:param filename: Nom du fichier TIFF de sortie.
+	:param stack: Tableau contenant l'image ou les frames
+				  - Si 2D (hauteur x largeur), convertit en pile 3D avec une seule frame.
+				  - Si 3D (frames x hauteur x largeur), sauvegarde les frames en multi-frame.
+	:param filename: Nom du fichier TIF de sortie.
 	"""
 	if stack.ndim == 2: stack = stack[np.newaxis, ...]		# Si le tableau est 2D, le transformer en 3D avec une seule frame
 	if stack.ndim != 3: raise ValueError("Le tableau doit être 2D (hauteur, largeur) ou 3D (frames, hauteur, largeur).")
@@ -123,11 +123,11 @@ def save_stack_as_tif(stack: NDArray[np.float32], filename: str):
 ##################################################
 def open_tif_as_stack(filename: str) -> NDArray[np.float32]:
 	"""
-	Ouvre un fichier TIFF en tant que pile 3D (frames x hauteur x largeur).
-    Si le fichier contient une seule image 2D, ajoute une dimension pour en faire une pile 3D.
+	Ouvre un fichier TIF en tant que pile 3D (frames x hauteur x largeur).
+	Si le fichier contient une seule image 2D, ajoute une dimension pour en faire une pile 3D.
 
-    :param filename: Chemin du fichier TIFF à ouvrir.
-    :return: Tableau 3D contenant les données TIFF.
+	:param filename: Chemin du fichier TIF à ouvrir.
+	:return: Tableau 3D contenant les données TIF.
 	"""
 	if not os.path.isfile(filename): raise OSError(f"Le fichier \"{filename}\" est introuvable.")
 	stack = tiff.imread(filename)						# Lecture du fichier avec tifffile

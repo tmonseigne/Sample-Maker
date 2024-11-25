@@ -1,9 +1,9 @@
 """ Fichier des tests pour la classe Stack """
 
 import os
-import numpy as np
 from pathlib import Path
 
+import numpy as np
 import pytest
 
 from SampleMaker.Stack import Stack

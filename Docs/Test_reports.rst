@@ -1,6 +1,7 @@
+.. Sample Maker tests master file.
 
 Tests
------
+==============================
 
 Liste des rapports de tests générés :
 

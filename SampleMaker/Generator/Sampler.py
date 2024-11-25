@@ -8,9 +8,9 @@ from numpy.typing import NDArray
 from scipy.stats import multivariate_normal
 
 from SampleMaker.Fluorophore import Fluorophore
+from SampleMaker.Generator.Noiser import Noiser
 from SampleMaker.Mask import Mask
-from SampleMaker.Noiser import Noiser
-from SampleMaker.Utils import print_warning
+from SampleMaker.Tools.Utils import print_warning
 
 MAX_INTENSITY = np.iinfo(np.uint16).max  # Pour des entiers sur 16 bits (soit 65535).
 

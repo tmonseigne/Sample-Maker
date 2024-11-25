@@ -6,7 +6,7 @@ from pathlib import Path
 import numpy as np
 
 from SampleMaker.FileIO import save_sample_as_png
-from SampleMaker.Noiser import Noiser
+from SampleMaker.Generator.Noiser import Noiser
 
 OUTPUT_DIR = Path(__file__).parent / "Output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)						# Créer le dossier de sorties (la première fois, il n'existe pas)
