@@ -1,4 +1,4 @@
-SampleMaker.TOOLS.FileIO
+SampleMaker.Tools.FileIO
 ==============================
 
 .. automodule:: SampleMaker.Tools.FileIO
