@@ -23,6 +23,7 @@ language = 'fr'
 extensions = [
 		'sphinx.ext.autodoc',
 		'sphinx.ext.autosummary',
+		'sphinx.ext.autosectionlabel',
 		'sphinx.ext.napoleon',
 		'sphinx.ext.todo',
 		'sphinx.ext.viewcode',
