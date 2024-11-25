@@ -3,10 +3,6 @@
 Installation
 ==============================
 
-.. image:: ./assets/img/WIP.png
-   :alt: Work in progress
-   :align: center
-
 Ce guide vous aidera à installer le projet étape par étape.
 Il inclut des instructions pour les débutants, avec des options supplémentaires pour les utilisateurs qui souhaitent utiliser **Chocolatey** et **Visual Studio Code**.
 
