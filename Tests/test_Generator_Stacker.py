@@ -3,13 +3,20 @@
 import os
 from pathlib import Path
 
+from SampleMaker.Generator.Sampler import Sampler
+from SampleMaker.Generator.Stacker import Stacker
 
 INPUT_DIR = Path(__file__).parent / "Input"
 OUTPUT_DIR = Path(__file__).parent / "Output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)  # Créer le dossier de sorties (la première fois, il n'existe pas)
-SIZE = 256
+
+SAMPLER = Sampler(size=128)
 
 ##################################################
 def test_stacker():
 	""" Test basique sur le générateur de stack. """
-	print("TODO")
+	stacker = Stacker(sampler=SAMPLER)
+	print(f"\n{stacker}")
+	stack = stacker.generate(10)
+	print(stacker)
+	stack.save(f"{OUTPUT_DIR}/test_stacker_base.tif")

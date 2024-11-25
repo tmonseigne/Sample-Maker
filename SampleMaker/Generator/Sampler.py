@@ -24,7 +24,7 @@ class Sampler:
 	Attributs :
 		- **size (int)** : Taille de l'image.
 		- **pixel_size (int)** : Taille d'un pixel en nanomètres (par défaut : 160). Utilisé pour calculer la surface de l'image.
-		- **density (float)** : Densité de molécules par micromètre carré (par défaut 1.0).
+		- **density (float)** : Densité de molécules par micromètre carré (par défaut 0.25).
 		- **astigmatism_ratio (float)** : Ratio de l'astigmatisme (par défaut 2 indique une déformation de X par rapport à Y de maximum 2).
 		- **mask (Mask)** : Masque utilisé pour la dispersion des molécules.
 		- **fluorophore (Fluorophore)** : Caractéristiques du fluorophore (intensité, variation).
@@ -32,7 +32,7 @@ class Sampler:
 	"""
 	size: int = 256
 	pixel_size: int = 160
-	density: float = 1.0
+	density: float = 0.25
 	astigmatism_ratio: float = 2.0
 	mask: Mask = field(default_factory=Mask)
 	fluorophore: Fluorophore = field(default_factory=Fluorophore)
@@ -72,6 +72,14 @@ class Sampler:
 		:return: Nombre estimé de molécules dans l'image.
 		"""
 		self.max_molecules = int(self.area * self.density)  # Calculer le nombre de molécules en fonction de la densité
+
+	def reset(self):
+		"""
+		Réinitialise la dernière position et la liste de molécules.
+		(Utile dans le cas de plusieurs utilisations du même sampler avec des paramètres différents.)
+		"""
+		self.n_molecules.clear()
+		self.last_localisations = np.empty((0, 3), dtype=np.float32)
 
 	# ==================================================
 	# endregion Initialization / Setter
@@ -123,7 +131,11 @@ class Sampler:
 		return np.vstack((x, y, z)).T						# Combiner les coordonnées dans un tableau de forme (n_molecules, 3).
 
 	# ==================================================
-	# endregion Compute Positions
+	# endregion Compute localisation
+	# ==================================================
+
+	# ==================================================
+	# region Generate Image
 	# ==================================================
 	##################################################
 	def generate_psf(self, localisation) -> NDArray[np.float32]:
@@ -189,12 +201,7 @@ class Sampler:
 		return self.noiser.apply(self.generate_psf(self.last_localisations))
 
 	# ==================================================
-	# region Compute Image
-	# ==================================================
-	##################################################
-
-	# ==================================================
-	# endregion Compute Image
+	# endregion Generate Image
 	# ==================================================
 
 	# ==================================================
@@ -203,9 +210,9 @@ class Sampler:
 	##################################################
 	def tostring(self) -> str:
 		"""
-		Retourne une chaîne de caractères correspondant aux caractéristiques du bruiter.
+		Retourne une chaîne de caractères correspondant aux caractéristiques du générateur.
 
-		:return: Une description textuelle des attributs du fluorophore.
+		:return: Une description textuelle des attributs du générateur.
 		"""
 		return (
 				f"size: {self.size}, Pixel Size: {self.pixel_size} nm, Molecule Density : {self.density}\n"
@@ -219,6 +226,6 @@ class Sampler:
 	##################################################
 	def __str__(self) -> str: return self.tostring()
 
-# ==================================================
-# endregion IO
-# ==================================================
+	# ==================================================
+	# endregion IO
+	# ==================================================
