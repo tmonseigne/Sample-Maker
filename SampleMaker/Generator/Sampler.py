@@ -10,6 +10,7 @@ from scipy.stats import multivariate_normal
 from SampleMaker.Fluorophore import Fluorophore
 from SampleMaker.Generator.Noiser import Noiser
 from SampleMaker.Mask import Mask
+from SampleMaker.Pattern import PatternType
 from SampleMaker.Tools.Utils import print_warning
 
 MAX_INTENSITY = np.iinfo(np.uint16).max  # Pour des entiers sur 16 bits (soit 65535).
@@ -103,7 +104,7 @@ class Sampler:
 		z = np.random.uniform(-1, 1, self.max_molecules)
 		localisation = np.vstack((x, y, z)).T  # Combiner les coordonnées dans un tableau de forme (n_molecules, 3)
 
-		if apply_mask:
+		if apply_mask and self.mask.pattern.pattern != PatternType.NONE:
 			# Convertir les coordonnées x et y en type entier pour correspondre aux pixels dans le masque,
 			# clip permet d'éviter les positions en dehors du masque.
 			x_int = np.clip(localisation[:, 0].astype(int), 0, self.size - 1)

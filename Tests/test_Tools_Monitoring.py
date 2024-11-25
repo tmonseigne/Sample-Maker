@@ -14,28 +14,7 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)  # Créer le dossier de sorties (la premi
 # region Simulations
 # ==================================================
 ##################################################
-def simulate_memory_usage(monitoring: Monitoring, size: int = 50, duration: float = 2):
-	"""
-	Simule une utilisation importante de mémoire en allouant un tableau de bytes.
-
-	:param monitoring: Moniteur à manipuler
-	:param size: Taille totale de mémoire à allouer (en mégaoctets).
-	:param duration: Temps pendant lequel la mémoire reste allouée (en secondes).
-	:param pause: Pause après la libération de la mémoire.
-	"""
-	monitoring.add_test_info("Tests/test_simulation_memory.py::test_allocate_memory")
-	print(f"Allocating {size} MB of memory...")
-	allocated_memory = bytearray(size * 1024 * 1024)  # Alloue un tableau de bytes
-	monitoring.add_test_info("Tests/test_simulation_memory.py::test_hold_memory")
-	print(f"Memory allocated. Holding for {duration} seconds...")
-	time.sleep(duration)  # Garde la mémoire allouée pour observer l'impact
-	monitoring.add_test_info("Tests/test_simulation_memory.py::test_release_memory")
-	print("Releasing memory.")
-	del allocated_memory  # Libère la mémoire
-
-
-##################################################
-def simulate_cpu_usage(monitoring: Monitoring, intensity: int = 100000000, duration: float = 2):
+def simulate_cpu_usage(monitoring: Monitoring, intensity: int = 1000000, duration: float = 2):
 	"""
 	Simule une utilisation importante de CPU en effectuant des calculs intensifs.
 
@@ -49,6 +28,26 @@ def simulate_cpu_usage(monitoring: Monitoring, intensity: int = 100000000, durat
 	while time.time() - start_time < duration:
 		_ = [x ** 2 for x in range(intensity)]  # Effectue des calculs inutiles pour simuler une charge CPU
 	print("CPU simulation complete.")
+
+
+##################################################
+def simulate_memory_usage(monitoring: Monitoring, size: int = 50, duration: float = 2):
+	"""
+	Simule une utilisation importante de mémoire en allouant un tableau de bytes.
+
+	:param monitoring: Moniteur à manipuler
+	:param size: Taille totale de mémoire à allouer (en mégaoctets).
+	:param duration: Temps pendant lequel la mémoire reste allouée (en secondes).
+	"""
+	monitoring.add_test_info("Tests/test_simulation_memory.py::test_allocate_memory")
+	print(f"Allocating {size} MB of memory...")
+	allocated_memory = bytearray(size * 1024 * 1024)		# Alloue un tableau de bytes
+	monitoring.add_test_info("Tests/test_simulation_memory.py::test_hold_memory")
+	print(f"Memory allocated. Holding for {duration} seconds...")
+	time.sleep(duration)									# Garde la mémoire allouée pour observer l'impact
+	monitoring.add_test_info("Tests/test_simulation_memory.py::test_release_memory")
+	print("Releasing memory.")
+	del allocated_memory 									# Libère la mémoire
 
 
 ##################################################
@@ -67,11 +66,11 @@ def simulate_disk_io(monitoring: Monitoring, file_size: int = 10, duration: floa
 
 	monitoring.add_test_info("Tests/test_simulation_disk.py::test_disk_hold")
 	print(f"File written. Holding for {duration} seconds...")
-	time.sleep(duration)  # Maintient le fichier pour observer son impact
+	time.sleep(duration)														  # Maintient le fichier pour observer son impact
 
 	monitoring.add_test_info("Tests/test_simulation_disk.py::test_disk_delete")
 	print("Deleting the file...")
-	os.remove(file_name)  # Supprime le fichier
+	os.remove(file_name)														  # Supprime le fichier
 	print("Disk I/O simulation complete.")
 
 
@@ -98,6 +97,7 @@ def test_monitoring_save():
 	simulate_cpu_usage(monitoring)
 	simulate_memory_usage(monitoring)
 	simulate_disk_io(monitoring)
+	monitoring.add_test_info("Invalid test infos")
 	monitoring.stop()
 	monitoring.draw_png(f"{OUTPUT_DIR}/test_monitoring.png")
 	monitoring.draw_html(f"{OUTPUT_DIR}/test_monitoring.html")

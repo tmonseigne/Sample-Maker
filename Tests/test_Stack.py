@@ -75,15 +75,23 @@ def test_stack_save():
 	stack = Stack()
 	stack.add_sample(np.zeros((2, 2)).astype(np.float32))
 	stack.add_sample(np.ones((2, 2)).astype(np.float32))
-	stack.save(f"{OUTPUT_DIR}/test_stack.png")
+	stack.save(f"{OUTPUT_DIR}/test_stack.tif")
 
 ##################################################
 def test_stack_open():
 	""" Test sur l'enregistrement d'une pile. """
 	# Initialisation de la classe
 	stack = Stack()
-	stack.open(f"{OUTPUT_DIR}/test_stack.png")
+	stack.open(f"{OUTPUT_DIR}/test_stack.tif")
 	ref = Stack()
 	ref.add_sample(np.zeros((2, 2)).astype(np.float32))
 	ref.add_sample(np.ones((2, 2)).astype(np.float32))
 	assert np.allclose(ref.stack, stack.stack, atol=1), "La pile devrait correspondre à la référence avec une tolérance d'erreur."
+
+##################################################
+def test_stack_open_bad_file():
+	""" Test sur l'enregistrement d'une pile avec un fichier inexistant. """
+	stack = Stack()
+	with pytest.raises(OSError) as exception_info:
+		stack.open("bad_filename.tif")
+	assert exception_info.type == OSError, "L'erreur relevé n'est pas correcte."

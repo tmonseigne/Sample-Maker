@@ -105,8 +105,7 @@ class Stack:
 		Ouvre un fichier PNG et le transforme en masque de booléen
 		:param filename: Nom du fichier à ouvrir
 		"""
-		if not os.path.isfile(filename): raise ValueError(f"Aucun fichier spécifié ou le fichier est introuvable.")
-		else: self.stack = open_tif_as_stack(filename)
+		self.stack = open_tif_as_stack(filename)
 
 	# ==================================================
 	# endregion IO
