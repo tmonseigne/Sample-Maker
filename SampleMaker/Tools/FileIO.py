@@ -24,10 +24,10 @@ def save_boolean_mask_as_png(mask: NDArray[np.bool_], filename: str):
 	:param mask: Tableau numpy 2D de type booléen représentant le masque.
 	:param filename: Chemin du fichier PNG de sortie.
 	"""
-	name = add_extension(filename, ".png")
+	if mask.ndim != 2: raise ValueError("Le tableau doit être 2D (hauteur, largeur).")
 	grayscale = (mask * MAX_UI_8).astype(np.uint8)  # Convertir le masque booléen en image en niveaux de gris (255 pour True, 0 pour False)
 	image = Image.fromarray(grayscale, mode='L')    # L pour niveau de gris
-	image.save(name)
+	image.save(filename)							# Enregistrement
 
 
 ##################################################
@@ -38,9 +38,8 @@ def open_png_as_boolean_mask(filename: str) -> NDArray[np.bool_]:
 	:param filename: Chemin du fichier PNG d'entrée.
 	:return: Tableau numpy 2D de type booléen représentant le masque (True pour les pixels blancs, False pour les pixels noirs).
 	"""
-	name = add_extension(filename, ".png")
-	if not os.path.isfile(name): raise OSError(f"Le fichier \"{name}\" est introuvable.")
-	image = Image.open(name).convert("L")		# Charger l'image en niveaux de gris
+	if not os.path.isfile(filename): raise OSError(f"Le fichier \"{filename}\" est introuvable.")
+	image = Image.open(filename).convert("L")	# Charger l'image en niveaux de gris
 	grayscale = np.array(image)					# Convertir l'image en tableau numpy
 	boolean_mask = grayscale >= (MAX_UI_8 / 2)  # Convertir les niveaux de gris en booléen : True pour les pixels >= 128, False pour < 128
 	return boolean_mask
@@ -66,18 +65,18 @@ def save_sample_as_png(sample: NDArray[np.float32], filename: str, percentile: f
 	:param filename: Chemin du fichier PNG de sortie.
 	:param percentile: Percentile de l'intensité max qui deviendra un pixel blanc (par défaut 100%).
 	"""
+	if sample.ndim != 2: raise ValueError("Le tableau doit être 2D (hauteur, largeur).")
 
 	percentile = np.clip(percentile, 0, 100)								# On évite les options bizarres des utilisateurs.
 	if np.fabs(percentile) <= np.finfo(np.float32).eps: grayscale = sample  # Si le percentile est 0 il n'y a pas de mise à l'échelle
-
-	else:  # Sinon mise à l'échelle
+	else:  																	# Sinon mise à l'échelle
 		max_i = np.percentile(sample, percentile)							# Calcul du percentile
 		if max_i == 0: grayscale = np.zeros_like(sample, dtype=np.uint8)    # Si le maximum est 0, on remplit l'image avec des valeurs nulles
 		else: grayscale = (sample * MAX_UI_8 / max_i)						# Normalisation entre 0 et 255
 
 	grayscale = np.clip(grayscale, 0, MAX_UI_8).astype(np.uint8)			# On s'assure que toutes les valeurs sont entre 0 et 255.
 	image = Image.fromarray(grayscale, mode='L')							# L pour niveau de gris
-	image.save(filename)
+	image.save(filename)													# Enregistrement
 
 
 ##################################################
@@ -90,9 +89,9 @@ def open_png_as_sample(filename: str, intensity_factor: float = 1.0) -> NDArray[
 	:return: Tableau numpy 2D de type flottant représentant l'échantillon.
 	"""
 	if not os.path.isfile(filename): raise OSError(f"Le fichier \"{filename}\" est introuvable.")
-	image = Image.open(filename).convert("L")		# Charger l'image en niveaux de gris
-	grayscale = np.array(image).astype(np.float32)  # Convertir l'image en tableau numpy
-	grayscale *= intensity_factor					# Convertir les niveaux de gris en intensité
+	image = Image.open(filename).convert("L")			# Charger l'image en niveaux de gris
+	grayscale = np.array(image).astype(np.float32)  	# Convertir l'image en tableau numpy
+	grayscale *= intensity_factor						# Convertir les niveaux de gris en intensité
 	return grayscale
 
 
@@ -131,8 +130,9 @@ def open_tif_as_stack(filename: str) -> NDArray[np.float32]:
 	"""
 	if not os.path.isfile(filename): raise OSError(f"Le fichier \"{filename}\" est introuvable.")
 	stack = tiff.imread(filename)						# Lecture du fichier avec tifffile
-	if stack.ndim == 2: stack = stack[np.newaxis, ...]  # Vérification des dimensions et conversion en pile 3D si nécessaire
-	if stack.ndim != 3: raise ValueError(f"Fichier {filename} invalide : attendu 2D ou 3D, trouvé {stack.ndim} dimensions.")
+	# Techniquement ces deux éléments ne sont pas possibles avec un fichier valide.
+	# if stack.ndim == 2: stack = stack[np.newaxis, ...]  # Vérification des dimensions et conversion en pile 3D si nécessaire
+	# if stack.ndim != 3: raise ValueError(f"Fichier {filename} invalide : attendu 2D ou 3D, trouvé {stack.ndim} dimensions.")
 	return stack.astype(np.float32)						# Retour avec conversion en float
 
 # ==================================================

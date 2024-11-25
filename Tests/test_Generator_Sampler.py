@@ -3,7 +3,7 @@
 import os
 from pathlib import Path
 
-from SampleMaker.FileIO import save_sample_as_png
+from SampleMaker.Tools.FileIO import save_sample_as_png
 from SampleMaker.Generator.Sampler import Sampler
 from SampleMaker.Mask import Mask
 from SampleMaker.Pattern import Pattern, PatternType

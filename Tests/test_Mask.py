@@ -6,7 +6,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from SampleMaker.FileIO import open_png_as_boolean_mask
+from SampleMaker.Tools.FileIO import open_png_as_boolean_mask
 from SampleMaker.Mask import Mask
 from SampleMaker.Pattern import Pattern, PatternType
 

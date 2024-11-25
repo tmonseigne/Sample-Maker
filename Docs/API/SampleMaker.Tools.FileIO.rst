@@ -1,7 +1,7 @@
-SampleMaker.FileIO
+SampleMaker.TOOLS.FileIO
 ==============================
 
-.. automodule:: SampleMaker.FileIO
+.. automodule:: SampleMaker.Tools.FileIO
    :members:
    :undoc-members:
    :show-inheritance:

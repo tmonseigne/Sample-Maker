@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 import numpy as np
 from numpy.typing import NDArray
 
-from SampleMaker.FileIO import open_tif_as_stack, save_stack_as_tif
+from SampleMaker.Tools.FileIO import open_tif_as_stack, save_stack_as_tif
 
 
 ##################################################
