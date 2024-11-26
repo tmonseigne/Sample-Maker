@@ -31,10 +31,16 @@ def test_sampler_masked():
 	sampler = Sampler(mask=Mask(SIZE, Pattern.from_pattern(PatternType.STRIPES)))
 	sample = sampler.generate_sample()
 	save_sample_as_png(sample, f"{OUTPUT_DIR}/test_sampler_stripes.png")
-	sampler = Sampler(mask=Mask(SIZE, Pattern.from_pattern(PatternType.SQUARES)))
+	sampler.mask = Mask(SIZE, Pattern.from_pattern(PatternType.SQUARES))
 	sample = sampler.generate_sample()
 	save_sample_as_png(sample, f"{OUTPUT_DIR}/test_sampler_squares.png")
 
+
+##################################################
+def test_sampler_change_params():
+	""" Test sur le sampler de changement de paramètres. """
+	sampler = Sampler()
+	sampler.size=512
 
 ##################################################
 def test_sampler_bad_options():

@@ -53,7 +53,7 @@ la taille en nanomètre d'un pixel et la densité de molécules par micromètre 
 
 .. code-block:: python
 
-	sampler = Sampler(size=size, pixel_size=160, density=0.25, astigmatism_ratio=2.0, mask=mask, fluorophore=fluorophore, noiser=noiser)
+	sampler = Sampler(size=size, pixel_size=160, density=0.25, _astigmatism_ratio=2.0, fluorophore=fluorophore, mask=mask, noiser=noiser)
 
 **Définition du générateur de pile** :
 Le générateur de pile va prendre le générateur d'échantillon paramétré et le modèle de pile que l'on souhaite générer
@@ -64,7 +64,7 @@ Le générateur de pile va prendre le générateur d'échantillon paramétré et
 	stacker = Stacker(sampler=sampler)
 
 **Génération de la pile et sauvegarde** :
-ON choisi combien d'échantillons seront présent sur notre pile lors de la génération puis on sauve le résultat dans un fichier tif.
+On choisi combien d'échantillons seront présent sur notre pile lors de la génération puis on sauve le résultat dans un fichier tif.
 
 .. code-block:: python
 
@@ -87,7 +87,7 @@ ON choisi combien d'échantillons seront présent sur notre pile lors de la gén
 	mask = Mask(size, Pattern.from_pattern(PatternType.SQUARES, {"size": 64}))
 	fluorophore = Fluorophore(wavelength=600, intensity=5000, delta=10, flickering=50)
 	noiser = Noiser(snr=2.6, background=500, variation=20)
-	sampler = Sampler(size=size, pixel_size=160, density=0.25, astigmatism_ratio=2.0, mask=mask, fluorophore=fluorophore, noiser=noiser)
+	sampler = Sampler(size=size, pixel_size=160, density=0.25, astigmatism_ratio=2.0, fluorophore=fluorophore, mask=mask, noiser=noiser)
 	stacker = Stacker(sampler=sampler)
 	stack = stacker.generate(10)
 	stack.save(f"Stack.tif")

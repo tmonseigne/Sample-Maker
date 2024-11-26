@@ -11,4 +11,3 @@ Petit outil permettant de simuler une acquisition de microscopie.
 ## Prérequis
 
 - Python 3.12 ou supérieur
-  - pip install colorama numpy pillow pytest pytest-cov PyQt5 sphinx sphinx-autobuild sphinx-rtd-theme

@@ -22,7 +22,7 @@ size = 256  # Taille de l'image, Cela correspond à la dimension d'un côté de 
 mask = Mask(size, Pattern.from_pattern(PatternType.NONE))
 fluorophore = Fluorophore(wavelength=600, intensity=5000, delta=10, flickering=50)
 noiser = Noiser(snr=10, background=500, variation=20)
-sampler = Sampler(size=size, pixel_size=160, density=0.25, astigmatism_ratio=2.0, mask=mask, fluorophore=fluorophore, noiser=noiser)
+sampler = Sampler(size=size, pixel_size=160, density=0.25, astigmatism_ratio=2.0, fluorophore=fluorophore, mask=mask, noiser=noiser)
 sample = sampler.generate_sample()
 save_sample_as_png(sample, f"{OUTPUT_DIR}/Sample_Base.png")
 
@@ -33,7 +33,7 @@ size = 256  # Taille de l'image, Cela correspond à la dimension d'un côté de 
 mask = Mask(size, Pattern.from_pattern(PatternType.SQUARES, {"size": 64}))
 fluorophore = Fluorophore(wavelength=600, intensity=5000, delta=10, flickering=50)
 noiser = Noiser(snr=2.6, background=500, variation=20)
-sampler = Sampler(size=size, pixel_size=160, density=0.25, astigmatism_ratio=2.0, mask=mask, fluorophore=fluorophore, noiser=noiser)
+sampler = Sampler(size=size, pixel_size=160, density=0.25, astigmatism_ratio=2.0, fluorophore=fluorophore, mask=mask, noiser=noiser)
 sample = sampler.generate_sample()
 save_sample_as_png(sample, f"{OUTPUT_DIR}/Sample_Square_noisy.png", 100)  # Enregistrement de l'échantillon au format png
 
