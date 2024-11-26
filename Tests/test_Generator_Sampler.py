@@ -41,6 +41,7 @@ def test_sampler_change_params():
 	""" Test sur le sampler de changement de paramètres. """
 	sampler = Sampler()
 	sampler.size=512
+	print(sampler.size)
 
 ##################################################
 def test_sampler_bad_options():
