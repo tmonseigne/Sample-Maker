@@ -90,7 +90,7 @@ class Monitoring:
 		self.memory.append(sum(proc.memory_info().rss for proc in processes))
 		# "Darwin" est le nom de macOS dans platform.system()
 		if platform.system() != "Darwin": self.disk.append(sum(proc.io_counters().write_bytes for proc in processes))
-		else: self.disk.append(0)
+		else: self.disk.append(0)  # pragma: no cover
 		self.times.append(time.time())
 
 	##################################################
