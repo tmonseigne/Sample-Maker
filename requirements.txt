@@ -28,5 +28,4 @@ allure-pytest
 sphinx
 sphinx-autobuild
 sphinx-rtd-theme
-sphinx_charts
 ansi2html
