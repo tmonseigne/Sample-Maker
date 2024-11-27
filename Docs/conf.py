@@ -57,6 +57,8 @@ autodoc_member_order = 'bysource'
 
 todo_include_todos = True
 
+suppress_warnings = ['autosectionlabel.*']
+
 # Copie des fichiers de rapport
 # Spécifie les répertoires source et destination
 def copy_dir(source, dest):
