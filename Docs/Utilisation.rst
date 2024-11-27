@@ -26,7 +26,7 @@ On aura donc un masque de répartition composé de 16 carrés.
 
 	mask = Mask(size, Pattern.from_pattern(PatternType.SQUARES, {"size": 32}))
 
-.. image:: ./assets/img/Square_mask.png
+.. image:: ./_static/img/Square_mask.png
    :alt: Square mask
    :align: center
 

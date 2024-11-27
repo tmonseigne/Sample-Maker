@@ -41,13 +41,13 @@ def simulate_memory_usage(monitoring: Monitoring, size: int = 50, duration: floa
 	"""
 	monitoring.add_test_info("Tests/test_simulation_memory.py::test_allocate_memory")
 	print(f"Allocating {size} MB of memory...")
-	allocated_memory = bytearray(size * 1024 * 1024)		# Alloue un tableau de bytes
+	allocated_memory = bytearray(size * 1024 * 1024)  # Alloue un tableau de bytes
 	monitoring.add_test_info("Tests/test_simulation_memory.py::test_hold_memory")
 	print(f"Memory allocated. Holding for {duration} seconds...")
-	time.sleep(duration)									# Garde la mémoire allouée pour observer l'impact
+	time.sleep(duration)  # Garde la mémoire allouée pour observer l'impact
 	monitoring.add_test_info("Tests/test_simulation_memory.py::test_release_memory")
 	print("Releasing memory.")
-	del allocated_memory 									# Libère la mémoire
+	del allocated_memory  # Libère la mémoire
 
 
 ##################################################
@@ -66,11 +66,11 @@ def simulate_disk_io(monitoring: Monitoring, file_size: int = 10, duration: floa
 
 	monitoring.add_test_info("Tests/test_simulation_disk.py::test_disk_hold")
 	print(f"File written. Holding for {duration} seconds...")
-	time.sleep(duration)														  # Maintient le fichier pour observer son impact
+	time.sleep(duration)  # Maintient le fichier pour observer son impact
 
 	monitoring.add_test_info("Tests/test_simulation_disk.py::test_disk_delete")
 	print("Deleting the file...")
-	os.remove(file_name)														  # Supprime le fichier
+	os.remove(file_name)  # Supprime le fichier
 	print("Disk I/O simulation complete.")
 
 
@@ -99,6 +99,5 @@ def test_monitoring_save():
 	simulate_disk_io(monitoring)
 	monitoring.add_test_info("Invalid test infos")
 	monitoring.stop()
-	monitoring.draw_png(f"{OUTPUT_DIR}/test_monitoring.png")
-	monitoring.draw_html(f"{OUTPUT_DIR}/test_monitoring.html")
-	monitoring.save(f"{OUTPUT_DIR}/test_monitoring.txt")
+	for ext in ["png", "html", "json", "txt"]:
+		monitoring.save(f"{OUTPUT_DIR}/test_monitoring.{ext}")

@@ -39,9 +39,9 @@ Un environnement virtuel permet de gérer les dépendances du projet de manière
 
 1. Ouvrez un terminal dans le dossier où vous avez extrait les fichiers du projet.
 2. Créez un environnement virtuel avec la commande suivante :
-.. code-block:: console
+	.. code-block:: console
 
-	python -m venv venv
+		python -m venv venv
 
 3. Activez l'environnement virtuel :
 	- Sous Windows :

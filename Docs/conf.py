@@ -12,38 +12,46 @@ sys.path.insert(0, os.path.abspath('../SampleMaker'))
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'Sample Maker'
-copyright = '2024, Thibaut Monseigne'
-author = 'Thibaut Monseigne'
-language = 'fr'
+project = "Sample Maker"
+copyright = "2024, Thibaut Monseigne"
+author = "Thibaut Monseigne"
+language = "fr"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-		'sphinx.ext.autodoc',
-		'sphinx.ext.autosummary',
-		'sphinx.ext.autosectionlabel',
-		'sphinx.ext.napoleon',
-		'sphinx.ext.todo',
-		'sphinx.ext.viewcode',
+		"sphinx.ext.autodoc",
+		"sphinx.ext.autosummary",
+		"sphinx.ext.autosectionlabel",
+		"sphinx.ext.napoleon",
+		"sphinx.ext.todo",
+		"sphinx.ext.viewcode",
+		"sphinx_charts.charts",
+		"sphinxcontrib.jquery",
 		]
 
-templates_path = ['_templates']
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+templates_path = ["_templates"]
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'sphinx_rtd_theme'
-html_static_path = ['_static']
+html_theme = "sphinx_rtd_theme"
+html_static_path = ["_static"]
+html_css_files = ["css/custom.css"]
+
+# Autoriser l'inclusion de contenu HTML brut
+html_context = {
+    "allow_html_in_rst": True
+}
 
 # -- Automatisation ----------------------------------------------------------
 autosummary_generate = True
 autodoc_default_options = {
-		'members':          True,
-		'undoc-members':    True,
-		'show-inheritance': True,
+		"members":          True,
+		"undoc-members":    True,
+		"show-inheritance": True,
 		}
 autodoc_member_order = 'bysource'
 
@@ -59,5 +67,4 @@ def copy_dir(source, dest):
 		# Copie récursivement les fichiers du dossier source vers le dossier de destination.
 		shutil.copytree(source, dest, dirs_exist_ok=True)
 
-copy_dir('test_reports', '_build/html/test_reports')
-copy_dir('assets', '_build/html/assets')
+copy_dir('Reports', '_build/html/Reports')

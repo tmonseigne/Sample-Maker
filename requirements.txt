@@ -1,18 +1,32 @@
-colorama
-matplotlib
+# Dépendances principales
 numpy
 pandas
+scipy
+colorama
 plotly
+kaleido
 pillow
-GPUtil
+tifffile
+PyQt5
+
+# Dépendances pour les infos cross-platform
 psutil
 py-cpuinfo
+GPUtil
+
+# Dépendances pour les Tests
 pytest
 pytest-cov
 pytest-html
-PyQt5
-scipy
-tifffile
+pytest-md
+pytest-json
+pytest-json-report
+pytest-metadata
+allure-pytest
+
+# Dépendances pour la documentation
 sphinx
 sphinx-autobuild
 sphinx-rtd-theme
+sphinx_charts
+ansi2html

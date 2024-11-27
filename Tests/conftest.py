@@ -1,12 +1,16 @@
+import json
 import platform
 
 import cpuinfo
 import psutil
-from pytest import hookimpl
+import pytest
+from pytest_metadata.plugin import metadata_key
 
 from SampleMaker.Tools.Monitoring import Monitoring
+from SampleMaker.Tools.Utils import print_warning
 
 all_tests_monitoring = Monitoring()
+
 
 ##################################################
 def cpu_infos() -> str:
@@ -20,7 +24,17 @@ def cpu_infos() -> str:
 
 
 ##################################################
+def add_to_json(path, datas_name, datas):
+	try:
+		with open(path, "r") as f: data = json.load(f)
+		data[datas_name] = datas
+		with open(path, "w") as f: json.dump(data, f, indent=4)
+	except FileNotFoundError: print_warning("Json File not found.")
+
+
+##################################################
 # Fonction pour configurer les métadonnées du rapport
+@pytest.hookimpl
 def pytest_metadata(metadata):
 	metadata['System'] = platform.system()
 	metadata['Platform'] = platform.platform()
@@ -38,22 +52,24 @@ def pytest_metadata(metadata):
 
 
 ##################################################
-@hookimpl(tryfirst=True)
+@pytest.hookimpl(tryfirst=True)
 def pytest_sessionstart(session):
 	global all_tests_monitoring
 	all_tests_monitoring.start(0.1)
 
+
 ##################################################
-@hookimpl(tryfirst=True)
+@pytest.hookimpl(tryfirst=True)
 def pytest_sessionfinish(session, exitstatus):
 	global all_tests_monitoring
 	all_tests_monitoring.stop()
-	all_tests_monitoring.draw_png("Reports/Monitoring.png")
-	all_tests_monitoring.draw_html("Reports/Monitoring.html")
-	all_tests_monitoring.save("Reports/test_info.txt")
+	for ext in ["png", "html", "json", "txt"]:
+		all_tests_monitoring.save(f"Reports/Monitoring.{ext}")
+	add_to_json("Reports/Test_Report.json", "metadata", session.config.stash[metadata_key])
+
 
 ##################################################
-@hookimpl(tryfirst=True)
+@pytest.hookimpl(tryfirst=True)
 def pytest_runtest_protocol(item, nextitem):
 	""" Capture les informations sur chaque test """
 	global all_tests_monitoring
