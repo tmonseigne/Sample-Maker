@@ -2,6 +2,7 @@
 
 from SampleMaker.Fluorophore import Fluorophore, PREDEFINED_FLUOROPHORES
 
+
 ##################################################
 def test_fluorophore():
 	""" Test basique sur les fluorophores. """

@@ -8,8 +8,8 @@ from itertools import accumulate
 import numpy as np
 from numpy.typing import NDArray
 
-from SampleMaker.Tools.FileIO import open_png_as_boolean_mask, save_boolean_mask_as_png
 from SampleMaker.Pattern import Pattern, PatternType
+from SampleMaker.Tools.FileIO import open_png_as_boolean_mask, save_boolean_mask_as_png
 from SampleMaker.Tools.Utils import print_warning
 
 
@@ -23,8 +23,8 @@ class Mask:
 		- **size (int)** : Taille du masque.
 		- **pattern (Pattern)** : Motif à utiliser pour générer le masque.
 	"""
-	_size: int =  field(default=256, init=True, repr=False)
-	_pattern: Pattern =  field(default_factory=Pattern, init=True, repr=False)
+	_size: int = field(default=256, init=True, repr=False)
+	_pattern: Pattern = field(default_factory=Pattern, init=True, repr=False)
 	mask: NDArray[np.bool_] = field(init=False, repr=False)
 
 	# ==================================================
@@ -89,9 +89,7 @@ class Mask:
 	# ==================================================
 	##################################################
 	def _generate(self):
-		"""
-		Génère un masque
-		"""
+		""" Génère un masque """
 		# Création de l'image selon le motif
 		if self._pattern.pattern == PatternType.STRIPES: self._stripes_mask()
 		elif self._pattern.pattern == PatternType.SQUARES: self._squares_mask()
@@ -101,9 +99,7 @@ class Mask:
 
 	##################################################
 	def _stripes_mask(self):
-		"""
-		Génération d'un masque avec un motif de bandes.
-		"""
+		""" Génération d'un masque avec un motif de bandes. """
 		self.mask = np.full((self._size, self._size), False, dtype=bool)			  # Masque "noir" par défaut
 		limits = [float(x) for x in self._pattern.options.lengths for _ in range(2)]  # Dupliquer chaque élément (bande noire et blanche de même taille)
 		if self._pattern.options.mirror: limits.extend([1] + limits[::-1])			  # Ajout du miroir
@@ -118,20 +114,18 @@ class Mask:
 
 	##################################################
 	def _squares_mask(self):
-		"""
-		Génération d'un masque avec un motif de carrés.
-		"""
+		""" Génération d'un masque avec un motif de carrés. """
 		self.mask = np.full((self._size, self._size), False, dtype=bool)  # Masque "noir" par défaut
 
 		s = self._pattern.options.size  # Taille de chaque carré blanc
-		if s * 2 > self._size:		    # Si on ne peut même pas placer un carré, le masque reste noir
+		if s * 2 > self._size:			# Si on ne peut même pas placer un carré, le masque reste noir
 			print_warning("La taille est trop grande. Masque blanc généré.")
-			self.mask = ~self.mask	    # Transformation en masque blanc
+			self.mask = ~self.mask		# Transformation en masque blanc
 			return
 
-		n = (self._size - s) // (s * 2) + 1  # Calcul du nombre de carrés dans chaque direction (+1 pour maximiser le nombre de carrés)
-		# Remplissage des carrés dans le masque
+		n = (self._size - s) // (s * 2) + 1			   # Calcul du nombre de carrés dans chaque direction (+1 pour maximiser le nombre de carrés)
 		start = (self._size - (n * (s * 2) - s)) // 2  # Calcul de la position du premier carré
+		# Remplissage des carrés dans le masque
 		for i in range(n):
 			for j in range(n):
 				x_start = start + i * (s * 2)
@@ -140,20 +134,18 @@ class Mask:
 
 	##################################################
 	def _sun_mask(self):
-		"""
-		Génération d'un masque avec un motif en forme de soleil.
-		"""
+		""" Génération d'un masque avec un motif en forme de soleil. """
 		self.mask = np.full((self._size, self._size), False, dtype=bool)  # Masque "noir" par défaut
 
 		r = self._pattern.options.ray_count
-		if not (r & r - 1) == 0:											# Vérifie que rays est une puissance de 2.
+		if not (r & r - 1) == 0:    # Vérifie que rays est une puissance de 2.
 			print_warning("Le nombre de rayons est introuvable ou manquant dans les options. Masque blanc généré.")
-			self.mask = ~self.mask											# Transformation en masque blanc
+			self.mask = ~self.mask  # Transformation en masque blanc
 			return
 
-		center = self._size // 2											# Centre de l'image
-		n_segments = r * 2													# Nombre de segments
-		angle_per_segment = 2 * math.pi / n_segments						# Calcul de l'angle par segment (en radians)
+		center = self._size // 2					  # Centre de l'image
+		n_segments = r * 2							  # Nombre de segments
+		angle_per_segment = 2 * math.pi / n_segments  # Calcul de l'angle par segment (en radians)
 
 		# Remplissage du masque
 		for x in range(self._size):

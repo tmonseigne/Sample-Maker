@@ -3,8 +3,8 @@
 import datetime
 import json
 import os
-import sys
 import re
+import sys
 
 from ansi2html import Ansi2HTMLConverter
 
@@ -14,6 +14,12 @@ conv = Ansi2HTMLConverter(inline=True)  # Utiliser des styles en ligne pour évi
 
 ##################################################
 def to_title_case(name: str) -> str:
+	"""
+	Convertit une chaîne de caractères en "Title Case" (majuscule à chaque mot).
+
+	:param name: La chaîne de caractères à convertir.
+	:return: La chaîne de caractères convertie en "Title Case".
+	"""
 	return name.replace("_", " ").title()
 
 
@@ -45,6 +51,12 @@ def format_duration(duration: float) -> str:
 # ==================================================
 ##################################################
 def generate_rst_from_json(src: str, dst: str):
+	"""
+	Génère un fichier reStructuredText à partir d'un rapport pytest en format JSON.
+
+	:param src: Chemin du fichier JSON contenant les résultats de pytest.
+	:param dst: Chemin du fichier de sortie reStructuredText.
+	"""
 	try:
 		with open(src, 'r') as f:
 			data = json.load(f)  # Read json
@@ -63,6 +75,13 @@ def generate_rst_from_json(src: str, dst: str):
 
 ##################################################
 def get_files_info(src, monitoring_ext="html") -> list[str]:
+	"""
+	Extrait les informations du fichier source pour générer un titre et un nom de fichier pour le monitoring.
+
+	:param src: Chemin du fichier source.
+	:param monitoring_ext: Extension du fichier de monitoring (par défaut "html").
+	:return: Liste contenant le titre et le nom du fichier de monitoring.
+	"""
 	file_basename = os.path.splitext(os.path.basename(src))[0]
 	title = to_title_case(file_basename)
 	monitoring_file = file_basename.replace("Test_Report", "Monitoring") + f".{monitoring_ext}"
@@ -71,6 +90,12 @@ def get_files_info(src, monitoring_ext="html") -> list[str]:
 
 ##################################################
 def get_metadata(metadata: dict) -> str:
+	"""
+	Génère une section reStructuredText pour afficher les métadonnées du rapport.
+
+	:param metadata: Dictionnaire contenant les métadonnées du rapport.
+	:return: Chaîne reStructuredText formatée avec les métadonnées.
+	"""
 	res = ("Environnement\n"
 		   "-------------\n\n"
 		   ".. list-table::\n\n")
@@ -84,6 +109,12 @@ def get_metadata(metadata: dict) -> str:
 
 ##################################################
 def get_summary(data: dict) -> str:
+	"""
+	Génère une section reStructuredText pour afficher un résumé du rapport de test.
+
+	:param data: Dictionnaire contenant les données du rapport, incluant la durée et les résultats des tests.
+	:return: Chaîne reStructuredText formatée avec le résumé du rapport.
+	"""
 	res = ("Summary\n"
 		   "-------\n\n")
 	timestamp = datetime.datetime.fromtimestamp(data["created"])
@@ -92,19 +123,26 @@ def get_summary(data: dict) -> str:
 	duration = str(datetime.timedelta(seconds=data["duration"])).split(".")[0]
 	sum = data["summary"]
 
-	res += (f"{sum.get("collected", 0)} tests collected, {sum.get("passed", 0)} passed, {sum.get("failed", 0)} failed "
+	res += (f"{sum.get("collected", 0)} tests collected, "
+			f"{sum.get("passed", 0)} passed ✅, {sum.get("failed", 0)} failed ❌ "
 			f"in {duration}s on {date} at {time}\n")
 	return res + "\n"
 
 
 ##################################################
 def get_monitoring(file: str) -> str:
+	"""
+	Génère une section reStructuredText pour afficher un graphique de monitoring à partir d'un fichier.
+
+	:param file: Nom du fichier HTML contenant le graphique de monitoring.
+	:return: Chaîne reStructuredText avec un iframe pour afficher le graphique.
+	"""
 	res = ("Monitoring\n"
 		   "----------\n\n")
 
-	#Le Json pourrait etre bien mais ne marche pas
-	#res += f".. chart:: Reports/{file}\n\n    Resources Monitoring\n\n"
-	#Le Iframe fait le travail
+	# Le Json pourrait etre bien mais ne marche pas
+	# res += f".. chart:: Reports/{file}\n\n    Resources Monitoring\n\n"
+	# Le Iframe fait le travail
 	res += (f".. raw:: html\n\n"
 			f"   <div style=\"position: relative; width: 100%; height: 620px; max-width: 100%; margin: 0 0 1em 0; padding:0;\">\n"
 			f"     <iframe src=\"{file}\"\n"
@@ -118,10 +156,10 @@ def get_monitoring(file: str) -> str:
 ##################################################
 def get_tests(tests: list) -> str:
 	"""
-	Génère une section RST formatée pour afficher les résultats des tests.
+	Génère une section reStructuredText pour afficher les résultats des tests.
 
 	:param tests: Liste des résultats de tests sous forme de dictionnaires.
-	:return: Chaîne RST formatée.
+	:return: Chaîne reStructuredText formatée avec les résultats des tests.
 	"""
 	res = ("Test Cases\n"
 		   f"----------\n\n"
@@ -209,6 +247,7 @@ def get_outcome_icon(outcome: str) -> str:
 # ==================================================
 ##################################################
 def usage():
+	""" Affiche l'usage du script en ligne de commande. """
 	print("Usage:\n"
 		  "  python gtest2md.py <REPORT_FILE> <OUTPUT_FILE>\n"
 		  "  Args:\n"

@@ -69,4 +69,3 @@ def test_add_grid():
 	save_sample_as_png(image, f"{OUTPUT_DIR}/Grid.png")
 	ref = open_png_as_sample(f"{INPUT_DIR}/Grid.png")
 	assert np.allclose(ref, image), "L'image devrait correspondre à la référence."
-

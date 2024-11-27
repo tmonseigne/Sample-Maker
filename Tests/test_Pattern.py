@@ -2,6 +2,7 @@
 
 from SampleMaker.Pattern import Pattern, PatternType, SquaresOptions
 
+
 ##################################################
 def test_pattern_type():
 	""" Test de l'objet PatternType. """
@@ -11,6 +12,7 @@ def test_pattern_type():
 	assert PatternType.SQUARES.tostring() == "Carrés", "La chaine de caractère ne correspond pas pour le pattern Carrés"
 	assert PatternType.SUN.tostring() == "Soleil", "La chaine de caractère ne correspond pas pour le pattern Soleil"
 	assert PatternType.EXISTING_IMAGE.tostring() == "Image existante", "La chaine de caractère ne correspond pas pour le pattern Image existante"
+
 
 ##################################################
 def test_pattern():
@@ -38,4 +40,3 @@ def test_pattern():
 	pattern = Pattern.from_pattern(PatternType.EXISTING_IMAGE, {"path": ""})
 	assert pattern.pattern == PatternType.EXISTING_IMAGE, "Ce n'est pas le bon type de pattern."
 	print(pattern)
-

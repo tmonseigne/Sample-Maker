@@ -3,10 +3,10 @@
 import os
 from pathlib import Path
 
-from SampleMaker.Tools.FileIO import save_sample_as_png
 from SampleMaker.Generator.Sampler import Sampler
 from SampleMaker.Mask import Mask
 from SampleMaker.Pattern import Pattern, PatternType
+from SampleMaker.Tools.FileIO import save_sample_as_png
 
 OUTPUT_DIR = Path(__file__).parent / "Output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)  # Créer le dossier de sorties (la première fois, il n'existe pas)
@@ -40,8 +40,9 @@ def test_sampler_masked():
 def test_sampler_change_params():
 	""" Test sur le sampler de changement de paramètres. """
 	sampler = Sampler()
-	sampler.size=512
+	sampler.size = 512
 	print(sampler.size)
+
 
 ##################################################
 def test_sampler_bad_options():

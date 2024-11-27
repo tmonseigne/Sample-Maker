@@ -13,6 +13,7 @@ def reset_on_change(attribute_name: str):
 	                           Cet attribut doit exister dans la classe sous une forme privée (préfixée par un underscore, par ex. `_nom_attribut`).
 	    :return: La classe modifiée avec un getter et un setter pour l'attribut spécifié.
 	    """
+
 	def decorator(cls):
 		private_name = f"_{attribute_name}"
 

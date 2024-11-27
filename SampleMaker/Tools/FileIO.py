@@ -7,8 +7,6 @@ import tifffile as tiff
 from numpy.typing import NDArray
 from PIL import Image
 
-from SampleMaker.Tools.Utils import add_extension
-
 MAX_UI_8 = np.iinfo(np.uint8).max
 MAX_UI_16 = np.iinfo(np.uint16).max
 
@@ -26,7 +24,7 @@ def save_boolean_mask_as_png(mask: NDArray[np.bool_], filename: str):
 	"""
 	if mask.ndim != 2: raise ValueError("Le tableau doit être 2D (hauteur, largeur).")
 	grayscale = (mask * MAX_UI_8).astype(np.uint8)  # Convertir le masque booléen en image en niveaux de gris (255 pour True, 0 pour False)
-	image = Image.fromarray(grayscale, mode='L')    # L pour niveau de gris
+	image = Image.fromarray(grayscale, mode='L')	# L pour niveau de gris
 	image.save(filename)							# Enregistrement
 
 
@@ -39,7 +37,7 @@ def open_png_as_boolean_mask(filename: str) -> NDArray[np.bool_]:
 	:return: Tableau numpy 2D de type booléen représentant le masque (True pour les pixels blancs, False pour les pixels noirs).
 	"""
 	if not os.path.isfile(filename): raise OSError(f"Le fichier \"{filename}\" est introuvable.")
-	image = Image.open(filename).convert("L")	# Charger l'image en niveaux de gris
+	image = Image.open(filename).convert("L")   # Charger l'image en niveaux de gris
 	grayscale = np.array(image)					# Convertir l'image en tableau numpy
 	boolean_mask = grayscale >= (MAX_UI_8 / 2)  # Convertir les niveaux de gris en booléen : True pour les pixels >= 128, False pour < 128
 	return boolean_mask
@@ -69,14 +67,14 @@ def save_sample_as_png(sample: NDArray[np.float32], filename: str, percentile: f
 
 	percentile = np.clip(percentile, 0, 100)								# On évite les options bizarres des utilisateurs.
 	if np.fabs(percentile) <= np.finfo(np.float32).eps: grayscale = sample  # Si le percentile est 0 il n'y a pas de mise à l'échelle
-	else:  																	# Sinon mise à l'échelle
+	else:																	# Sinon mise à l'échelle
 		max_i = np.percentile(sample, percentile)							# Calcul du percentile
-		if max_i == 0: grayscale = np.zeros_like(sample, dtype=np.uint8)    # Si le maximum est 0, on remplit l'image avec des valeurs nulles
+		if max_i == 0: grayscale = np.zeros_like(sample, dtype=np.uint8)	# Si le maximum est 0, on remplit l'image avec des valeurs nulles
 		else: grayscale = (sample * MAX_UI_8 / max_i)						# Normalisation entre 0 et 255
 
-	grayscale = np.clip(grayscale, 0, MAX_UI_8).astype(np.uint8)			# On s'assure que toutes les valeurs sont entre 0 et 255.
-	image = Image.fromarray(grayscale, mode='L')							# L pour niveau de gris
-	image.save(filename)													# Enregistrement
+	grayscale = np.clip(grayscale, 0, MAX_UI_8).astype(np.uint8)  # On s'assure que toutes les valeurs sont entre 0 et 255.
+	image = Image.fromarray(grayscale, mode='L')				  # L pour niveau de gris
+	image.save(filename)										  # Enregistrement
 
 
 ##################################################
@@ -89,9 +87,9 @@ def open_png_as_sample(filename: str, intensity_factor: float = 1.0) -> NDArray[
 	:return: Tableau numpy 2D de type flottant représentant l'échantillon.
 	"""
 	if not os.path.isfile(filename): raise OSError(f"Le fichier \"{filename}\" est introuvable.")
-	image = Image.open(filename).convert("L")			# Charger l'image en niveaux de gris
-	grayscale = np.array(image).astype(np.float32)  	# Convertir l'image en tableau numpy
-	grayscale *= intensity_factor						# Convertir les niveaux de gris en intensité
+	image = Image.open(filename).convert("L")		# Charger l'image en niveaux de gris
+	grayscale = np.array(image).astype(np.float32)  # Convertir l'image en tableau numpy
+	grayscale *= intensity_factor					# Convertir les niveaux de gris en intensité
 	return grayscale
 
 
@@ -113,10 +111,10 @@ def save_stack_as_tif(stack: NDArray[np.float32], filename: str):
 				  - Si 3D (frames x hauteur x largeur), sauvegarde les frames en multi-frame.
 	:param filename: Nom du fichier TIF de sortie.
 	"""
-	if stack.ndim == 2: stack = stack[np.newaxis, ...]		# Si le tableau est 2D, le transformer en 3D avec une seule frame
+	if stack.ndim == 2: stack = stack[np.newaxis, ...]		 # Si le tableau est 2D, le transformer en 3D avec une seule frame
 	if stack.ndim != 3: raise ValueError("Le tableau doit être 2D (hauteur, largeur) ou 3D (frames, hauteur, largeur).")
 	stack = np.clip(stack, 0, MAX_UI_16).astype(np.uint16)   # S'assure que les valeurs sont bien entre 0 et MAX_UI_16 et de type uint16
-	tiff.imwrite(filename, stack, photometric="minisblack")	 # Sauvegarde la pile avec tifffile
+	tiff.imwrite(filename, stack, photometric="minisblack")  # Sauvegarde la pile avec tifffile
 
 
 ##################################################
@@ -129,11 +127,8 @@ def open_tif_as_stack(filename: str) -> NDArray[np.float32]:
 	:return: Tableau 3D contenant les données TIF.
 	"""
 	if not os.path.isfile(filename): raise OSError(f"Le fichier \"{filename}\" est introuvable.")
-	stack = tiff.imread(filename)						# Lecture du fichier avec tifffile
-	# Techniquement ces deux éléments ne sont pas possibles avec un fichier valide.
-	# if stack.ndim == 2: stack = stack[np.newaxis, ...]  # Vérification des dimensions et conversion en pile 3D si nécessaire
-	# if stack.ndim != 3: raise ValueError(f"Fichier {filename} invalide : attendu 2D ou 3D, trouvé {stack.ndim} dimensions.")
-	return stack.astype(np.float32)						# Retour avec conversion en float
+	stack = tiff.imread(filename)	 # Lecture du fichier avec tifffile
+	return stack.astype(np.float32)  # Retour avec conversion en float
 
 # ==================================================
 # endregion Sample TIF Stack IO

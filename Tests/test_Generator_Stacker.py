@@ -12,6 +12,7 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)  # Créer le dossier de sorties (la premi
 
 SAMPLER = Sampler(size=128)
 
+
 ##################################################
 def test_stacker():
 	""" Test basique sur le générateur de stack. """

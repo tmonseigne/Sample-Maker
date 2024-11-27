@@ -26,6 +26,7 @@ def get_color_map_by_name(names: list[str], palette: list[str] = px.colors.quali
 
 	return color_map
 
+
 ##################################################
 def draw_test_section(fig: go.Figure, y_range: list, tests: list[dict], color_map: dict, last_time: float, row: int):
 	"""
@@ -74,42 +75,3 @@ def draw_test_section(fig: go.Figure, y_range: list, tests: list[dict], color_ma
 		# Ajouter une ligne verticale pointillée
 		fig.add_trace(go.Scatter(x=[t, t], y=y_range, mode='lines', line=dict(color=color, width=0.5, dash='dash'),
 								 name=text, hoverinfo='text', text=text), row=row, col=1)
-
-#
-###################################################
-#def add_color_map_legend(fig: go.Figure, color_map: dict,
-#						 x_start: float = 0.05, y: float = -0.2, rect_size: float = 0.05, spacing: float = 0.15):
-#	"""
-#	Ajoute une légende colorée personnalisée à un graphique Plotly.
-#
-#	Cette fonction place une série de rectangles colorés (avec leurs annotations) sous le graphique,
-#	pour représenter une légende associée à un `color_map` donné.
-#
-#	:param fig: Le graphique Plotly à modifier pour inclure la légende.
-#	:param color_map: Un dictionnaire associant un nom (clé) à une couleur (valeur) en format hexadécimal ou CSS.
-#	:param x_start: La position horizontale de départ (en coordonnées relatives au graphique). (Par défaut: 0.05)
-#	:param y: La position verticale de la légende (en coordonnées relatives au graphique). (Par défaut: -0.2)
-#	:param rect_size: La taille des rectangles colorés (en proportion). (Par défaut: 0.05)
-#	:param spacing: L'espacement horizontal entre chaque élément de la légende (en proportion). (Par défaut: 0.15)
-#	:return: Cette fonction modifie l'objet `fig` en ajoutant des traces et des formes, mais ne retourne rien.
-#	"""
-#	annotations = []
-#	shapes = []
-#	for i, (item, color) in enumerate(color_map.items()):
-#		# Calcul des positions
-#		x_rect_start = x_start + i * spacing
-#		x_rect_end = x_rect_start + rect_size
-#
-#		# Ajouter un carré coloré
-#		shapes.append(dict(type="rect", xref="paper", yref="paper",
-#						   x0=x_rect_start, y0=y, x1=x_rect_end, y1=y + rect_size, fillcolor=color, line=dict(width=0), ))
-#
-#		# Ajouter un texte à côté
-#		annotations.append(dict(x=x_rect_end + 0.02, y=y + rect_size / 2, xref="paper", yref="paper",
-#								text=item, showarrow=False, font=dict(size=10), align="left", ))
-#
-#	# Appliquer les annotations et les formes au graphique
-#	fig.update_layout(annotations=list(fig.layout.annotations or []) + annotations,
-#					  shapes=list(fig.layout.shapes or []) + shapes, )
-#
-#

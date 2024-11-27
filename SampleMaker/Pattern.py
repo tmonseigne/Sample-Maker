@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
+
 # ==================================================
 # region Pattern Type
 # ==================================================
@@ -42,6 +43,7 @@ class PatternType(Enum):
 
 	##################################################
 	def __str__(self) -> str: return self.tostring()
+
 
 # ==================================================
 # endregion Pattern Type
@@ -106,6 +108,7 @@ class StripesOptions:
 	##################################################
 	def __str__(self) -> str: return self.tostring()
 
+
 ##################################################
 @dataclass
 class SquaresOptions:
@@ -133,6 +136,7 @@ class SquaresOptions:
 	##################################################
 	def __str__(self) -> str: return self.tostring()
 
+
 ##################################################
 @dataclass
 class SunOptions:
@@ -158,6 +162,7 @@ class SunOptions:
 	##################################################
 	def __str__(self) -> str: return self.tostring()
 
+
 ##################################################
 @dataclass
 class ExistingImageOptions:
@@ -182,6 +187,7 @@ class ExistingImageOptions:
 
 	##################################################
 	def __str__(self) -> str: return self.tostring()
+
 
 # ==================================================
 # endregion Pattern Options

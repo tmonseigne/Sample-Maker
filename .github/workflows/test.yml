@@ -18,8 +18,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ["3.12", "3.13"]
+        platform: [ ubuntu-latest, windows-latest, macos-latest ]
+        python-version: [ "3.12", "3.13" ]
 
     steps:
       - uses: actions/checkout@v4
@@ -52,7 +52,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Reports
-          path: | 
+          path: |
             Reports/Test_Report_CI_*.rst
             Reports/Monitoring_CI_*.html
         continue-on-error: true  # Permet de continuer même si cette étape échoue

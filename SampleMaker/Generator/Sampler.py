@@ -165,7 +165,7 @@ class Sampler:
 			x_int = np.clip(localisation[:, 0].astype(int), 0, self._size - 1)
 			y_int = np.clip(localisation[:, 1].astype(int), 0, self._size - 1)
 			valid_indices = self.mask.mask[x_int, y_int]  # Sélectionner les positions des molécules dont le masque est "True" aux indices (x, y)
-			localisation = localisation[valid_indices]  # Ne garder que les molécules qui sont dans le masque
+			localisation = localisation[valid_indices]	  # Ne garder que les molécules qui sont dans le masque
 		return localisation
 
 	##################################################
@@ -178,13 +178,13 @@ class Sampler:
 		:return: Un tableau numpy de N lignes et 3 colonnes, où chaque ligne représente les coordonnées (x, y, z) d'une molécule.
 		"""
 
-		start = int(shift / 2)  # Position de départ
+		start = int(shift / 2)								 # Position de départ
 		coord = np.arange(start, self._size - start, shift)  # On voit le centre des carrés de taille shift present dans notre image.
-		n_molecules = len(coord) ** 2  # On a NxN molécules.
-		x, y = np.meshgrid(coord, coord)  # Grille de coordonnées X et Y.
-		x, y = x.flatten(), y.flatten()  # Aplatir les coordonnées X et Y pour les transformer en une liste de points.
-		z = np.linspace(-1, 1, n_molecules)  # Tous les Z possibles sur cette grille.
-		return np.vstack((x, y, z)).T  # Combiner les coordonnées dans un tableau de forme (n_molecules, 3).
+		n_molecules = len(coord) ** 2						 # On a NxN molécules.
+		x, y = np.meshgrid(coord, coord)					 # Grille de coordonnées X et Y.
+		x, y = x.flatten(), y.flatten()						 # Aplatir les coordonnées X et Y pour les transformer en une liste de points.
+		z = np.linspace(-1, 1, n_molecules)					 # Tous les Z possibles sur cette grille.
+		return np.vstack((x, y, z)).T						 # Combiner les coordonnées dans un tableau de forme (n_molecules, 3).
 
 	# ==================================================
 	# endregion Compute localisation
@@ -219,9 +219,9 @@ class Sampler:
 			x_mesh, y_mesh = np.meshgrid(x_coords, y_coords)
 			pos = np.dstack((x_mesh, y_mesh))
 
-			rv = multivariate_normal(mean=[x, y], cov=[[sigma_x**2, 0], [0, sigma_y**2]])  # Définir la gaussienne avec l'astigmatisme selon le ratio
-			psf = self._fluorophore.get_intensity(True) * rv.pdf(pos)  # Générer une intensité et appliquer la gaussienne
-			image += psf  # Ajouter la PSF à l'image
+			rv = multivariate_normal(mean=[x, y], cov=[[sigma_x ** 2, 0], [0, sigma_y ** 2]])  # Définir la gaussienne avec l'astigmatisme selon le ratio
+			psf = self._fluorophore.get_intensity(True) * rv.pdf(pos)						   # Générer une intensité et appliquer la gaussienne
+			image += psf																	   # Ajouter la PSF à l'image
 
 		return np.clip(image, 0, MAX_INTENSITY)  # Clipper les valeurs pour éviter les débordements
 

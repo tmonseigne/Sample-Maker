@@ -13,6 +13,7 @@ OUTPUT_DIR = Path(__file__).parent / "Output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)  # Créer le dossier de sorties (la première fois, il n'existe pas)
 SIZE = 256
 
+
 ##################################################
 def test_stack():
 	""" Test basique sur la classe. """
@@ -44,10 +45,10 @@ def test_stack_setter_getter():
 	sample4 = np.ones((2, 2)).astype(np.float32) * 4
 
 	# Ajout des échantillons
-	stack.add_sample(sample1)  # Premier échantillon
-	stack.add_sample(sample2, -1)  # Deuxième échantillon ajouté à la fin (car indice <0)
+	stack.add_sample(sample1)			 # Premier échantillon
+	stack.add_sample(sample2, -1)		 # Deuxième échantillon ajouté à la fin (car indice <0)
 	stack.add_sample(sample3, index=42)  # Troisième échantillon ajouté à la fin (car indice trop élevé)
-	stack.add_sample(sample4, index=0)  # Remplace le premier échantillon
+	stack.add_sample(sample4, index=0)   # Remplace le premier échantillon
 
 	print(f"\n{stack}")  # Affiche Pile 3D : (3, 2, 2) Contenu : [[4, 4, 4, 4], [2, 2, 2, 2], [3, 3, 3, 3]]
 
@@ -68,6 +69,7 @@ def test_stack_setter_getter():
 	with pytest.raises(IndexError) as exception_info: stack.get_sample(42)
 	assert exception_info.type == IndexError, "L'erreur relevé n'est pas correcte."
 
+
 ##################################################
 def test_stack_save():
 	""" Test sur l'enregistrement d'une pile. """
@@ -76,6 +78,7 @@ def test_stack_save():
 	stack.add_sample(np.zeros((2, 2)).astype(np.float32))
 	stack.add_sample(np.ones((2, 2)).astype(np.float32))
 	stack.save(f"{OUTPUT_DIR}/test_stack.tif")
+
 
 ##################################################
 def test_stack_open():
@@ -87,6 +90,7 @@ def test_stack_open():
 	ref.add_sample(np.zeros((2, 2)).astype(np.float32))
 	ref.add_sample(np.ones((2, 2)).astype(np.float32))
 	assert np.allclose(ref.stack, stack.stack, atol=1), "La pile devrait correspondre à la référence avec une tolérance d'erreur."
+
 
 ##################################################
 def test_stack_open_bad_file():

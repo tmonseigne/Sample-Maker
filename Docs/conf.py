@@ -42,8 +42,8 @@ html_css_files = ["css/custom.css"]
 
 # Autoriser l'inclusion de contenu HTML brut
 html_context = {
-    "allow_html_in_rst": True
-}
+		"allow_html_in_rst": True
+		}
 
 # -- Automatisation ----------------------------------------------------------
 autosummary_generate = True
@@ -58,6 +58,7 @@ todo_include_todos = True
 
 suppress_warnings = ['autosectionlabel.*']
 
+
 # Copie des fichiers de rapport
 # Spécifie les répertoires source et destination
 def copy_dir(source, dest):
@@ -67,5 +68,6 @@ def copy_dir(source, dest):
 		os.makedirs(dest, exist_ok=True)
 		# Copie récursivement les fichiers du dossier source vers le dossier de destination.
 		shutil.copytree(source, dest, dirs_exist_ok=True)
+
 
 copy_dir('Reports', '_build/html/Reports')

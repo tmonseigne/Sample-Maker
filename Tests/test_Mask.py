@@ -6,9 +6,9 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from SampleMaker.Tools.FileIO import open_png_as_boolean_mask
 from SampleMaker.Mask import Mask
 from SampleMaker.Pattern import Pattern, PatternType
+from SampleMaker.Tools.FileIO import open_png_as_boolean_mask
 
 INPUT_DIR = Path(__file__).parent / "Input"
 OUTPUT_DIR = Path(__file__).parent / "Output"
@@ -27,6 +27,7 @@ def test_mask():
 	assert mask.pattern == new_pattern, "Le masque n'a pas la taille attendue."
 	print(f"\n{mask}")
 	mask.save(f"{OUTPUT_DIR}/test_mask.png")
+
 
 ##################################################
 def test_generate_mask_stripes():

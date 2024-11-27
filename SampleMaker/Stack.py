@@ -1,6 +1,5 @@
 """ Fichier de la classe permettant de stocker et manipuler des piles d'échantillons """
 
-import os
 from dataclasses import dataclass, field
 
 import numpy as np
@@ -18,13 +17,13 @@ class Stack:
 	Attributs :
 		- **stack (np.ndarray)** : Tableau numpy 3D stockant la pile d'images.
 	"""
-	stack: NDArray[np.float32] = field(init=False, default_factory=lambda: np.empty((0,0,0), dtype=np.float32))
+	stack: NDArray[np.float32] = field(init=False, default_factory=lambda: np.empty((0, 0, 0), dtype=np.float32))
 
 	# ==================================================
 	# region Sample Manipulation
 	# ==================================================
 	##################################################
-	def add_sample(self, sample: NDArray[np.float32], index: int=-1):
+	def add_sample(self, sample: NDArray[np.float32], index: int = -1):
 		"""
 		Ajoute un échantillon 2D à la pile 3D de la classe.
 

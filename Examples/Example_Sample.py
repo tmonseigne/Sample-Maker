@@ -3,12 +3,12 @@
 import os
 from pathlib import Path
 
-from SampleMaker.Tools.FileIO import save_sample_as_png
 from SampleMaker.Fluorophore import Fluorophore
 from SampleMaker.Generator.Noiser import Noiser
 from SampleMaker.Generator.Sampler import Sampler
 from SampleMaker.Mask import Mask
 from SampleMaker.Pattern import Pattern, PatternType
+from SampleMaker.Tools.FileIO import save_sample_as_png
 
 # Gestion des dossiers
 OUTPUT_DIR = Path(__file__).parent / "Output"

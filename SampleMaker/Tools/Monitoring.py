@@ -197,7 +197,7 @@ class Monitoring:
 
 		# add_color_map_legend
 		self._figure.update_layout(width=1200, height=600,
-								   margin={"t":50,"l":5,"r":5,"b":5},
+								   margin={"t": 50, "l": 5, "r": 5, "b": 5},
 								   title_text="Resource Usage Over Time", showlegend=False)
 		for i in range(3):
 			self._figure.update_yaxes(showgrid=False, row=i + 1, col=1)  # Supprimer la grille verticale
@@ -212,7 +212,7 @@ class Monitoring:
 	# endregion IO
 	# ==================================================
 	##################################################
-	def save(self, filename: str, full_html: bool=False):
+	def save(self, filename: str, full_html: bool = False):
 		"""
 		Sauvegarde les données de monitoring dans un fichier spécifié en fonction de l'extension du fichier.
 

@@ -55,7 +55,7 @@ class Noiser:
 		# Si le bruit de fond est non nul
 		if abs(self.background) > np.finfo(np.float32).eps and abs(self.variation) > np.finfo(np.float32).eps:
 			# Crée une image de fond (background) avec un bruit gaussien de base et un bruit poissonien et l'ajoute au signal
-			noisy += self.create_noise(size, self.background, (self.background * self.variation/100))
+			noisy += self.create_noise(size, self.background, (self.background * self.variation / 100))
 
 		# Si le SNR est non nul
 		if abs(self.snr) > np.finfo(np.float32).eps:

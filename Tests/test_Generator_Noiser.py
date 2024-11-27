@@ -5,8 +5,8 @@ from pathlib import Path
 
 import numpy as np
 
-from SampleMaker.Tools.FileIO import save_sample_as_png
 from SampleMaker.Generator.Noiser import Noiser
+from SampleMaker.Tools.FileIO import save_sample_as_png
 
 OUTPUT_DIR = Path(__file__).parent / "Output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)						# Créer le dossier de sorties (la première fois, il n'existe pas)
@@ -50,6 +50,7 @@ def test_noiser_only_background():
 	noiser = Noiser(0, 50, 50)
 	res = noiser.apply(ref_image)
 	save_sample_as_png(res, f"{OUTPUT_DIR}/test_noiser_background.png", 0)
+
 
 ##################################################
 def test_noiser_black_image():
