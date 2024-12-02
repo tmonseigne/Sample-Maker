@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication
 
-from SampleMaker.GUI.MainUI import MainUI
+from SampleMaker.GUI import MainUI
 
 
 def main():

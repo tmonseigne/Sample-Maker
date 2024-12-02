@@ -6,6 +6,7 @@ Les sous-classes permettent de gérer des paramètres spécifiques tels que les 
 Ces classes sont utilisées pour créer et configurer des widgets de paramètres dans une interface graphique.
 
 Classes :
+
     - Setting : Classe de base pour un paramètre d'interface utilisateur.
     - ComboSetting : Paramètre de type liste déroulante avec options.
     - FileSetting : Paramètre de Type ouverture de fichier.

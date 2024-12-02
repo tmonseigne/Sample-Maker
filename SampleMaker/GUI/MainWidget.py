@@ -12,16 +12,8 @@ import os
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QHBoxLayout, QMessageBox, QPushButton, QVBoxLayout, QWidget
 
-from SampleMaker.Fluorophore import Fluorophore
-from SampleMaker.Generator.Noiser import Noiser
-from SampleMaker.Generator.Sampler import Sampler
-from SampleMaker.Generator.Stacker import Stacker
-from SampleMaker.Generator.StackModel import StackModelType
-from SampleMaker.GUI.Settings.UI import Setting, ComboSetting, FileSetting, FloatSetting, IntSetting
 from SampleMaker.GUI.Settings.Settings import Settings
 from SampleMaker.GUI.UtilsUI import create_section
-from SampleMaker.Mask import Mask
-from SampleMaker.Pattern import PatternType
 from SampleMaker.Tools.Utils import add_suffix, get_timestamp_for_files
 
 # Gestion des dossiers
@@ -169,9 +161,3 @@ class MainWidget(QWidget):
 		# Afficher la boîte de message et attendre la réponse de l'utilisateur
 		msg_box.exec_()
 
-	def check_settings(self) -> list:
-		""""""
-		# Récupération de tous les settings de tous les dictionnaires de setting
-		s = [[setting.get_value() for setting in section] for section in self.settings.values()]
-		self.warning_popup("Yolo", "Blabla")
-		return s

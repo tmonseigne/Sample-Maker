@@ -1,6 +1,4 @@
-SampleMaker API Documentation
-==============================
-
+"""
 SampleMaker : Un générateur d'images synthétiques pour des simulations en microscopie.
 
 Ce package fournit une infrastructure complète pour générer des images artificielles basées sur des paramètres configurables,
@@ -24,23 +22,17 @@ incluant les caractéristiques des fluorophores, les modèles de bruit, et les p
 **Importation** :
 
 Les composants peuvent être importés directement selon les besoins, par exemple :
+```python
+from SampleMaker import Fluorophore, Generator
+```
 
-.. code-block:: python
+"""
 
-	from SampleMaker import Fluorophore, Generator
+# Importation explicite des classes pour qu'elles soient accessibles directement
+from .Fluorophore import Fluorophore
+from .Mask import Mask
+from .Pattern import Pattern, PatternType
+from .Stack import Stack
 
-
-.. toctree::
-   :maxdepth: 2
-
-   SampleMaker.Generator
-   SampleMaker.GUI
-   SampleMaker.Tools
-
-.. toctree::
-   :maxdepth: 1
-
-   SampleMaker.Fluorophore
-   SampleMaker.Mask
-   SampleMaker.Pattern
-   SampleMaker.Stack
+# Définir la liste des symboles exportés
+__all__ = ["Generator", "GUI", "Tools", "Fluorophore", "Mask", "Pattern", "PatternType", "Stack"]
