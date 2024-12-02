@@ -16,7 +16,7 @@ class StackModelType(Enum):
 
 	- NONE : Aucun modèle particulier (les échantillons sont indépendants les uns des autres).
 	"""
-	NONE = 0
+	RANDOM = 0
 
 	###################################################
 	def tostring(self) -> str:
@@ -26,7 +26,7 @@ class StackModelType(Enum):
 		:return: Le nom du motif en français.
 		"""
 		return {
-				StackModelType.NONE: "None",
+				StackModelType.RANDOM: "Aléatoire",
 				}[self]
 
 
@@ -75,7 +75,7 @@ class StackModel:
 		- **model (StackModelType)** : Le modèle à utiliser.
 		- **options (Dict)** : Dictionnaire contenant des options spécifiques au modèle.
 	"""
-	model: StackModelType = StackModelType.NONE
+	model: StackModelType = StackModelType.RANDOM
 	options: Union[NoneOptions] = field(default_factory=NoneOptions)
 
 	##################################################

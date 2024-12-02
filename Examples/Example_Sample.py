@@ -37,6 +37,19 @@ sampler = Sampler(size=size, pixel_size=160, density=0.25, astigmatism_ratio=2.0
 sample = sampler.generate_sample()
 save_sample_as_png(sample, f"{OUTPUT_DIR}/Sample_Square_noisy.png", 100)  # Enregistrement de l'échantillon au format png
 
+
+##################################################
+# Création d'un échantillon avec une grille de PSF fixe et aucun bruit.
+
+size = 256  # Taille de l'image, Cela correspond à la dimension d'un côté de l'image carrée.
+mask = Mask(size, Pattern.from_pattern(PatternType.EXISTING_IMAGE, {"path": f"{INPUT_DIR}/PALM.png"}))
+fluorophore = Fluorophore(wavelength=600, intensity=5000, delta=10, flickering=50)
+noiser = Noiser(snr=0, background=0, variation=0)
+sampler = Sampler(size=size, pixel_size=160, astigmatism_ratio=2.0, fluorophore=fluorophore, noiser=noiser)
+sample = sampler.generate_sample()
+save_sample_as_png(sample, f"{OUTPUT_DIR}/Sample_Palm.png", 100)  # Enregistrement de l'échantillon au format png
+
+
 ##################################################
 # Création d'un échantillon avec une grille de PSF fixe et aucun bruit.
 

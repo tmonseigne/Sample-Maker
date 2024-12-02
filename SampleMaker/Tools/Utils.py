@@ -1,5 +1,7 @@
 """ Fichier de fonctions génériques """
 
+from datetime import datetime
+
 import numpy as np
 from colorama import Fore, Style
 from numpy.typing import NDArray
@@ -7,7 +9,7 @@ from numpy.typing import NDArray
 
 # ==================================================
 # region File Management
-# # ==================================================
+# ==================================================
 ##################################################
 def add_extension(filename: str, extension: str) -> str:
 	"""
@@ -17,8 +19,36 @@ def add_extension(filename: str, extension: str) -> str:
 	:param extension: Extension finale du fichier
 	"""
 	if not extension.startswith('.'): extension = '.' + extension  # S'assurer que l'extension commence par un point
-	if not filename.endswith(extension): filename += extension	   # Si le fichier n'a pas déjà l'extension, on l'ajoute
+	if not filename.endswith(extension): filename += extension  # Si le fichier n'a pas déjà l'extension, on l'ajoute
 	return filename
+
+
+##################################################
+def add_suffix(filename: str, suffix: str) -> str:
+	"""
+	Ajoute un suffixe à un nom de fichier (gère la possibilité d'une extension ou non au nom de fichier).
+
+	:param filename: Nom de fichier d'origine.
+	:param suffix: Suffixe à ajouter.
+	:return: Nom de fichier avec l'horodatage ajouté.
+	"""
+	# Insérer le suffixe avant l'extension du fichier s'il y en a une
+	if "." in filename:
+		name, ext = filename.rsplit(".", 1)
+		return f"{name}{suffix}.{ext}"
+	return f"{filename}{suffix}"
+
+
+##################################################
+def get_timestamp_for_files(with_hour: bool = True) -> str:
+	"""
+	Créé un horodatage au format -AAAAMMJJ_HHMMSS pour un nom de fichier.
+
+	:param with_hour: Ajoute ou non l'heure au timestamp
+	:return: Horodatage.
+	"""
+	if with_hour: return datetime.now().strftime("-%Y%m%d_%H%M%S")  # Formater la date et l'heure
+	return datetime.now().strftime("-%Y%m%d")  # Formater la date
 
 
 # ==================================================
