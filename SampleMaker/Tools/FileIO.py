@@ -1,4 +1,36 @@
-""" Fichier de fonctions de manipulation de fichiers """
+"""
+Fichier de fonctions de manipulation de fichiers
+
+Ce module regroupe diverses fonctions pour la gestion et la manipulation de fichiers
+ainsi que pour le traitement d'images sous forme de masques ou d'échantillons.
+
+Il offre des utilitaires pour enregistrer et charger des données en formats PNG ou TIF,
+en facilitant les conversions entre tableaux NumPy et fichiers image. Les fonctionnalités
+couvrent les masques booléens, les échantillons avec normalisation, et les piles d'images.
+
+**Structure** :
+
+1. **Boolean Mask IO**
+
+   - `save_boolean_mask_as_png`: Enregistre un masque binaire comme une image PNG.
+   - `open_png_as_boolean_mask`: Charge un masque binaire depuis une image PNG.
+
+2. **Sample PNG Image IO**
+
+   - `save_sample_as_png`: Enregistre un tableau 2D comme une image PNG avec normalisation.
+   - `open_png_as_sample`: Charge un tableau 2D depuis une image PNG avec ajustement d'intensité.
+
+3. **Sample TIF Stack IO**
+
+   - `save_stack_as_tif`: Sauvegarde une pile d'images 3D en tant que fichier TIF multi-frame.
+   - `open_tif_as_stack`: Charge une pile d'images 3D depuis un fichier TIF.
+
+Constantes :
+
+- `MAX_UI_8` : Valeur maximale pour un entier non signé sur 8 bits (255).
+- `MAX_UI_16` : Valeur maximale pour un entier non signé sur 16 bits (65535).
+
+"""
 
 import os
 

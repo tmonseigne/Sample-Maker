@@ -1,3 +1,25 @@
+"""
+Module de surveillance des ressources système pendant l'exécution de tests.
+
+Ce fichier contient une classe principale `Monitoring` permettant de suivre en temps réel l'utilisation des
+ressources système (CPU, mémoire, disque) durant l'exécution de tests. Il offre des fonctionnalités de surveillance,
+de mise à jour des données et de visualisation graphique des résultats.
+
+**Contenu** :
+
+1. **Classe principale**
+
+   - `Monitoring` : Classe pour surveiller et analyser les ressources utilisées.
+
+2. **Fonctionnalités**
+
+   - Surveillance des ressources système (CPU, mémoire, disque) via `psutil`.
+   - Génération de graphiques interactifs avec `plotly`.
+   - Sauvegarde des résultats au format texte, HTML ou JSON.
+   - Gestion des intervalles de mise à jour via des threads.
+
+"""
+
 import os
 import platform
 import re
@@ -64,9 +86,7 @@ class Monitoring:
 
 	##################################################
 	def _reset(self):
-		"""
-		Réinitialise toutes les données de monitoring (CPU, mémoire, disque, etc.).
-		"""
+		""" Réinitialise toutes les données de monitoring (CPU, mémoire, disque, etc.). """
 		self._cpu = []
 		# self.gpu = []
 		self._memory = []
@@ -78,9 +98,7 @@ class Monitoring:
 
 	##################################################
 	def _update(self):
-		"""
-		Met à jour les valeurs d'utilisation du CPU, de la mémoire et du disque en fonction des processus en cours.
-		"""
+		""" Met à jour les valeurs d'utilisation du CPU, de la mémoire et du disque en fonction des processus en cours. """
 		# Sélection de processus
 		pytest_pid = os.getpid()  # PID de pytest
 		pytest_proc = psutil.Process(pytest_pid)  # Récupère le processus parent
@@ -109,18 +127,14 @@ class Monitoring:
 
 	##################################################
 	def monitor(self):
-		"""
-		Surveille les ressources en continu dans un thread séparé.
-		"""
+		""" Surveille les ressources en continu dans un thread séparé. """
 		while self._monitoring:
 			self._update()
 			time.sleep(self.interval)
 
 	##################################################
 	def stop(self):
-		"""
-		Arrête la surveillance et effectue une dernière mise à jour des valeurs.
-		"""
+		""" Arrête la surveillance et effectue une dernière mise à jour des valeurs. """
 		self._monitoring = False
 		self._thread.join()
 		self._update()  # Dernière entrée

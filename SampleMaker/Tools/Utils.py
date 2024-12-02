@@ -1,4 +1,30 @@
-""" Fichier de fonctions génériques """
+"""
+Fichier de fonctions génériques pour la gestion des fichiers, l'affichage de messages colorés dans la console,
+et la manipulation d'images matricielles, comme l'ajout de grilles.
+
+Ce module regroupe des utilitaires pour des tâches courantes et est structuré en plusieurs sections :
+
+- Gestion de fichiers : manipulation des noms de fichiers et ajout d'extensions ou de suffixes.
+- Affichage : impression de messages colorés pour les erreurs ou avertissements.
+- Dessin : ajout de grilles sur des images représentées sous forme de matrices NumPy.
+
+**Structure** :
+
+1. **File Management**
+
+   - `add_extension` : Ajoute une extension à un fichier s'il n'en a pas.
+   - `add_suffix` : Ajoute un suffixe à un nom de fichier, tout en préservant l'extension.
+   - `get_timestamp_for_files` : Génère un horodatage au format adapté pour les noms de fichiers.
+
+2. **Prints**
+
+   - `print_error` : Affiche un message d'erreur en rouge.
+   - `print_warning` : Affiche un avertissement en jaune.
+
+3. **Drawing**
+
+   - `add_grid` : Ajoute une grille de pixels sur une image représentée sous forme de matrice NumPy.
+"""
 
 from datetime import datetime
 

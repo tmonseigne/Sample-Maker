@@ -1,4 +1,16 @@
-""" Fichier de décorateurs personnalisés. """
+"""
+Fichier de décorateurs personnalisés.
+
+Ce module contient un décorateur utilitaire pour étendre le comportement des classes Python.
+Il permet d'automatiser certaines tâches, comme l'appel d'une méthode lors de la modification d'un attribut spécifique.
+
+**Fonctionnalités** :
+
+1. **`reset_on_change`**
+
+   - Décorateur conçu pour déclencher automatiquement une méthode `reset` lors du changement d'un attribut.
+   - Il crée un getter et un setter pour un attribut donné, avec la logique d'appel de la méthode `reset` lorsque le setter est invoqué.
+"""
 
 
 ##################################################
