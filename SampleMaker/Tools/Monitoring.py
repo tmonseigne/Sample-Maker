@@ -243,7 +243,7 @@ class Monitoring:
 		elif extension == ".json":
 			self._figure.write_json(filename)
 		else:
-			with open(filename, "w") as f:
+			with open(filename, "w", encoding="utf-8") as f:
 				f.write(f"Timestamps : {self._times}\n")
 				f.write(f"CPU Usage : {self._cpu}\n")
 				# f.write(f"GPU Usage : {self.gpu}\n")
