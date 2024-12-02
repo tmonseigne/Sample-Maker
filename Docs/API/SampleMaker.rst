@@ -10,7 +10,6 @@ incluant les caractéristiques des fluorophores, les modèles de bruit, et les p
 
 - `Fluorophore` : Gère les propriétés optiques des fluorophores simulés.
 - `Generator` : Contient les outils pour créer des images synthétiques, y compris le bruit (Noiser), l'échantillonnage (Sampler), et la gestion des piles (Stacker, StackModel).
-- `GUI` : Fournit une interface utilisateur pour configurer et gérer les paramètres.
 - `Mask` : Gère les masques appliqués aux images pour structurer la répartition des molécules.
 - `Pattern` : Définit les motifs de répartition des molécules.
 - `Tools` : Fournit des outils utilitaires pour la gestion des fichiers, la surveillance des ressources, et d'autres fonctions génériques.
@@ -34,7 +33,6 @@ Les composants peuvent être importés directement selon les besoins, par exempl
    :maxdepth: 2
 
    SampleMaker.Generator
-   SampleMaker.GUI
    SampleMaker.Tools
 
 .. toctree::

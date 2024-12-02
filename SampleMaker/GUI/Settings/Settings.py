@@ -17,14 +17,9 @@ en facilitant le paramétrage et en générant des objets prêts à l'emploi pou
 import os
 from dataclasses import dataclass, field
 
-from SampleMaker.Fluorophore import Fluorophore
-from SampleMaker.Generator.Noiser import Noiser
-from SampleMaker.Generator.Sampler import Sampler
-from SampleMaker.Generator.Stacker import Stacker
-from SampleMaker.Generator.StackModel import StackModelType
-from SampleMaker.GUI.Settings import UI as UI
-from SampleMaker.Mask import Mask
-from SampleMaker.Pattern import Pattern, PatternType
+from SampleMaker import Fluorophore, Mask, Pattern, PatternType
+from SampleMaker.Generator import Noiser, Sampler, Stacker, StackModelType
+from SampleMaker.GUI.Settings import UI
 
 MIN_SIZE, MAX_SIZE = 32, 4096
 

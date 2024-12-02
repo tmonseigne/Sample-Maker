@@ -18,12 +18,9 @@ import numpy as np
 from numpy.typing import NDArray
 from scipy.stats import multivariate_normal
 
-from SampleMaker.Fluorophore import Fluorophore
+from SampleMaker import Fluorophore, Mask, PatternType
 from SampleMaker.Generator.Noiser import Noiser
-from SampleMaker.Mask import Mask
-from SampleMaker.Pattern import PatternType
-from SampleMaker.Tools.Decorators import reset_on_change
-from SampleMaker.Tools.Utils import print_warning
+from SampleMaker.Tools import Decorators, print_warning
 
 MAX_INTENSITY = np.iinfo(np.uint16).max  # Pour des entiers sur 16 bits (soit 65535).
 FWHM_SIGMA_RATIO = 2.355  # Valeur pour passer du FWHM à un sigma pour la PSF 2*sqrt(2*ln(2)) = 2.35482004503...
@@ -31,12 +28,12 @@ FWHM_SIGMA_RATIO = 2.355  # Valeur pour passer du FWHM à un sigma pour la PSF 2
 
 ##################################################
 @dataclass
-@reset_on_change("size")
-@reset_on_change("pixel_size")
-@reset_on_change("na")
-@reset_on_change("density")
-@reset_on_change("astigmatism_ratio")
-@reset_on_change("fluorophore")
+@Decorators.reset_on_change("size")
+@Decorators.reset_on_change("pixel_size")
+@Decorators.reset_on_change("na")
+@Decorators.reset_on_change("density")
+@Decorators.reset_on_change("astigmatism_ratio")
+@Decorators.reset_on_change("fluorophore")
 class Sampler:
 	"""
 	Classe permettant de générer un échantillon.

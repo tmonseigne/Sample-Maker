@@ -22,8 +22,6 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QComboBox, QDoubleSpinBox, QFileDialog, QFormLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton
 from PyQt5.QtWidgets import QSpinBox
 
-from SampleMaker.GUI.UtilsUI import create_double_spin_box, create_spin_box
-
 
 # ==================================================
 # region Setting
@@ -126,8 +124,11 @@ class IntSetting(Setting):
 	##################################################
 	def initialize(self):
 		super().initialize()  # Appelle l'initialisation de la classe mère
-		self.box = create_spin_box(self.min, self.max, self.default, self.step)  # Création du spin
+		self.box = QSpinBox()
 		self.box.setAlignment(Qt.AlignLeft)  # Définir l'alignement du layout à gauche
+		self.box.setRange(self.min, self.max)
+		self.box.setSingleStep(self.step)
+		self.box.setValue(self.default)
 		self.add_row(self.box)  # Ajoute le spin
 
 	##################################################
@@ -158,8 +159,12 @@ class FloatSetting(Setting):
 	##################################################
 	def initialize(self):
 		super().initialize()  # Appelle l'initialisation de la classe mère
-		self.box = create_double_spin_box(self.min, self.max, self.default, self.step, self.precision)  # Création du spin
+		self.box = QDoubleSpinBox()
 		self.box.setAlignment(Qt.AlignLeft)  # Définir l'alignement du layout à gauche
+		self.box.setRange(self.min, self.max)
+		self.box.setSingleStep(self.step)
+		self.box.setDecimals(self.precision)
+		self.box.setValue(self.default)
 		self.add_row(self.box)  # Ajoute le spin
 
 	##################################################

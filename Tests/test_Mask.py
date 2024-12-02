@@ -6,9 +6,8 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from SampleMaker.Mask import Mask
-from SampleMaker.Pattern import Pattern, PatternType
-from SampleMaker.Tools.FileIO import open_png_as_boolean_mask
+from SampleMaker import Mask, Pattern, PatternType
+from SampleMaker.Tools import open_png_as_boolean_mask
 
 INPUT_DIR = Path(__file__).parent / "Input"
 OUTPUT_DIR = Path(__file__).parent / "Output"

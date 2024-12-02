@@ -1,6 +1,6 @@
 """ Fichier des tests pour le Stacker : le générateur de pile d'échantillons """
 
-from SampleMaker.Generator.StackModel import StackModel, StackModelType
+from SampleMaker.Generator import StackModel, StackModelType
 
 
 ##################################################

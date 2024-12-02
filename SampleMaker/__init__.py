@@ -7,7 +7,8 @@ incluant les caractéristiques des fluorophores, les modèles de bruit, et les p
 **Modules principaux** :
 
 - `Fluorophore` : Gère les propriétés optiques des fluorophores simulés.
-- `Generator` : Contient les outils pour créer des images synthétiques, y compris le bruit (Noiser), l'échantillonnage (Sampler), et la gestion des piles (Stacker, StackModel).
+- `Generator` : Contient les outils pour créer des images synthétiques, y compris le bruit (Noiser), l'échantillonnage (Sampler), et la gestion des piles (
+Stacker, StackModel).
 - `GUI` : Fournit une interface utilisateur pour configurer et gérer les paramètres.
 - `Mask` : Gère les masques appliqués aux images pour structurer la répartition des molécules.
 - `Pattern` : Définit les motifs de répartition des molécules.
@@ -29,10 +30,11 @@ from SampleMaker import Fluorophore, Generator
 """
 
 # Importation explicite des classes pour qu'elles soient accessibles directement
-from .Fluorophore import Fluorophore
+from .Fluorophore import Fluorophore, PREDEFINED_FLUOROPHORES
 from .Mask import Mask
-from .Pattern import Pattern, PatternType
+from .Pattern import Pattern, PatternType, ExistingImageOptions, NoneOptions, SquaresOptions, StripesOptions, SunOptions
 from .Stack import Stack
 
 # Définir la liste des symboles exportés
-__all__ = ["Generator", "GUI", "Tools", "Fluorophore", "Mask", "Pattern", "PatternType", "Stack"]
+__all__ = ["Generator", "GUI", "Tools", "Fluorophore", "PREDEFINED_FLUOROPHORES", "Mask", "Pattern", "PatternType", "Stack",
+		   "ExistingImageOptions", "NoneOptions", "SquaresOptions", "StripesOptions", "SunOptions"]

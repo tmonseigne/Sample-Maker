@@ -3,11 +3,8 @@
 import os
 from pathlib import Path
 
-from SampleMaker.Fluorophore import Fluorophore
-from SampleMaker.Generator.Noiser import Noiser
-from SampleMaker.Generator.Sampler import Sampler
-from SampleMaker.Mask import Mask
-from SampleMaker.Pattern import Pattern, PatternType
+from SampleMaker import Fluorophore, Mask, Pattern, PatternType
+from SampleMaker.Generator import Noiser, Sampler
 from SampleMaker.Tools.FileIO import save_sample_as_png
 
 # Gestion des dossiers
@@ -37,7 +34,6 @@ sampler = Sampler(size=size, pixel_size=160, density=0.25, astigmatism_ratio=2.0
 sample = sampler.generate_sample()
 save_sample_as_png(sample, f"{OUTPUT_DIR}/Sample_Square_noisy.png", 100)  # Enregistrement de l'échantillon au format png
 
-
 ##################################################
 # Création d'un échantillon avec une grille de PSF fixe et aucun bruit.
 
@@ -48,7 +44,6 @@ noiser = Noiser(snr=0, background=0, variation=0)
 sampler = Sampler(size=size, pixel_size=160, astigmatism_ratio=2.0, fluorophore=fluorophore, noiser=noiser)
 sample = sampler.generate_sample()
 save_sample_as_png(sample, f"{OUTPUT_DIR}/Sample_Palm.png", 100)  # Enregistrement de l'échantillon au format png
-
 
 ##################################################
 # Création d'un échantillon avec une grille de PSF fixe et aucun bruit.

@@ -3,9 +3,8 @@
 import os
 from pathlib import Path
 
-from SampleMaker.Generator.Sampler import Sampler
-from SampleMaker.Mask import Mask
-from SampleMaker.Pattern import Pattern, PatternType
+from SampleMaker.Generator import Sampler
+from SampleMaker import Mask, Pattern, PatternType
 from SampleMaker.Tools.FileIO import save_sample_as_png
 
 OUTPUT_DIR = Path(__file__).parent / "Output"

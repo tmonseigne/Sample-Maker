@@ -9,8 +9,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 from SampleMaker.Pattern import Pattern, PatternType
-from SampleMaker.Tools.FileIO import open_png_as_boolean_mask, save_boolean_mask_as_png
-from SampleMaker.Tools.Utils import print_warning
+from SampleMaker.Tools import open_png_as_boolean_mask, print_warning, save_boolean_mask_as_png
 
 
 ##################################################

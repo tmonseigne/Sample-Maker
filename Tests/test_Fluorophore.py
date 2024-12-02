@@ -1,6 +1,6 @@
 """ Fichier des tests pour la classe Fluorophore """
 
-from SampleMaker.Fluorophore import Fluorophore, PREDEFINED_FLUOROPHORES
+from SampleMaker import Fluorophore, PREDEFINED_FLUOROPHORES
 
 
 ##################################################

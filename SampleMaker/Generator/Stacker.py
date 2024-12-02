@@ -17,9 +17,9 @@ avec différents modèles pour varier la composition de la pile.
 
 from dataclasses import dataclass, field
 
+from SampleMaker import Stack
 from SampleMaker.Generator.Sampler import Sampler
 from SampleMaker.Generator.StackModel import StackModel
-from SampleMaker.Stack import Stack
 
 
 ##################################################

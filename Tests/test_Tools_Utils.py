@@ -4,8 +4,7 @@ from pathlib import Path
 
 import numpy as np
 
-from SampleMaker.Tools.FileIO import open_png_as_sample, save_sample_as_png
-from SampleMaker.Tools import Utils
+from SampleMaker.Tools import Utils, open_png_as_sample, save_sample_as_png
 
 INPUT_DIR = Path(__file__).parent / "Input"
 OUTPUT_DIR = Path(__file__).parent / "Output"

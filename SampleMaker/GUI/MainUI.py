@@ -7,7 +7,7 @@ Elle gère la barre de menu, la barre d'état, ainsi que le widget central et le
 
 from PyQt5.QtWidgets import QAction, QApplication, QMainWindow, QMessageBox
 
-from SampleMaker.GUI.MainWidget import MainWidget
+from SampleMaker.GUI.SettingWidget import MainWidget
 from SampleMaker.GUI.PreferencesDialog import PreferencesDialog
 
 

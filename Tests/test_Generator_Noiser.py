@@ -5,7 +5,7 @@ from pathlib import Path
 
 import numpy as np
 
-from SampleMaker.Generator.Noiser import Noiser
+from SampleMaker.Generator import Noiser
 from SampleMaker.Tools.FileIO import save_sample_as_png
 
 OUTPUT_DIR = Path(__file__).parent / "Output"

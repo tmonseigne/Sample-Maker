@@ -3,8 +3,7 @@
 import os
 from pathlib import Path
 
-from SampleMaker.Mask import Mask
-from SampleMaker.Pattern import Pattern, PatternType
+from SampleMaker import Mask, Pattern, PatternType
 
 # Gestion des dossiers
 INPUT_DIR = Path(__file__).parent / "Input"

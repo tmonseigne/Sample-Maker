@@ -10,10 +10,9 @@ Le widget principal gère également la barre de statut et les actions associée
 import os
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QHBoxLayout, QMessageBox, QPushButton, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QHBoxLayout, QLabel, QLayout, QMessageBox, QPushButton, QVBoxLayout, QWidget
 
 from SampleMaker.GUI.Settings.Settings import Settings
-from SampleMaker.GUI.UtilsUI import create_section
 from SampleMaker.Tools.Utils import add_suffix, get_timestamp_for_files
 
 # Gestion des dossiers
@@ -50,19 +49,19 @@ class MainWidget(QWidget):
 		setting_layout = QHBoxLayout()
 		setting_layout.setAlignment(Qt.AlignLeft)  # Définir l'alignement du layout à gauche
 		for s in self.settings.ui["Dimension"]: setting_layout.addLayout(s.get_layout())
-		self.main_layout.addLayout(create_section("Dimensions", setting_layout))
+		self.main_layout.addLayout(self.create_section("Dimensions", setting_layout))
 
 		# Section Setup
 		setting_layout = QHBoxLayout()
 		setting_layout.setAlignment(Qt.AlignLeft)  # Définir l'alignement du layout à gauche
 		for s in self.settings.ui["Setup"]: setting_layout.addLayout(s.get_layout())
-		self.main_layout.addLayout(create_section("Installation", setting_layout))
+		self.main_layout.addLayout(self.create_section("Installation", setting_layout))
 
 		# Section Fluorophore
 		setting_layout = QHBoxLayout()
 		setting_layout.setAlignment(Qt.AlignLeft)  # Définir l'alignement du layout à gauche
 		for s in self.settings.ui["Fluorophore"]: setting_layout.addLayout(s.get_layout())
-		self.main_layout.addLayout(create_section("Fluorophore", setting_layout))
+		self.main_layout.addLayout(self.create_section("Fluorophore", setting_layout))
 
 		# Section Répartition
 		setting_layout = QVBoxLayout()
@@ -74,13 +73,13 @@ class MainWidget(QWidget):
 		setting_layout.addLayout(first_part)
 		setting_layout.addLayout(self.settings.ui["Structure"][2].get_layout())
 		setting_layout.addLayout(self.settings.ui["Structure"][3].get_layout())
-		self.main_layout.addLayout(create_section("Structure", setting_layout))
+		self.main_layout.addLayout(self.create_section("Structure", setting_layout))
 
 		# Section Bruit
 		setting_layout = QHBoxLayout()
 		setting_layout.setAlignment(Qt.AlignLeft)  # Définir l'alignement du layout à gauche
 		for s in self.settings.ui["Noise"]: setting_layout.addLayout(s.get_layout())
-		self.main_layout.addLayout(create_section("Bruit", setting_layout))
+		self.main_layout.addLayout(self.create_section("Bruit", setting_layout))
 
 		# Ajouter les boutons Reset et Générer
 		buttons_layout = QHBoxLayout()
@@ -95,6 +94,24 @@ class MainWidget(QWidget):
 
 		# Appliquer la mise en page principale
 		self.setLayout(self.main_layout)
+
+	##################################################
+	def create_section(self, title: str, layout: QLayout) -> QVBoxLayout:
+		"""
+		Crée une section verticale composée d'un titre et d'une mise en page donnée.
+
+		Cette fonction est utile pour organiser des groupes d'éléments dans une	interface utilisateur.
+		Elle ajoute un titre sous forme de texte enrichi (<b> pour le gras) au-dessus du layout spécifié.
+
+		:param title: Texte du titre à afficher au-dessus de la mise en page.
+		:param layout: Mise en page (layout) à inclure sous le titre.
+		:return: Un `QVBoxLayout` contenant le titre et le layout fourni.
+		"""
+		res = QVBoxLayout()
+		res.setAlignment(Qt.AlignTop)
+		res.addWidget(QLabel(f"<b>{title}</b>"))
+		res.addLayout(layout)
+		return res
 
 	##################################################
 	def generate_function(self):

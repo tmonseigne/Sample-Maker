@@ -3,8 +3,7 @@
 import os
 from pathlib import Path
 
-from SampleMaker.Generator.Sampler import Sampler
-from SampleMaker.Generator.Stacker import Stacker
+from SampleMaker.Generator import Sampler, Stacker
 
 INPUT_DIR = Path(__file__).parent / "Input"
 OUTPUT_DIR = Path(__file__).parent / "Output"

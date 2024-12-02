@@ -3,12 +3,8 @@
 import os
 from pathlib import Path
 
-from SampleMaker.Fluorophore import Fluorophore
-from SampleMaker.Generator.Noiser import Noiser
-from SampleMaker.Generator.Sampler import Sampler
-from SampleMaker.Generator.Stacker import Stacker
-from SampleMaker.Mask import Mask
-from SampleMaker.Pattern import Pattern, PatternType
+from SampleMaker import Fluorophore, Mask, Pattern, PatternType
+from SampleMaker.Generator import Noiser, Sampler, Stacker
 
 # Gestion des dossiers
 OUTPUT_DIR = Path(__file__).parent / "Output"

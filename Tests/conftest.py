@@ -6,8 +6,7 @@ import psutil
 import pytest
 from pytest_metadata.plugin import metadata_key
 
-from SampleMaker.Tools.Monitoring import Monitoring
-from SampleMaker.Tools.Utils import print_warning
+from SampleMaker.Tools import Monitoring, print_warning
 
 all_tests_monitoring = Monitoring()
 
