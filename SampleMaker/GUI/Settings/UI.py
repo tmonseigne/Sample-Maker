@@ -7,10 +7,10 @@ Ces classes sont utilisées pour créer et configurer des widgets de paramètres
 
 Classes :
     - Setting : Classe de base pour un paramètre d'interface utilisateur.
-    - SettingCombo : Paramètre de type liste déroulante avec options.
-    - SettingFloat : Paramètre de type flottant (float).
-    - SettingInt : Paramètre de type entier (integer).
-
+    - ComboSetting : Paramètre de type liste déroulante avec options.
+    - FileSetting : Paramètre de Type ouverture de fichier.
+    - FloatSetting : Paramètre de type flottant (float).
+    - IntSetting : Paramètre de type entier (integer).
 """
 
 import os
@@ -133,7 +133,6 @@ class IntSetting(Setting):
 	def reset(self):
 		self.box.setValue(self.default)
 
-
 # ==================================================
 # endregion Setting Int
 # ==================================================
@@ -164,7 +163,6 @@ class FloatSetting(Setting):
 
 	##################################################
 	def reset(self): self.box.setValue(self.default)
-
 
 # ==================================================
 # endregion Setting Float
@@ -208,7 +206,6 @@ class ComboSetting(Setting):
 		while self._layout.rowCount() > 1: self._layout.removeRow(1)
 		for option in self.options: option.initialize()  # recréer version fonctionnelle du layout de l'option
 		self._layout.addRow(QLabel("Options : "), self.options[index].get_layout())
-
 
 # ==================================================
 # endregion Setting List with or without options

@@ -5,6 +5,7 @@ SampleMaker API Documentation
    :maxdepth: 2
 
    SampleMaker.Generator
+   SampleMaker.GUI
    SampleMaker.Tools
 
 .. toctree::

@@ -1,4 +1,19 @@
-""" Fichier de la Classe contenant la liste des paramètres pour le générateur """
+"""
+Ce fichier définit la classe `Settings`, utilisée pour gérer et enregistrer les paramètres nécessaires
+à la configuration du générateur d'images et des données dans le projet SampleMaker.
+
+**Fonctionnalités principales** :
+
+- Permet le parsing et l'enregistrement des paramètres liés à l'interface utilisateur.
+- Fournit une gestion structurée des dimensions, des propriétés optiques, des fluorophores, des bruits et des modèles d'empilement.
+- Inclut des méthodes pour générer des objets associés, tels que des échantillonneurs, des masques, des bruiteurs et des fluorophores.
+
+**Usage** :
+
+La classe `Settings` est conçue pour interagir directement avec l'interface utilisateur,
+en facilitant le paramétrage et en générant des objets prêts à l'emploi pour les différentes étapes de simulation ou d'analyse.
+"""
+
 import os
 from dataclasses import dataclass, field
 

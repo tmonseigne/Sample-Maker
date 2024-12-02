@@ -14,9 +14,11 @@ Ce sous-package contient des outils pour la génération d'images et de données
 
 """
 
-# Exemple d'importation des modules pour un accès direct
-#from .Utils import add_extension, add_grid, add_suffix, get_timestamp_for_files, print_error, print_warning
-#from .Decorators import reset_on_change
+# Importation explicite des classes pour qu'elles soient accessibles directement
+from .Noiser import Noiser
+from .Sampler import Sampler
+from .Stacker import Stacker
+from .StackModel import StackModel, StackModelType, NoneOptions
 
 # Définir la liste des symboles exportés
-__all__ = ["Noiser", "Sampler", "Stacker", "StackModel"]
+__all__ = ["Noiser", "Sampler", "Stacker", "StackModel", "StackModelType", "NoneOptions"]

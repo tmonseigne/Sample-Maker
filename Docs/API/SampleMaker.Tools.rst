@@ -3,21 +3,8 @@ SampleMaker.Tools
 
 Ce sous-package contient des outils utilitaires pour le projet SampleMaker.
 
-**Modules disponibles** :
-
-- Decorators : Fournit des décorateurs personnalisés.
-- Drawing : Fournit des fonctions de dessin génériques.
-- FileIO : Fournit des fonctions de manipulation de fichiers génériques.
-- Monitoring : Fournit un module de surveillance des ressources système pendant l'exécution de tests.
-- Utils : Fournit des fonctions d'assistance génériques.
-
-**Fonctionnalités principales** :
-
-- Tous les modules peuvent être importés directement via `from SampleMaker.Tools import <module>`.
-
-
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
    SampleMaker.Tools.Decorators
    SampleMaker.Tools.Drawing
