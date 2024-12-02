@@ -1,4 +1,29 @@
-""" Fichier des classes de masques de structure """
+"""
+Fichier des classes de masques de répartition
+
+Ce module définit les classes et outils nécessaires pour générer, manipuler, et sauvegarder
+des masques de répartition. Ces masques sont utilisés pour représenter des motifs géométriques
+ou personnalisés qui peuvent être appliqués dans divers contextes de traitement d'images ou de simulation.
+
+Structure :
+1. **Masques de base** :
+
+   - `Mask` : Classe principale pour générer et gérer un masque avec différents motifs géométriques.
+
+2. **Types de motifs** :
+
+   - Bandes (`stripes`).
+   - Carrés (`squares`).
+   - Soleil (`sun`).
+   - Motif personnalisé à partir d'une image existante.
+
+3. **Fonctionnalités principales** :
+
+   - Génération automatique du masque en fonction de la taille et du motif.
+   - Possibilité de sauvegarder et de charger un masque au format PNG.
+   - Modification dynamique de la taille ou du motif avec régénération automatique.
+
+"""
 
 import math
 import os

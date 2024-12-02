@@ -1,4 +1,14 @@
-""" Fichier de la classe permettant de stocker et manipuler des piles d'échantillons """
+"""
+Ce module définit la classe `Stack`, qui fournit une structure flexible pour gérer des piles
+d'images ou d'échantillons 2D, représentées comme des tableaux 3D.
+
+Fonctionnalités principales :
+
+- **Manipulation d'échantillons** : Ajouter ou récupérer des échantillons 2D dans une pile 3D.
+- **Entrée/Sortie (IO)** : Charger ou enregistrer des piles dans des fichiers TIF.
+- **Affichage** : Générer une représentation textuelle décrivant la pile et son contenu.
+
+"""
 
 from dataclasses import dataclass, field
 

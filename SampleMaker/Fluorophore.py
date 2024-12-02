@@ -1,4 +1,28 @@
-""" Fichier de la classe Fluorophore """
+"""
+Ce module définit la classe `Fluorophore` et un ensemble de fluorophores prédéfinis.
+Un fluorophore est une entité ayant des propriétés optiques spécifiques, telles que sa longueur d'onde d'émission
+et son intensité, qui peuvent être utilisées pour des simulations ou des calculs en microscopie et en imagerie.
+
+Structure :
+
+1. **Classe `Fluorophore`**
+
+   - Modélise les caractéristiques d'un fluorophore, comme sa longueur d'onde, son intensité et son comportement
+     de scintillement. Elle inclut également une méthode pour calculer l'intensité avec des variations aléatoires.
+
+2. **Fluorophores prédéfinis**
+
+   - Fournit un dictionnaire de fluorophores couramment utilisés, chacun configuré avec des paramètres spécifiques
+     (par exemple, GFP, RFP, Alexa488, etc.).
+
+Fonctionnalités :
+
+- Création d'instances de fluorophores personnalisées.
+- Calcul de l'intensité avec ou sans variation aléatoire.
+- Conversion des propriétés d'un fluorophore en chaîne de caractères lisible.
+- Accès rapide à des fluorophores prédéfinis via le dictionnaire `PREDEFINED_FLUOROPHORES`.
+
+"""
 
 import random
 from dataclasses import dataclass

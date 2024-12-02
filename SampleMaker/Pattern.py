@@ -1,4 +1,39 @@
-""" Fichier des classes de motifs pour des masques de structure """
+"""
+Fichier des classes de motifs pour des masques de répartition
+
+Ce module définit les structures de données et les classes nécessaires pour modéliser et générer
+des motifs spécifiques, utilisés principalement dans des masques de répartition.
+
+Il fournit :
+
+1. Une énumération pour identifier les types de motifs disponibles.
+2. Des classes pour configurer les options spécifiques à chaque motif.
+3. Une classe principale pour encapsuler un motif et ses options associées.
+
+Structure :
+
+- **Pattern Type** : Enumération des types de motifs (aucun, bandes, carrés, soleil, image existante).
+- **Pattern Options** : Classes d'options configurables pour chaque type de motif (par exemple, taille des bandes ou nombre de rayons pour un motif de soleil).
+- **Pattern** : Classe principale pour représenter un motif et ses options associées.
+
+Fonctionnalités :
+
+- Création et gestion de motifs paramétrables via des classes spécifiques.
+- Méthodes utilitaires pour convertir les motifs et options en chaînes lisibles.
+- Génération d'instances de motifs avec leurs options via des méthodes de classe.
+
+Classes :
+
+- **`PatternType`** : Enumération des types de motifs disponibles.
+- **Options spécifiques** :
+  - `NoneOptions` : Aucune option pour le motif "None".
+  - `StripesOptions` : Options pour un motif de bandes.
+  - `SquaresOptions` : Options pour un motif de carrés.
+  - `SunOptions` : Options pour un motif de soleil.
+  - `ExistingImageOptions` : Options pour utiliser une image existante.
+- **`Pattern`** : Classe principale pour gérer les motifs et leurs options.
+
+"""
 
 from dataclasses import dataclass, field
 from enum import Enum
