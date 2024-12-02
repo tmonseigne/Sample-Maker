@@ -5,6 +5,8 @@ branch = True
 # Exclure toutes les lignes de code dans les fichiers de test
 omit =
     Tests/*
+    main.py
+    
 exclude_lines =
     # Ces commentaires excluent des lignes spécifiques si elles sont détectées
     pragma: no cover
