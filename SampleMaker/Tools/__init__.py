@@ -1,7 +1,4 @@
 """
-Tools Module
-============
-
 Ce sous-package contient des outils utilitaires pour le projet SampleMaker.
 
 **Modules disponibles** :

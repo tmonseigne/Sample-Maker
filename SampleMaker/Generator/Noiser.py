@@ -1,4 +1,13 @@
-""" Fichier de la classe du générateur de bruit """
+"""
+Fichier contenant la classe `Noiser` qui génère du bruit sur une image pour simuler des conditions expérimentales réalistes.
+
+Cette classe permet d'ajouter du bruit gaussien et poissonien à une image,
+en fonction de paramètres tels que le rapport signal sur bruit (SNR),
+l'intensité de fond et la variation du bruit de fond.
+Elle est utilisée pour simuler des effets optiques dans des images,
+notamment pour tester des algorithmes de traitement d'images dans des environnements bruités.
+
+"""
 
 from dataclasses import dataclass
 

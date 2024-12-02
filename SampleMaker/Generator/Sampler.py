@@ -1,4 +1,15 @@
-""" Fichier de la classe du générateur d'échantillons simulés """
+"""
+Fichier contenant la classe du générateur d'échantillons simulés.
+
+La classe `Sampler` permet de simuler la distribution de molécules dans une image 2D, en prenant en compte des paramètres physiques comme la taille de l'image,
+la taille des pixels, l'ouverture numérique (NA), la densité des molécules, ainsi que l'astigmatisme.
+Elle utilise un fluorophore pour définir les propriétés optiques des molécules et applique des masques pour simuler des motifs de dispersion.
+
+Les principales fonctionnalités de la classe incluent :
+- La génération aléatoire ou en grille des positions des molécules dans l'image.
+- Le calcul des fonctions de réponse impulsionnelle (PSF) de chaque molécule.
+- L'ajout de bruit optique simulé pour obtenir une image avec un rapport signal/bruit (SNR) prédéfini.
+"""
 
 from dataclasses import dataclass, field
 from typing import List

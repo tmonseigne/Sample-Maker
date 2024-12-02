@@ -1,4 +1,19 @@
-""" Fichier de la classe du générateur de pile d'échantillons simulés """
+"""
+Fichier de la classe du générateur de pile d'échantillons simulés
+
+Ce module contient la classe `Stacker`, qui est utilisée pour générer des piles d'échantillons
+simulés basées sur un générateur d'échantillons (`Sampler`) et un modèle de pile (`StackModel`).
+
+La classe permet de créer des piles 3D à partir des échantillons générés et peut être configurée
+avec différents modèles pour varier la composition de la pile.
+
+**Fonctionnalités** :
+
+- Génération de piles d'échantillons simulés.
+- Supporte l'extension avec différents types de modèles pour la pile.
+- Méthodes de conversion en chaîne de caractères pour afficher les détails du générateur.
+
+"""
 
 from dataclasses import dataclass, field
 

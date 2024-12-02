@@ -6,7 +6,8 @@ branch = True
 omit =
     Tests/*
     main.py
-    
+    **/__init__.py
+
 exclude_lines =
     # Ces commentaires excluent des lignes spécifiques si elles sont détectées
     pragma: no cover

@@ -1,4 +1,40 @@
-""" Fichier des classes de modèles pour les piles """
+"""
+Fichier des classes de modèles pour les piles
+
+Ce module définit les structures de données et les classes nécessaires pour modéliser et gérer
+les piles (stacks) avec différents types de modèles et leurs options associées.
+
+Il fournit :
+
+- Une énumération pour identifier les types de modèles disponibles.
+- Des classes de configuration pour les options spécifiques à chaque modèle.
+- Une classe principale pour encapsuler un modèle de pile et ses options.
+
+**Structure** :
+
+1. **Stack Model Type**
+
+   - `StackModelType` : Énumération pour les types de modèles (actuellement un modèle aléatoire).
+
+2. **Stack Model Options**
+
+   - `NoneOptions` : Classe d'options utilisée lorsque le modèle ne nécessite aucune configuration particulière.
+
+3. **Stack Model**
+
+   - `StackModel` : Classe principale pour représenter un modèle de pile avec son type et ses options.
+
+Fonctionnalités :
+
+- Conversion des modèles et options en chaînes lisibles.
+- Méthodes utilitaires pour instancier un modèle avec ses options.
+
+Classes :
+
+- **`StackModelType`** : Enumération des modèles disponibles.
+- **`NoneOptions`** : Classe d'options vide pour le modèle par défaut.
+- **`StackModel`** : Classe principale pour gérer les modèles et options de piles.
+"""
 
 from dataclasses import dataclass, field
 from enum import Enum
