@@ -92,9 +92,7 @@ class PatternType(Enum):
 ##################################################
 @dataclass
 class NoneOptions:
-	"""
-	Pas d'options pour le motif 'NONE'
-	"""
+	""" Pas d'options pour le motif 'NONE' """
 
 	##################################################
 	@staticmethod
@@ -262,9 +260,7 @@ class Pattern:
 
 	##################################################
 	def tostring(self) -> str:
-		"""
-		Conversion en chaine de caractère.
-		"""
+		""" Conversion en chaine de caractère. """
 		return f"Pattern: {self.pattern}, Options: {self.options}"
 
 	##################################################

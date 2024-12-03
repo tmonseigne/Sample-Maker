@@ -2,9 +2,10 @@
 branch = True
 
 [coverage:report]
-# Exclure toutes les lignes de code dans les fichiers de test
+# Exclure toutes les lignes de code dans les fichiers de test, exemples, le main et les init
 omit =
     Tests/*
+    Examples/*
     main.py
     **/__init__.py
 

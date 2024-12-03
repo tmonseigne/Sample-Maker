@@ -23,6 +23,7 @@ pytest-json
 pytest-json-report
 pytest-metadata
 allure-pytest
+pytest-qt
 
 # Dépendances pour la documentation
 sphinx

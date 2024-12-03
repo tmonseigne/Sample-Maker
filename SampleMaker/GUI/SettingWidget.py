@@ -1,7 +1,7 @@
 """
-Module contenant la classe `MainWidget` pour l'interface principale de l'application.
+Module contenant la classe `SettingWidget` pour l'interface principale de l'application.
 
-Ce module définit la classe `MainWidget`, qui crée et gère l'interface utilisateur principale de l'application.
+Ce module définit la classe `SettingWidget`, qui crée et gère l'interface utilisateur principale de l'application.
 Elle contient des sections de paramètres organisées sous forme de layout,
 permettant de modifier différents paramètres pour la génération de fichiers et l'affichage des résultats.
 Le widget principal gère également la barre de statut et les actions associées aux boutons de l'interface utilisateur.
@@ -21,7 +21,7 @@ MIN_SIZE, MAX_SIZE = 32, 4096
 
 
 ##################################################
-class MainWidget(QWidget):
+class SettingWidget(QWidget):
 	""" Widget principal gérant toute l'interface """
 
 	##################################################
@@ -48,19 +48,19 @@ class MainWidget(QWidget):
 		# Section Dimensions
 		setting_layout = QHBoxLayout()
 		setting_layout.setAlignment(Qt.AlignLeft)  # Définir l'alignement du layout à gauche
-		for s in self.settings.ui["Dimension"]: setting_layout.addLayout(s.get_layout())
+		for s in self.settings.ui["Dimension"]: setting_layout.addLayout(s.layout)
 		self.main_layout.addLayout(self.create_section("Dimensions", setting_layout))
 
 		# Section Setup
 		setting_layout = QHBoxLayout()
 		setting_layout.setAlignment(Qt.AlignLeft)  # Définir l'alignement du layout à gauche
-		for s in self.settings.ui["Setup"]: setting_layout.addLayout(s.get_layout())
+		for s in self.settings.ui["Setup"]: setting_layout.addLayout(s.layout)
 		self.main_layout.addLayout(self.create_section("Installation", setting_layout))
 
 		# Section Fluorophore
 		setting_layout = QHBoxLayout()
 		setting_layout.setAlignment(Qt.AlignLeft)  # Définir l'alignement du layout à gauche
-		for s in self.settings.ui["Fluorophore"]: setting_layout.addLayout(s.get_layout())
+		for s in self.settings.ui["Fluorophore"]: setting_layout.addLayout(s.layout)
 		self.main_layout.addLayout(self.create_section("Fluorophore", setting_layout))
 
 		# Section Répartition
@@ -68,17 +68,17 @@ class MainWidget(QWidget):
 		setting_layout.setAlignment(Qt.AlignLeft)  # Définir l'alignement du layout à gauche
 		first_part = QHBoxLayout()
 		first_part.setAlignment(Qt.AlignLeft)  # Définir l'alignement du layout à gauche
-		first_part.addLayout(self.settings.ui["Structure"][0].get_layout())
-		first_part.addLayout(self.settings.ui["Structure"][1].get_layout())
+		first_part.addLayout(self.settings.ui["Structure"][0].layout)
+		first_part.addLayout(self.settings.ui["Structure"][1].layout)
 		setting_layout.addLayout(first_part)
-		setting_layout.addLayout(self.settings.ui["Structure"][2].get_layout())
-		setting_layout.addLayout(self.settings.ui["Structure"][3].get_layout())
+		setting_layout.addLayout(self.settings.ui["Structure"][2].layout)
+		setting_layout.addLayout(self.settings.ui["Structure"][3].layout)
 		self.main_layout.addLayout(self.create_section("Structure", setting_layout))
 
 		# Section Bruit
 		setting_layout = QHBoxLayout()
 		setting_layout.setAlignment(Qt.AlignLeft)  # Définir l'alignement du layout à gauche
-		for s in self.settings.ui["Noise"]: setting_layout.addLayout(s.get_layout())
+		for s in self.settings.ui["Noise"]: setting_layout.addLayout(s.layout)
 		self.main_layout.addLayout(self.create_section("Bruit", setting_layout))
 
 		# Ajouter les boutons Reset et Générer
@@ -125,7 +125,7 @@ class MainWidget(QWidget):
 		# Cette fonction sera appelée quand le bouton "Générer" est cliqué
 		self.parent.update_status("Génération en cours...")
 		msg = self.settings.parse_settings()
-		if msg != "":
+		if msg != "":  # pragma: no cover
 			self.warning_popup("Erreur de paramètres", msg)
 			return
 
@@ -158,7 +158,7 @@ class MainWidget(QWidget):
 			f.write(self.settings.tostring())
 
 	##################################################
-	def warning_popup(self, title: str, msg: str):
+	def warning_popup(self, title: str, msg: str):  # pragma: no cover
 		"""
 		Affiche une fenêtre contextuelle d'avertissement avec un titre et un message spécifié.
 

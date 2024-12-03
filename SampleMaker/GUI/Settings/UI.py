@@ -50,7 +50,8 @@ class Setting:
 		self.initialize()
 
 	##################################################
-	def get_layout(self) -> QFormLayout:
+	@property
+	def layout(self) -> QFormLayout:
 		"""
 		Retourne le layout associé à ce paramètre.
 
@@ -70,6 +71,11 @@ class Setting:
 		:return: La valeur associée à ce paramètre.
 		"""
 		return None
+
+	##################################################
+	def set_value(self, value: Any):
+		""" Applique la valeur au paramètre """
+		return
 
 	##################################################
 	def initialize(self):
@@ -122,6 +128,9 @@ class IntSetting(Setting):
 	def get_value(self) -> int: return self.box.value()
 
 	##################################################
+	def set_value(self, value: int): self.box.setValue(value)
+
+	##################################################
 	def initialize(self):
 		super().initialize()  # Appelle l'initialisation de la classe mère
 		self.box = QSpinBox()
@@ -132,8 +141,8 @@ class IntSetting(Setting):
 		self.add_row(self.box)  # Ajoute le spin
 
 	##################################################
-	def reset(self):
-		self.box.setValue(self.default)
+	def reset(self): self.set_value(self.default)
+
 
 # ==================================================
 # endregion Setting Int
@@ -157,6 +166,9 @@ class FloatSetting(Setting):
 	def get_value(self) -> float: return self.box.value()
 
 	##################################################
+	def set_value(self, value: float): self.box.setValue(value)
+
+	##################################################
 	def initialize(self):
 		super().initialize()  # Appelle l'initialisation de la classe mère
 		self.box = QDoubleSpinBox()
@@ -168,7 +180,8 @@ class FloatSetting(Setting):
 		self.add_row(self.box)  # Ajoute le spin
 
 	##################################################
-	def reset(self): self.box.setValue(self.default)
+	def reset(self): self.set_value(self.default)
+
 
 # ==================================================
 # endregion Setting Float
@@ -186,11 +199,13 @@ class ComboSetting(Setting):
 	box: QComboBox = field(init=False, default_factory=QComboBox)
 
 	##################################################
-	def get_value(self) -> Any:
+	def get_value(self) -> List[int | Any]:
 		index = self.box.currentIndex()
-		if index < len(self.options):
-			return [index, self.options[index].get_value()]
+		if 0 <= index < len(self.options): return [index, self.options[index].get_value()]
 		return [index, None]
+
+	##################################################
+	def set_value(self, value: int): self.box.setCurrentIndex(value)
 
 	##################################################
 	def initialize(self):
@@ -204,14 +219,14 @@ class ComboSetting(Setting):
 			self.update_options(0)  # Initialise les options pour "Choix 1"
 
 	##################################################
-	def reset(self):
-		self.box.setCurrentIndex(0)
+	def reset(self): self.set_value(0)
 
 	##################################################
 	def update_options(self, index):
 		while self._layout.rowCount() > 1: self._layout.removeRow(1)
 		for option in self.options: option.initialize()  # recréer version fonctionnelle du layout de l'option
-		self._layout.addRow(QLabel("Options : "), self.options[index].get_layout())
+		self._layout.addRow(QLabel("Options : "), self.options[index].layout)
+
 
 # ==================================================
 # endregion Setting List with or without options
@@ -225,6 +240,12 @@ class ComboSetting(Setting):
 class FileSetting(Setting):
 	""" Classe pour un paramètre spécifique de type Ouverture de fichier. """
 	box: QLineEdit = field(init=False, default_factory=QLineEdit)  # Boîte de texte pour afficher le chemin
+
+	##################################################
+	def get_value(self) -> str: return self.box.text()
+
+	##################################################
+	def set_value(self, value: str): self.box.setText(value)
 
 	##################################################
 	def initialize(self):
@@ -248,13 +269,11 @@ class FileSetting(Setting):
 		layout.addWidget(self.box)
 		layout.addWidget(browse_button)
 
-		self.add_row(layout)		# Ajouter au layout principal du setting
+		self.add_row(layout)  # Ajouter au layout principal du setting
 
 	##################################################
-	def browse_file(self):
-		"""
-		Ouvre un dialogue de sélection de fichier et met à jour la boîte avec le chemin sélectionné.
-		"""
+	def browse_file(self): # pragma: no cover
+		""" Ouvre un dialogue de sélection de fichier et met à jour la boîte avec le chemin sélectionné. """
 		current = self.get_value()
 		# Si le chemin par défaut n'est pas valide, on utilise le chemin principal du projet
 		if not os.path.exists(current) or current == "": current = os.getcwd()
@@ -262,16 +281,7 @@ class FileSetting(Setting):
 		if path: self.box.setText(path)  # Met à jour le chemin dans la boîte de texte
 
 	##################################################
-	def get_value(self) -> str:
-		"""
-		Retourne le chemin du fichier sélectionné.
-		:return: Le chemin du fichier sous forme de chaîne.
-		"""
-		return self.box.text()
-
-	def reset(self):
-		"""Réinitialise le paramètre à son chemin par défaut."""
-		self.box.setText("")  # Remet le texte dans la boîte de saisie au chemin par défaut
+	def reset(self): self.set_value("")
 
 # ==================================================
 # endregion Setting File

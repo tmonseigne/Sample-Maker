@@ -65,9 +65,7 @@ def test_stripes_mask_options():
 
 ##################################################
 def test_stripes_mask_options_bad():
-	"""
-	Test de la fonction stripes_mask avec des options spécifiques mauvaises.
-	"""
+	""" Test de la fonction stripes_mask avec des options spécifiques mauvaises. """
 	mask = None
 	size = 128
 	options = {"Longueurs": [200, 100, 50], "Mirrored": False, "Orientation": False}

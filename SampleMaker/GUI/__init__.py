@@ -10,6 +10,8 @@ Ce sous-module gère l'interface utilisateur pour le projet SampleMaker.
 
 # Importation explicite des classes pour qu'elles soient accessibles directement
 from .MainUI import MainUI
+from .PreferencesDialog import PreferencesDialog
+from .SettingWidget import SettingWidget
 
 # Définir la liste des symboles exportés
-__all__ = ["Settings", "MainUI"]
+__all__ = ["Settings", "MainUI", "PreferencesDialog", "SettingWidget"]

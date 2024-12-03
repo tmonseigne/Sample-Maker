@@ -68,6 +68,7 @@ class Sampler:
 	_max_molecules: int = field(init=False, default=0)
 	_sigma_base: float = field(init=False, default=1)
 	_astigmatism: [float, float] = field(init=False, default_factory=lambda: [1.0, 1.0])
+	_meshgrid: NDArray[np.float32] = field(init=False, default_factory=lambda: [])
 
 	# ==================================================
 	# region Initialization / Setter
@@ -122,9 +123,7 @@ class Sampler:
 
 	##################################################
 	def _set_psf_parameters(self):
-		"""
-		Calcul des différents paramètres nécessaire au calcul des PSF.
-		"""
+		""" Calcul des différents paramètres nécessaire au calcul des PSF. """
 		fwhm = (0.61 * self._fluorophore.wavelength) / self._na	 # Calcul de la largeur à mi-hauteur (FWHM) pour une PSF circulaire
 		self._sigma_base = fwhm / FWHM_SIGMA_RATIO  			 # Convertir la largeur à mi-hauteur en variance (sigma)
 		self._sigma_base /= self._pixel_size					 # Convertir sigma_base en pixels (par rapport à la taille du pixel)
@@ -132,6 +131,13 @@ class Sampler:
 		# Déterminer les bornes pour le ratio d'aspect (si l'astigmatisme est inférieur à 1, on inverse l'étirement horizontal et vertical)
 		self._astigmatism[0] = min(self._astigmatism_ratio, 1.0 / self._astigmatism_ratio)
 		self._astigmatism[1] = max(self._astigmatism_ratio, 1.0 / self._astigmatism_ratio)
+
+	def _set_meshgrid(self):
+		""" Calcul de la grille pour appliquer la gaussienne à l'image. """
+		x_coords = np.arange(self._size)
+		y_coords = np.arange(self._size)
+		x_mesh, y_mesh = np.meshgrid(x_coords, y_coords)
+		self._meshgrid = np.dstack((x_mesh, y_mesh))
 
 	##################################################
 	def reset(self):
@@ -144,6 +150,7 @@ class Sampler:
 		self._set_area()
 		self._set_max_molecule_number()
 		self._set_psf_parameters()
+		self._set_meshgrid()
 
 	# ==================================================
 	# endregion Initialization / Setter
@@ -172,7 +179,9 @@ class Sampler:
 			# clip permet d'éviter les positions en dehors du masque.
 			x_int = np.clip(localisation[:, 0].astype(int), 0, self._size - 1)
 			y_int = np.clip(localisation[:, 1].astype(int), 0, self._size - 1)
-			valid_indices = self.mask.mask[x_int, y_int]  # Sélectionner les positions des molécules dont le masque est "True" aux indices (x, y)
+			# Sélectionner les positions des molécules dont le masque est "True" aux indices (x, y)
+			# On inverse les X et Y sur l'image du masque pour correspondre aux tableaux : Premier indice les lignes donc le Y
+			valid_indices = self.mask.mask[y_int, x_int]
 			localisation = localisation[valid_indices]	  # Ne garder que les molécules qui sont dans le masque
 		return localisation
 
@@ -222,13 +231,8 @@ class Sampler:
 			sigma_y = self._sigma_base / ratio
 
 			# Création d'une grille pour la gaussienne 2D autour de (x, y)
-			x_coords = np.arange(self._size)
-			y_coords = np.arange(self._size)
-			x_mesh, y_mesh = np.meshgrid(x_coords, y_coords)
-			pos = np.dstack((x_mesh, y_mesh))
-
 			rv = multivariate_normal(mean=[x, y], cov=[[sigma_x ** 2, 0], [0, sigma_y ** 2]])  # Définir la gaussienne avec l'astigmatisme selon le ratio
-			psf = self._fluorophore.get_intensity(True) * rv.pdf(pos)						   # Générer une intensité et appliquer la gaussienne
+			psf = self._fluorophore.get_intensity(True) * rv.pdf(self._meshgrid)			   # Générer une intensité et appliquer la gaussienne
 			image += psf																	   # Ajouter la PSF à l'image
 
 		return np.clip(image, 0, MAX_INTENSITY)  # Clipper les valeurs pour éviter les débordements

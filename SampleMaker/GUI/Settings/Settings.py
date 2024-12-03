@@ -81,7 +81,7 @@ class Settings:
 								UI.FloatSetting(label="Variation (%)", min=1, max=100, default=10, step=1),
 								UI.IntSetting(label="Scintillement (ms)", min=1, max=100, default=50, step=1)],
 
-				"Structure":   [UI.FloatSetting(label="Densité (molécules/µm²) ", min=0.01, max=1.0, default=0.25, step=0.05),
+				"Structure":   [UI.FloatSetting(label="Densité (molécules/µm²) ", min=0.01, max=2.0, default=0.25, step=0.05),
 								UI.FloatSetting(label="Ratio Astigmatisme", min=1, max=5, default=2, step=0.5),
 								UI.ComboSetting(label="Masque de répartition",
 												choices=[PatternType.NONE.tostring(),
@@ -191,6 +191,8 @@ class Settings:
 			if not os.path.isfile(filename): return f"Le fichier \"{filename}\" est introuvable."
 			self.pattern = Pattern.from_pattern(PatternType.EXISTING_IMAGE, {"path": filename})
 
+		else : return "Masque de répartition non reconnu"
+
 		return ""
 
 	##################################################
@@ -198,8 +200,7 @@ class Settings:
 		if setting[0] == 0:
 			self.stack_model_type = StackModelType.RANDOM
 			self.stack_model_options = {}
-		else:
-			return "Modèle non reconnu."
+		else: return "Modèle non reconnu."
 		return ""
 
 	# ==================================================

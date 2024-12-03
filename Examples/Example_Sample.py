@@ -14,7 +14,7 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)  # Créer le dossier de sorties (la premi
 
 ##################################################
 # Création d'un échantillon sans restriction
-
+print("Création d'un échantillon sans restriction")
 size = 256  # Taille de l'image, Cela correspond à la dimension d'un côté de l'image carrée.
 mask = Mask(size, Pattern.from_pattern(PatternType.NONE))
 fluorophore = Fluorophore(wavelength=600, intensity=5000, delta=10, flickering=50)
@@ -25,7 +25,7 @@ save_sample_as_png(sample, f"{OUTPUT_DIR}/Sample_Base.png")
 
 ##################################################
 # Création d'un échantillon avec une structure et un snr faible
-
+print("Création d'un échantillon avec une structure et un snr faible")
 size = 256  # Taille de l'image, Cela correspond à la dimension d'un côté de l'image carrée.
 mask = Mask(size, Pattern.from_pattern(PatternType.SQUARES, {"size": 64}))
 fluorophore = Fluorophore(wavelength=600, intensity=5000, delta=10, flickering=50)
@@ -35,22 +35,24 @@ sample = sampler.generate_sample()
 save_sample_as_png(sample, f"{OUTPUT_DIR}/Sample_Square_noisy.png", 100)  # Enregistrement de l'échantillon au format png
 
 ##################################################
-# Création d'un échantillon avec une grille de PSF fixe et aucun bruit.
-
+# Création d'un échantillon avec une image pour la repartition et aucun bruit.
+print("Création d'un échantillon avec une image pour la repartition une densité élevée et aucun bruit.")
 size = 256  # Taille de l'image, Cela correspond à la dimension d'un côté de l'image carrée.
 mask = Mask(size, Pattern.from_pattern(PatternType.EXISTING_IMAGE, {"path": f"{INPUT_DIR}/PALM.png"}))
 fluorophore = Fluorophore(wavelength=600, intensity=5000, delta=10, flickering=50)
 noiser = Noiser(snr=0, background=0, variation=0)
-sampler = Sampler(size=size, pixel_size=160, astigmatism_ratio=2.0, fluorophore=fluorophore, noiser=noiser)
+sampler = Sampler(size=size, pixel_size=160, density=2, astigmatism_ratio=2.0, mask=mask, fluorophore=fluorophore, noiser=noiser)
 sample = sampler.generate_sample()
 save_sample_as_png(sample, f"{OUTPUT_DIR}/Sample_Palm.png", 100)  # Enregistrement de l'échantillon au format png
 
 ##################################################
 # Création d'un échantillon avec une grille de PSF fixe et aucun bruit.
-
+print("Création d'un échantillon avec une grille de PSF fixe et aucun bruit.")
 size = 128  # Taille de l'image, Cela correspond à la dimension d'un côté de l'image carrée.
 fluorophore = Fluorophore(wavelength=600, intensity=5000, delta=10, flickering=50)
 noiser = Noiser(snr=0, background=0, variation=0)
 sampler = Sampler(size=size, pixel_size=160, astigmatism_ratio=2.0, fluorophore=fluorophore, noiser=noiser)
 sample = sampler.generate_grid()
 save_sample_as_png(sample, f"{OUTPUT_DIR}/Sample_Grid.png", 100)  # Enregistrement de l'échantillon au format png
+
+print("Fini")

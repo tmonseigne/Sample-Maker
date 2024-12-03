@@ -7,8 +7,8 @@ Elle gère la barre de menu, la barre d'état, ainsi que le widget central et le
 
 from PyQt5.QtWidgets import QAction, QApplication, QMainWindow, QMessageBox
 
-from SampleMaker.GUI.SettingWidget import MainWidget
 from SampleMaker.GUI.PreferencesDialog import PreferencesDialog
+from SampleMaker.GUI.SettingWidget import SettingWidget
 
 
 ##################################################
@@ -47,7 +47,7 @@ class MainUI(QMainWindow):
 		"""
 		self.statusBar().showMessage("Prêt")  # Barre de statut avec message par défaut
 		self.create_menu_bar()  # Ajout de la barre de menu
-		self.setCentralWidget(MainWidget(self))  # Contenu principal
+		self.setCentralWidget(SettingWidget(self))  # Contenu principal
 
 	##################################################
 	def create_menu_bar(self):
@@ -82,7 +82,7 @@ class MainUI(QMainWindow):
 		help_menu.addAction(about_action)
 
 	##################################################
-	def open_preferences(self):
+	def open_preferences(self):  # pragma: no cover
 		"""
 		Ouvre une fenêtre de préférences.
 
@@ -92,17 +92,13 @@ class MainUI(QMainWindow):
 		dialog.exec_()  # Affiche la boîte de dialogue en mode modal
 
 	##################################################
-	def show_about_dialog(self):
+	def show_about_dialog(self):  # pragma: no cover
 		"""
 		Affiche une boîte de dialogue 'À propos'.
 
 		Présente des informations sur l'application, telles que son nom, sa version, et l'équipe de développement.
 		"""
-		QMessageBox.about(
-				self,
-				"À propos de Sample Maker",
-				"Sample Maker - Interface utilisateur\nVersion 1.0\n\nDéveloppé avec PyQt5.",
-				)
+		QMessageBox.about(self, "À propos de Sample Maker", "Sample Maker - Interface utilisateur\nVersion 1.0\n\nDéveloppé avec PyQt5.", )
 
 	##################################################
 	def update_status(self, msg):
@@ -114,7 +110,6 @@ class MainUI(QMainWindow):
 
 		:param msg: Le message à afficher dans la barre de statut.
 		"""
-		if self.parent:
-			self.statusBar().showMessage(msg)
-			QApplication.processEvents()  # Force l'interface à se rafraîchir
+		self.statusBar().showMessage(msg)
+		QApplication.processEvents()  # Force l'interface à se rafraîchir
 		print(msg)

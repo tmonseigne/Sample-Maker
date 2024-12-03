@@ -77,9 +77,7 @@ class StackModelType(Enum):
 ##################################################
 @dataclass
 class NoneOptions:
-	"""
-	Pas d'options pour le motif 'NONE'
-	"""
+	""" Pas d'options pour le motif 'NONE' """
 
 	##################################################
 	@staticmethod
@@ -128,9 +126,7 @@ class StackModel:
 
 	##################################################
 	def tostring(self) -> str:
-		"""
-		Conversion en chaine de caractère.
-		"""
+		""" Conversion en chaine de caractère. """
 		return f"Model: {self.model}, Options: {self.options}"
 
 	##################################################
