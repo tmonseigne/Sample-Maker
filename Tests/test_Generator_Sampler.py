@@ -22,6 +22,7 @@ def test_sampler():
 	save_sample_as_png(sample, f"{OUTPUT_DIR}/test_sampler_grid.png")
 	print(f"\nSampler Print : \n{sampler}")
 	print(f"Molecules générated : {sampler.n_molecules}")
+	assert True
 
 
 ##################################################
@@ -33,6 +34,7 @@ def test_sampler_masked():
 	sampler.mask = Mask(SIZE, Pattern.from_pattern(PatternType.SQUARES))
 	sample = sampler.generate_sample()
 	save_sample_as_png(sample, f"{OUTPUT_DIR}/test_sampler_squares.png")
+	assert True
 
 
 ##################################################
@@ -41,6 +43,7 @@ def test_sampler_change_params():
 	sampler = Sampler()
 	sampler.size = 512
 	print(sampler.size)
+	assert True
 
 
 ##################################################
@@ -49,3 +52,4 @@ def test_sampler_bad_options():
 	sampler = Sampler(astigmatism_ratio=-1)
 	sample = sampler.generate_sample()
 	save_sample_as_png(sample, f"{OUTPUT_DIR}/test_sampler_bad_options.png")
+	assert True

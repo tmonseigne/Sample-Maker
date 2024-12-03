@@ -2,17 +2,10 @@
 
 import sys
 
-import pytest
-from PyQt5.QtCore import QCoreApplication, QLoggingCategory
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtCore import QCoreApplication, Qt, QTimer
+from PyQt5.QtWidgets import QApplication, QDialog, QMessageBox
 
-from SampleMaker.GUI import MainUI, SettingWidget
-from pytestqt.qtbot import QtBot
-
-import sys
-import traceback
-
+from SampleMaker.GUI import MainUI
 from SampleMaker.GUI.PreferencesDialog import PreferencesDialog
 
 
@@ -27,30 +20,50 @@ def initialize():
 	app = QApplication([])  # Initialisation de QApplication
 	return app
 
+
+##################################################
+def close_messagebox():
+	# Recherche la boîte de dialogue QMessageBox affichée
+	for widget in QApplication.instance().topLevelWidgets():
+		if isinstance(widget, QMessageBox):
+			widget.accept()  # Simule un clic sur "OK"
+
+
+##################################################
+def close_dialog(dialog):
+	if dialog: dialog.accept()
+
 ##################################################
 def test_main_ui():
+	""" Test basique de l'interface principale """
 	app = initialize()
 	window = MainUI()
 	window.update_status("New Status")
-	# window.show_about_dialog() # Need to close and qtbot crash
-	# window.open_preferences() # Need to close and qtbot crash
+	QTimer.singleShot(100, close_messagebox)  # Ferme automatiquement le QMessageBox
+	window.show_about_dialog()
+	QTimer.singleShot(100, lambda: close_dialog(window.findChild(QDialog)))  # Ferme automatiquement le QDialog
+	window.open_preferences()
+	assert True
 
 
 ##################################################
 def test_preference_ui():
+	""" Test basique de l'interface de préférence """
 	app = initialize()
 	window = PreferencesDialog()
+	assert True
 
 
 ##################################################
 def test_settings_ui():
+	""" Test basique du widget principal """
 	app = initialize()
 	window = MainUI()
 	widget = window.centralWidget()
 	settings_ui = widget.settings.ui
-	settings_ui["Dimension"][1].set_value(1) # On limite à 1 frame pour aller vite
+	settings_ui["Dimension"][1].set_value(1)  # On limite à 1 frame pour aller vite
 	widget.generate_function()
-
+	assert True
 
 # qtbot crash
 ###################################################

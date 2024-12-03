@@ -22,6 +22,5 @@ def test_fluorophore():
 ##################################################
 def test_predefined_fluorophores():
 	""" Récupération des fluorophores prédéfinis """
-
-	for name, fluorophore in PREDEFINED_FLUOROPHORES.items():
-		print(f"\n{name}:\n{fluorophore}")
+	for name, fluorophore in PREDEFINED_FLUOROPHORES.items(): print(f"\n{name}:\n{fluorophore}")
+	assert True

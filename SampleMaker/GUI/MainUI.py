@@ -82,22 +82,14 @@ class MainUI(QMainWindow):
 		help_menu.addAction(about_action)
 
 	##################################################
-	def open_preferences(self):  # pragma: no cover
-		"""
-		Ouvre une fenêtre de préférences.
-
-		Affiche une boîte de dialogue modale permettant de modifier les préférences de l'application.
-		"""
+	def open_preferences(self):
+		""" Affiche une boîte de dialogue modale permettant de modifier les préférences de l'application. """
 		dialog = PreferencesDialog(self)
 		dialog.exec_()  # Affiche la boîte de dialogue en mode modal
 
 	##################################################
-	def show_about_dialog(self):  # pragma: no cover
-		"""
-		Affiche une boîte de dialogue 'À propos'.
-
-		Présente des informations sur l'application, telles que son nom, sa version, et l'équipe de développement.
-		"""
+	def show_about_dialog(self):
+		""" Présente des informations sur l'application, telles que son nom, sa version, et l'équipe de développement. """
 		QMessageBox.about(self, "À propos de Sample Maker", "Sample Maker - Interface utilisateur\nVersion 1.0\n\nDéveloppé avec PyQt5.", )
 
 	##################################################

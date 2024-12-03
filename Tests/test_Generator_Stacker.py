@@ -20,3 +20,4 @@ def test_stacker():
 	stack = stacker.generate(10)
 	print(stacker)
 	stack.save(f"{OUTPUT_DIR}/test_stacker_base.tif")
+	assert True

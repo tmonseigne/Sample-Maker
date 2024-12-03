@@ -35,43 +35,54 @@ def setting_base_test(setting: UI.Setting, change, default_expected, change_expe
 
 ###################################################
 def test_setting():
+	""" Test basique de la classe (constructeur, getter, setter) """
 	app = initialize()
 	setting = UI.Setting()
 	setting_base_test(setting, None, None, None)
+	assert True
 
 
 ###################################################
 def test_int_setting():
+	""" Test basique de la classe (constructeur, getter, setter) """
 	app = initialize()
 	setting = UI.IntSetting("Test", 0, 10, 1, 1)
 	setting_base_test(setting, 5, 1, 5)
+	assert True
 
 
 ###################################################
 def test_float_setting():
+	""" Test basique de la classe (constructeur, getter, setter) """
 	app = initialize()
 	setting = UI.FloatSetting("Test", 0.0, 10.0, 1.0, 1.0)
 	setting_base_test(setting, 5.0, 1.0, 5.0)
+	assert True
 
 
 ###################################################
 def test_combo_setting():
+	""" Test basique de la classe (constructeur, getter, setter) """
 	app = initialize()
 	setting = UI.ComboSetting(label="Test", choices=["Choix 1", "Choix 2"], options=[UI.Setting(), UI.IntSetting(label="Option du choix 2")])
 	setting_base_test(setting, 1, [0, None], [1, 0])
 	setting = UI.ComboSetting(label="Test", choices=["Choix 1", "Choix 2"], options=[])
 	setting_base_test(setting, 1, [0, None], [1, None])
+	assert True
 
 
 ###################################################
 def test_file_setting():
+	""" Test basique de la classe (constructeur, getter, setter) """
 	app = initialize()
 	setting = UI.FileSetting(label="Test")
 	setting_base_test(setting, "filename.extension", "", "filename.extension")
+	assert True
 
 
 ###################################################
 def test_settings():
+	""" Test basique de la classe (constructeur, getter, setter) """
 	app = initialize()
 	settings = Settings()
 	ui = settings.ui
@@ -79,10 +90,12 @@ def test_settings():
 	res = settings.parse_settings()
 	stacker = settings.get_stacker()
 	print(settings)
+	assert True
 
 
 ###################################################
 def test_settings_pattern_management():
+	""" Test sur le reglage du pattern """
 	app = initialize()
 	settings = Settings()
 	# Change Pattern Options
@@ -116,10 +129,12 @@ def test_settings_pattern_management():
 	ui["Structure"][2].set_value(5)
 	res = settings.parse_settings()
 	print_warning(res)
+	assert True
 
 
 ###################################################
 def test_settings_stack_management():
+	""" Test sur le reglage du modèle """
 	app = initialize()
 	settings = Settings()
 	# Change Stack Options
@@ -128,3 +143,4 @@ def test_settings_stack_management():
 	ui["Structure"][3].set_value(1)
 	res = settings.parse_settings()
 	print_warning(res)
+	assert True

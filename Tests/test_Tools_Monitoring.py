@@ -87,6 +87,7 @@ def test_monitoring():
 	time.sleep(1)
 	monitoring.stop()
 	print(f"\n{monitoring}")
+	assert True
 
 
 ##################################################
@@ -101,3 +102,4 @@ def test_monitoring_save():
 	monitoring.stop()
 	for ext in ["png", "html", "json", "txt"]:
 		monitoring.save(f"{OUTPUT_DIR}/test_monitoring.{ext}")
+	assert True

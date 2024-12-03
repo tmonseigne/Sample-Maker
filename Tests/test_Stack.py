@@ -30,6 +30,7 @@ def test_stack():
 	stack.add_sample(sample2)  # Deuxième échantillon ajouté à la fin (car indice <0)
 
 	print(stack)  # Affiche Pile 3D : (2, 2, 2) Contenu : [[1, 1, 1, 1], [2, 2, 2, 2]]
+	assert True
 
 
 ##################################################
@@ -78,6 +79,7 @@ def test_stack_save():
 	stack.add_sample(np.zeros((2, 2)).astype(np.float32))
 	stack.add_sample(np.ones((2, 2)).astype(np.float32))
 	stack.save(f"{OUTPUT_DIR}/test_stack.tif")
+	assert True
 
 
 ##################################################

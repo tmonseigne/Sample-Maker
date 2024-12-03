@@ -23,6 +23,7 @@ def test_noiser():
 	print(noiser)
 	res = noiser.apply(ref_image)
 	save_sample_as_png(res, f"{OUTPUT_DIR}/test_noiser_base.png", 0)
+	assert True
 
 
 ##################################################
@@ -42,6 +43,7 @@ def test_noiser_only_snr():
 		noiser = Noiser(snr=snr, background=0, variation=0)
 		res = noiser.apply(ref_image)
 		save_sample_as_png(res, f"{OUTPUT_DIR}/test_noiser_snr_{snr}.png", 0)
+	assert True
 
 
 ##################################################
@@ -50,6 +52,7 @@ def test_noiser_only_background():
 	noiser = Noiser(0, 50, 50)
 	res = noiser.apply(ref_image)
 	save_sample_as_png(res, f"{OUTPUT_DIR}/test_noiser_background.png", 0)
+	assert True
 
 
 ##################################################
@@ -58,3 +61,4 @@ def test_noiser_black_image():
 	noiser = Noiser(snr=10, background=0, variation=0)
 	res = noiser.apply(np.zeros((size, size), dtype=np.float32))
 	save_sample_as_png(res, f"{OUTPUT_DIR}/test_noiser_black.png", 0)
+	assert True

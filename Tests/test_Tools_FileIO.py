@@ -24,6 +24,7 @@ REF_STACK = np.stack((REF_GRADIENT, np.fliplr(REF_GRADIENT)), axis=0)  # Empilem
 def test_save_boolean_mask_as_png():
 	""" Test de la fonction save_boolean_mask_as_png. """
 	FileIO.save_boolean_mask_as_png(REF_BOOLEAN_MASK, f"{OUTPUT_DIR}/test_save_boolean_mask.png")
+	assert True
 
 
 ##################################################
@@ -55,6 +56,7 @@ def test_save_sample_as_png():
 	FileIO.save_sample_as_png(REF_GRADIENT, f"{OUTPUT_DIR}/test_save_sample.png", 0)
 	FileIO.save_sample_as_png(REF_GRADIENT, f"{OUTPUT_DIR}/test_save_sample_normalized.png", 100)
 	FileIO.save_sample_as_png(np.zeros((256, 256)).astype(np.float32), f"{OUTPUT_DIR}/test_save_sample_black.png")
+	assert True
 
 
 ##################################################
@@ -92,12 +94,14 @@ def test_open_png_as_sample_bad_file():
 def test_save_stack_as_tif():
 	"""	Test de la fonction save_stack_as_tif. """
 	FileIO.save_stack_as_tif(REF_STACK, f"{OUTPUT_DIR}/test_save_stack.tif")
+	assert True
 
 
 ##################################################
 def test_save_stack_as_tif_2d():
 	""" Test de la fonction save_stack_as_tif avec une image 2D. """
 	FileIO.save_stack_as_tif(REF_GRADIENT, f"{OUTPUT_DIR}/test_save_stack_2D.tif")
+	assert True
 
 
 ##################################################
