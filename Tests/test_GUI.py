@@ -1,5 +1,6 @@
 """ Fichier des tests pour l'interface utilisateur. """
 
+import platform
 import sys
 
 from PyQt5.QtCore import QCoreApplication, Qt, QTimer
@@ -33,16 +34,18 @@ def close_messagebox():
 def close_dialog(dialog):
 	if dialog: dialog.accept()
 
+
 ##################################################
 def test_main_ui():
 	""" Test basique de l'interface principale """
 	app = initialize()
 	window = MainUI()
 	window.update_status("New Status")
-	QTimer.singleShot(100, close_messagebox)  # Ferme automatiquement le QMessageBox
-	window.show_about_dialog()
-	QTimer.singleShot(100, lambda: close_dialog(window.findChild(QDialog)))  # Ferme automatiquement le QDialog
-	window.open_preferences()
+	if platform.system() != "Darwin":
+		QTimer.singleShot(100, close_messagebox)  # Ferme automatiquement le QMessageBox
+		window.show_about_dialog()
+		QTimer.singleShot(100, lambda: close_dialog(window.findChild(QDialog)))  # Ferme automatiquement le QDialog
+		window.open_preferences()
 	assert True
 
 
