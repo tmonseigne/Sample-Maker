@@ -1,0 +1,125 @@
+name: Sample Maker CI
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+  # Permet d'exécuter le workflow manuellement depuis l'onglet Actions
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+
+jobs:
+  Tests:
+    name: Tests on ${{ matrix.platform }} for Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      fail-fast: false  # Continue other jobs if one matrix fail
+      matrix:
+        platform: [ ubuntu-latest, windows-latest, macos-latest ]
+        python-version: [ "3.12", "3.13" ]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Set up QT For Linux (libxcb, x11...)
+        uses: tlambert03/setup-qt-libs@v1
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Run tests
+        uses: aganders3/headless-gui@v2
+        with:
+          run: python -m pytest
+
+      - name: Manage Test Reports
+        run: |
+          python ./Docs/Tools/pytest_json_to_rst.py ./Reports/Test_Report.json ./Reports/Test_Report_CI_${{ matrix.platform }}_${{ matrix.python-version }}.rst
+          mv ./Reports/Monitoring.html ./Reports/Monitoring_CI_${{ matrix.platform }}_${{ matrix.python-version }}.html
+        continue-on-error: true  # Permet de continuer même si cette étape échoue
+
+      - name: Upload Test Reports as Artifacts
+        uses: actions/upload-artifact@v3  # Limiter à V3 pour le moment la V4 est bugué
+        with:
+          name: Reports
+          path: |
+            Reports/Test_Report_CI_*.rst
+            Reports/Monitoring_CI_*.html
+        continue-on-error: true  # Permet de continuer même si cette étape échoue
+
+      - name: Upload coverage to Codecov
+        if: matrix.platform == 'ubuntu-latest' && matrix.python-version == '3.13'
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml
+          flags: unittests
+          fail_ci_if_error: false  # Autorise l'echec de l'upload
+
+  Doc:
+    name: Build and Deploy Sphinx Documentation
+    needs: Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Download Test Reports
+        uses: actions/download-artifact@v3
+        with:
+          name: Reports
+          path: Docs/Reports/
+
+      - name: Build documentation
+        run: sphinx-build -b html Docs/ Docs/_build/html
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload documentation to GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'Docs/_build/html'
+
+      #- name: Deploy to GitHub Pages
+      #  id: deployment
+      #  uses: actions/deploy-pages@v4
+#
+      #- name: Deploy to GitHub Pages
+      #  if: github.ref == 'refs/heads/main'
+      #  uses: peaceiris/actions-gh-pages@v3
+      #  with:
+      #    github_token: ${{ secrets.GITHUB_TOKEN }}
+      #    publish_dir: docs/_build/html

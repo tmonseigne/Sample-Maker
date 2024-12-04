@@ -22,7 +22,7 @@ Environnement
 Summary
 -------
 
-54 tests collected, 54 passed, 0 failed in 0:00:14s on 27/11/2024 at 15:52:42
+67 tests collected, 67 passed ✅, 0 failed ❌ in 0:00:18s on 04/12/2024 at 10:01:28
 
 Monitoring
 ----------
@@ -53,7 +53,7 @@ Fluorophore
      - Duration
    * - Fluorophore
      - ✅
-     - 3ms
+     - 4ms
    * - Predefined Fluorophores
      - ✅
      - 2ms
@@ -63,6 +63,94 @@ Fluorophore
    <details>
       <summary>Log Test : Predefined Fluorophores</summary>
       <pre>GFP:<br>- Longueur d'onde (wavelength): 509 nm<br>- Intensité de base: 4000<br>- Variation maximale (delta): ±5%<br>- Scintillement (flickering): 30 ms<br><br>RFP:<br>- Longueur d'onde (wavelength): 582 nm<br>- Intensité de base: 4500<br>- Variation maximale (delta): ±10%<br>- Scintillement (flickering): 50 ms<br><br>CFP:<br>- Longueur d'onde (wavelength): 475 nm<br>- Intensité de base: 3500<br>- Variation maximale (delta): ±7%<br>- Scintillement (flickering): 40 ms<br><br>YFP:<br>- Longueur d'onde (wavelength): 527 nm<br>- Intensité de base: 3800<br>- Variation maximale (delta): ±6%<br>- Scintillement (flickering): 35 ms<br><br>Alexa488:<br>- Longueur d'onde (wavelength): 495 nm<br>- Intensité de base: 6000<br>- Variation maximale (delta): ±3%<br>- Scintillement (flickering): 25 ms</pre>
+   </details>
+
+Gui
+^^^
+
+.. list-table:: 
+   :header-rows: 1
+
+   * - Test Name
+     - Status
+     - Duration
+   * - Main Ui
+     - ✅
+     - 624ms
+   * - Preference Ui
+     - ✅
+     - 3ms
+   * - Settings Ui
+     - ✅
+     - 1.35s
+
+.. raw:: html
+
+   <details>
+      <summary>Log Test : Main Ui</summary>
+      <pre>New Status</pre>
+   </details>
+
+.. raw:: html
+
+   <details>
+      <summary>Log Test : Settings Ui</summary>
+      <pre>Génération en cours...<br>Génération en cours... Paramètres récupérés...<br>Settings :<br>  - Dimension :<br>    - Taille (px) : 256<br>    - Nombre de Frames : 1<br>  - Setup :<br>    - Taille des pixels (nm) : 160<br>    - Ouverture Numérique : 1.4<br>  - Fluorophore :<br>    - Longueur d'onde (nm) : 600<br>    - Intensité (lux ?) : 5000<br>    - Variation (%) : 10.0<br>    - Scintillement (ms) : 50<br>  - Structure :<br>    - Densité (molécules/µm²)  : 0.25<br>    - Ratio Astigmatisme : 2.0<br>    - Masque de répartition : [0, None]<br>    - Style de pile : [0, None]<br>  - Noise :<br>    - Intensité du bruit de fond (lux ?) : 500<br>    - Variation du bruit de fond (%) : 10.0<br>    - SNR : 10.0<br><br>Génération en cours... Paramètres récupérés... Paramétrisation effectué...<br>Génération terminée</pre>
+   </details>
+
+Gui Settings
+^^^^^^^^^^^^
+
+.. list-table:: 
+   :header-rows: 1
+
+   * - Test Name
+     - Status
+     - Duration
+   * - Setting
+     - ✅
+     - 2ms
+   * - Int Setting
+     - ✅
+     - 160ms
+   * - Float Setting
+     - ✅
+     - 156ms
+   * - Combo Setting
+     - ✅
+     - 158ms
+   * - File Setting
+     - ✅
+     - 195ms
+   * - Settings
+     - ✅
+     - 155ms
+   * - Settings Pattern Management
+     - ✅
+     - 164ms
+   * - Settings Stack Management
+     - ✅
+     - 154ms
+
+.. raw:: html
+
+   <details>
+      <summary>Log Test : Settings</summary>
+      <pre>Settings :<br>  - Dimension :<br>    - Taille (px) : 256<br>    - Nombre de Frames : 10<br>  - Setup :<br>    - Taille des pixels (nm) : 160<br>    - Ouverture Numérique : 1.4<br>  - Fluorophore :<br>    - Longueur d'onde (nm) : 600<br>    - Intensité (lux ?) : 5000<br>    - Variation (%) : 10.0<br>    - Scintillement (ms) : 50<br>  - Structure :<br>    - Densité (molécules/µm²)  : 0.25<br>    - Ratio Astigmatisme : 2.0<br>    - Masque de répartition : [0, None]<br>    - Style de pile : [0, None]<br>  - Noise :<br>    - Intensité du bruit de fond (lux ?) : 500<br>    - Variation du bruit de fond (%) : 10.0<br>    - SNR : 10.0</pre>
+   </details>
+
+.. raw:: html
+
+   <details>
+      <summary>Log Test : Settings Pattern Management</summary>
+      <pre><span style="color: #aa5500"></span><span style="font-weight: bold; color: #aa5500">La taille des carrés est trop élevé<br>(limite pour un échantillon de taille 256: 128</span><span style="font-weight: bold"></span><br><span style="color: #aa5500"></span><span style="font-weight: bold; color: #aa5500">Le nombre de rayon doit être une puissance de 2<br>Ex : 1, 2, 4, 8, 16...)</span><span style="font-weight: bold"></span><br><span style="color: #aa5500"></span><span style="font-weight: bold; color: #aa5500">Aucun fichier n'est spécifié.</span><span style="font-weight: bold"></span><br><span style="color: #aa5500"></span><span style="font-weight: bold; color: #aa5500">Le fichier "filename" est introuvable.</span><span style="font-weight: bold"></span><br><span style="color: #aa5500"></span><span style="font-weight: bold; color: #aa5500">Masque de répartition non reconnu</span><span style="font-weight: bold"></span></pre>
+   </details>
+
+.. raw:: html
+
+   <details>
+      <summary>Log Test : Settings Stack Management</summary>
+      <pre><span style="color: #aa5500"></span><span style="font-weight: bold; color: #aa5500">Modèle non reconnu.</span><span style="font-weight: bold"></span></pre>
    </details>
 
 Generator Noiser
@@ -76,19 +164,19 @@ Generator Noiser
      - Duration
    * - Noiser
      - ✅
-     - 67ms
+     - 91ms
    * - Noiser No Noise
      - ✅
      - 42ms
    * - Noiser Only Snr
      - ✅
-     - 141ms
+     - 116ms
    * - Noiser Only Background
      - ✅
-     - 28ms
+     - 25ms
    * - Noiser Black Image
      - ✅
-     - 4ms
+     - 9ms
 
 .. raw:: html
 
@@ -115,16 +203,16 @@ Generator Sampler
      - Duration
    * - Sampler
      - ✅
-     - 3.37s
+     - 2.57s
    * - Sampler Masked
      - ✅
-     - 1.04s
+     - 778ms
    * - Sampler Change Params
      - ✅
-     - 1ms
+     - 3ms
    * - Sampler Bad Options
      - ✅
-     - 10ms
+     - 9ms
 
 .. raw:: html
 
@@ -167,7 +255,7 @@ Generator Stackmodel
 
    <details>
       <summary>Log Test : Pattern</summary>
-      <pre>Model: StackModelType.NONE, Options: No Options</pre>
+      <pre>Model: StackModelType.RANDOM, Options: No Options</pre>
    </details>
 
 Generator Stacker
@@ -181,13 +269,13 @@ Generator Stacker
      - Duration
    * - Stacker
      - ✅
-     - 801ms
+     - 601ms
 
 .. raw:: html
 
    <details>
       <summary>Log Test : Stacker</summary>
-      <pre>Model: StackModelType.NONE, Options: No Options<br>Sampler: size: 128, Pixel Size: 160 nm, Molecule Density : 0.25<br>Area: 419.4304, Maximum molecule number: 104<br>Mask: Size: 256, Pattern: None, Options: No Options<br>Fluorophore: - Longueur d'onde (wavelength): 600 nm<br>- Intensité de base: 5000<br>- Variation maximale (delta): ±10%<br>- Scintillement (flickering): 50 ms<br>Noise: SNR: 10, Background: 500 (± 10 %)<br>Generation number : 0<br>Model: StackModelType.NONE, Options: No Options<br>Sampler: size: 128, Pixel Size: 160 nm, Molecule Density : 0.25<br>Area: 419.4304, Maximum molecule number: 104<br>Mask: Size: 256, Pattern: None, Options: No Options<br>Fluorophore: - Longueur d'onde (wavelength): 600 nm<br>- Intensité de base: 5000<br>- Variation maximale (delta): ±10%<br>- Scintillement (flickering): 50 ms<br>Noise: SNR: 10, Background: 500 (± 10 %)<br>Generation number : 10</pre>
+      <pre>Model: StackModelType.RANDOM, Options: No Options<br>Sampler: size: 128, Pixel Size: 160 nm, Molecule Density : 0.25<br>Area: 419.4304, Maximum molecule number: 104<br>Mask: Size: 256, Pattern: None, Options: No Options<br>Fluorophore: - Longueur d'onde (wavelength): 600 nm<br>- Intensité de base: 5000<br>- Variation maximale (delta): ±10%<br>- Scintillement (flickering): 50 ms<br>Noise: SNR: 10, Background: 500 (± 10 %)<br>Generation number : 0<br>Model: StackModelType.RANDOM, Options: No Options<br>Sampler: size: 128, Pixel Size: 160 nm, Molecule Density : 0.25<br>Area: 419.4304, Maximum molecule number: 104<br>Mask: Size: 256, Pattern: None, Options: No Options<br>Fluorophore: - Longueur d'onde (wavelength): 600 nm<br>- Intensité de base: 5000<br>- Variation maximale (delta): ±10%<br>- Scintillement (flickering): 50 ms<br>Noise: SNR: 10, Background: 500 (± 10 %)<br>Generation number : 10</pre>
    </details>
 
 Mask
@@ -201,19 +289,19 @@ Mask
      - Duration
    * - Mask
      - ✅
-     - 2ms
+     - 16ms
    * - Generate Mask Stripes
      - ✅
-     - 2ms
+     - 3ms
    * - Stripes Mask Options
      - ✅
-     - 1ms
+     - 2ms
    * - Stripes Mask Options Bad
      - ✅
      - 1ms
    * - Generate Mask Squares
      - ✅
-     - 1ms
+     - 2ms
    * - Squares Mask Options Little
      - ✅
      - 2ms
@@ -222,10 +310,10 @@ Mask
      - 1ms
    * - Squares Mask Options Only One
      - ✅
-     - 1ms
+     - 2ms
    * - Generate Mask Sun
      - ✅
-     - 47ms
+     - 35ms
    * - Sun Mask Options
      - ✅
      - 11ms
@@ -234,13 +322,13 @@ Mask
      - 1ms
    * - Generate Mask Existing Image
      - ✅
-     - 1ms
+     - 2ms
    * - Existing Mask Options Bad Filename
      - ✅
      - 1ms
    * - None Mask
      - ✅
-     - 1ms
+     - 2ms
 
 .. raw:: html
 
@@ -317,7 +405,7 @@ Stack
      - 1ms
    * - Stack Save
      - ✅
-     - 8ms
+     - 7ms
    * - Stack Open
      - ✅
      - 2ms
@@ -350,31 +438,31 @@ Tools Fileio
      - Duration
    * - Save Boolean Mask As Png
      - ✅
-     - 41ms
+     - 37ms
    * - Save Boolean Mask As Png Bad Mask
      - ✅
      - 1ms
    * - Open Png As Boolean Mask
      - ✅
-     - 3ms
+     - 2ms
    * - Open Png As Boolean Mask Bad File
      - ✅
      - 1ms
    * - Save Sample As Png
      - ✅
-     - 8ms
+     - 7ms
    * - Save Sample As Png Bad Sample
      - ✅
      - 1ms
    * - Open Png As Sample
      - ✅
-     - 8ms
+     - 6ms
    * - Open Png As Sample Bad File
      - ✅
      - 1ms
    * - Save Stack As Tif
      - ✅
-     - 9ms
+     - 8ms
    * - Save Stack As Tif 2D
      - ✅
      - 8ms
@@ -383,7 +471,7 @@ Tools Fileio
      - 1ms
    * - Open Tif As Stack
      - ✅
-     - 6ms
+     - 5ms
    * - Open Tif As Stack Bad File
      - ✅
      - 1ms
@@ -399,16 +487,16 @@ Tools Monitoring
      - Duration
    * - Monitoring
      - ✅
-     - 1.38s
+     - 1.43s
    * - Monitoring Save
      - ✅
-     - 6.64s
+     - 7.10s
 
 .. raw:: html
 
    <details>
       <summary>Log Test : Monitoring</summary>
-      <pre>6 entrées.<br>Timestamps : [0.0, 0.21, 0.41, 0.62, 0.83, 1.04]<br>CPU Usage : [0.0, 0.44375, 0.0, 0.0, 0.0, 0.446875]<br>Memory Usage : [169.27734375, 169.28125, 169.28125, 169.28125, 169.28125, 169.2578125]<br>Disk Usage : [0, 0.0, 0.0, 0.0, 0.0, 0.0]</pre>
+      <pre>6 entrées.<br>Timestamps : [0.0, 0.21, 0.43, 0.64, 0.85, 1.06]<br>CPU Usage : [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]<br>Memory Usage : [203.390625, 203.39453125, 203.39453125, 203.3984375, 203.3984375, 203.375]<br>Disk Usage : [0, 0.0, 0.0, 0.0, 0.0, 0.0]</pre>
    </details>
 
 .. raw:: html
@@ -430,6 +518,12 @@ Tools Utils
    * - Add Extension
      - ✅
      - 1ms
+   * - Add Suffix
+     - ✅
+     - 1ms
+   * - Get Timestamp For Files
+     - ✅
+     - 1ms
    * - Print Error
      - ✅
      - 1ms
@@ -438,7 +532,14 @@ Tools Utils
      - 1ms
    * - Add Grid
      - ✅
-     - 4ms
+     - 6ms
+
+.. raw:: html
+
+   <details>
+      <summary>Log Test : Get Timestamp For Files</summary>
+      <pre>-20241204_100128<br>-20241204</pre>
+   </details>
 
 .. raw:: html
 
